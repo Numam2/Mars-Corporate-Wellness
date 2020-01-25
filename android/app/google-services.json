@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "952672906973",
+    "firebase_url": "https://ludus-health-coach.firebaseio.com",
+    "project_id": "ludus-health-coach",
+    "storage_bucket": "ludus-health-coach.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952672906973:android:10bbb1171a26327a18b534",
+        "android_client_info": {
+          "package_name": "com.ludcoach.personal_trainer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952672906973-ee9gipg8iu6kelsp82tsgf6lh491vutl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuO7Ddb5m1vFF8z9a6F6sYaw-DNadNM3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952672906973-ee9gipg8iu6kelsp82tsgf6lh491vutl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
