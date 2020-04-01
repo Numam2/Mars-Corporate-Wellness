@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:personal_trainer/Firebase_Services/auth.dart';
+import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Screens/Profile/Onboarding.dart';
 
 class Register extends StatefulWidget {
 
@@ -16,6 +19,7 @@ final AuthService _auth = AuthService();
 final _formKey = GlobalKey<FormState>();
 
 //Text field state
+String name = "";
 String email = "";
 String password = "";
 String error = "";
@@ -35,11 +39,14 @@ String error = "";
           ),
         ),
  
-      body: Stack(children: <Widget>[
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
 
         ////// First Text 
         Container(
-          padding: EdgeInsets.fromLTRB(25.0, 110.0, 0.0, 0.0),
+          padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
           child: Text(
                   "Sing Up",
                   style: TextStyle(
@@ -50,18 +57,43 @@ String error = "";
         
         ////// Register form
         Container(
-          padding: EdgeInsets.fromLTRB(25.0, 175.0, 25.0, 0.0),
+          padding: EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 0.0),
           child:Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
 
+                  ///Name input
+                  SizedBox(height: 25),
+                  TextFormField( 
+                    style: TextStyle(color:Colors.white),                   
+                    validator: (val) => val.isEmpty ? "Please enter a name" : null,
+                    cursorColor: Colors.redAccent[700],
+                    decoration: InputDecoration(                      
+                      hintText: "name",
+                      hintStyle: TextStyle(color: Colors.grey.shade700),
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: Colors.grey,
+                      ),
+                      focusedBorder: UnderlineInputBorder(  
+                        borderSide: BorderSide(color: Colors.redAccent[700])
+                      )
+                    ),
+                    onChanged: (val){
+                      setState(() => name = val);
+                    },
+                  ),
+
                   ///Email input
                   SizedBox(height: 25),
                   TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color:Colors.white),                   
                     validator: (val) => val.isEmpty ? "Enter an email" : null,
-                    decoration: InputDecoration(
+                    cursorColor: Colors.redAccent[700],
+                    decoration: InputDecoration(                      
                       hintText: "email",
                       hintStyle: TextStyle(color: Colors.grey.shade700),
                       prefixIcon: Icon(
@@ -69,7 +101,7 @@ String error = "";
                         color: Colors.grey,
                       ),
                       focusedBorder: UnderlineInputBorder(  
-                        borderSide: BorderSide(color: Colors.lightBlueAccent)
+                        borderSide: BorderSide(color: Colors.redAccent[700])
                       )
                     ),
                     onChanged: (val){
@@ -80,7 +112,9 @@ String error = "";
                   ///Password input
                   SizedBox(height: 25),
                   TextFormField(
+                    style: TextStyle(color:Colors.white), 
                     validator: (val) => val.length < 6 ? "Your password must have at least 6 characters" : null,
+                    cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(
                       hintText: "password",
                       hintStyle: TextStyle(color: Colors.grey.shade700),
@@ -89,7 +123,7 @@ String error = "";
                         color: Colors.grey,
                       ),
                       focusedBorder: UnderlineInputBorder(  
-                        borderSide: BorderSide(color: Colors.lightBlueAccent)
+                        borderSide: BorderSide(color: Colors.redAccent[700])
                       )
                     ),
                     obscureText: true,
@@ -99,26 +133,33 @@ String error = "";
                   ),
                   
                   ///Button Register
-                  SizedBox(height: 50),
-                  RaisedButton(
-                    color: Colors.black,
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                        color: Colors.white),
+                  SizedBox(height: 60),
+                  Container(
+                    padding: EdgeInsets.only(left:40,right:40),                    
+                    height: 40,
+                    child: RaisedButton(
+                      color: Colors.redAccent[700],
+                      child: Text(
+                        "Register",
+                        style: TextStyle(
+                          color: Colors.white),
+                        ),
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                       ),
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()){
-                        dynamic result = await _auth.registerWithEmailAndPassword(email,password);
-                          
-                         if (this.mounted && result == null) {
-                          setState(() => error = "Please provide a valid combination of email and password");
-                         }
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => Onboarding()));
+                          dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                          final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                          final String uid = user.uid.toString();
+                          await DatabaseService(uid: uid).updateUserData(name,'Sex', '00', '0.0', '0.0', 'None', 'None', 'None',0,0,0);                                            
+                           if (this.mounted && result == null) {
+                            setState(() => error = "Please provide a valid combination of email and password");
+                           }                          
+                        }
                       }
-                    }
+                    ),
                   ),
 
                   //Show error if threr is an error signing in

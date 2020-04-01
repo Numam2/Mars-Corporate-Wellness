@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:personal_trainer/Firebase_Services/auth.dart';
+import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
 
 
@@ -25,6 +26,10 @@ String email = "";
 String password = "";
 String error = "";
 
+goHome(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => InicioNew()));    
+  }
+
 ////////////////////////////////////////// Start Widget tree visible in Screen ///////////////////////////////////////////
 
 
@@ -42,13 +47,17 @@ return loading ? Loading() : Scaffold(
           ),
         ),
  
-      body: Stack(children: <Widget>[
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[      
 
         ////// First Text 
         Container(
-          padding: EdgeInsets.fromLTRB(25.0, 110.0, 0.0, 0.0),
+          padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
           child: Text(
                   "Log in",
+                  textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 40.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.white
                   )
@@ -57,7 +66,7 @@ return loading ? Loading() : Scaffold(
         
         ////// Register form
         Container(
-          padding: EdgeInsets.fromLTRB(25.0, 175.0, 25.0, 0.0),
+          padding: EdgeInsets.fromLTRB(25.0, 25, 25.0, 0.0),
           child:Form(
             key: _formKey,
             child: Column(
@@ -67,7 +76,10 @@ return loading ? Loading() : Scaffold(
                   ///Email input
                   SizedBox(height: 25),
                   TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color:Colors.white), 
                     validator: (val) => val.isEmpty ? "Enter an email" : null,
+                    cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(
                       hintText: "email",
                       hintStyle: TextStyle(color: Colors.grey.shade700),
@@ -76,7 +88,7 @@ return loading ? Loading() : Scaffold(
                         color: Colors.grey,
                       ),
                       focusedBorder: UnderlineInputBorder(  
-                        borderSide: BorderSide(color: Colors.lightBlueAccent)
+                        borderSide: BorderSide(color: Colors.redAccent[700])
                       )
                     ),
                     onChanged: (val){
@@ -87,7 +99,9 @@ return loading ? Loading() : Scaffold(
                   ///Password input
                   SizedBox(height: 25),
                   TextFormField(
+                    style: TextStyle(color:Colors.white), 
                     validator: (val) => val.length < 6 ? "Your password must have at least 6 characters" : null,
+                    cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(
                       hintText: "password",
                       hintStyle: TextStyle(color: Colors.grey.shade700),
@@ -96,7 +110,7 @@ return loading ? Loading() : Scaffold(
                         color: Colors.grey,
                       ),
                       focusedBorder: UnderlineInputBorder(  
-                        borderSide: BorderSide(color: Colors.lightBlueAccent)
+                        borderSide: BorderSide(color: Colors.redAccent[700])
                       )
                     ),
                     obscureText: true,
@@ -106,30 +120,35 @@ return loading ? Loading() : Scaffold(
                   ),
                   
                   ///Button Register
-                  SizedBox(height: 50),
-                  RaisedButton(
-                    color: Colors.black,
-                    child: Text(
-                      "Sign In",
-                      style: TextStyle(
-                        color: Colors.white),
+                  SizedBox(height: 60),
+                  Container(
+                    padding: EdgeInsets.only(left:40,right:40),                    
+                    height: 40,
+                    child: RaisedButton(
+                      color: Colors.redAccent[700],
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                          color: Colors.white),
+                        ),
+                      shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                       ),
-                    shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    ),
-                    onPressed: () async {
+                      onPressed: () async {
 
-                      if (_formKey.currentState.validate()){
-                          setState(() => loading = true);
-                          dynamic result = await _auth.signInWithEmailAndPassword(email,password);
-                          if (result == null){
-                            setState((){
-                              error = "Could not sign in with those credentials";
-                              loading = false;
-                            });
+                        if (_formKey.currentState.validate()){
+                            setState(() => loading = true);
+                            dynamic result = await _auth.signInWithEmailAndPassword(email,password);
+                            goHome();
+                            if (result == null){
+                              setState((){
+                                error = "Could not sign in with those credentials";
+                                loading = false;
+                              });
+                          }
                         }
                       }
-                    }
+                    ),
                   ),
 
                    //Show error if threr is an error signing in

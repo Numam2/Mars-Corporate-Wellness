@@ -14,7 +14,7 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -29,8 +29,19 @@ dependencies:
   firebase_auth: ^0.14.0+5
   cloud_firestore: ^0.12.9+5
   provider: ^4.0.1
-  flutter_spinkit: "^4.1.1"
 
+  # Additional UI dependencies used on the APP
+  flutter_bloc: ^3.2.0
+  curved_navigation_bar: ^0.3.2
+  flutter_spinkit: "^4.1.1"
+  progress_indicators: ^0.1.4
+  argon_buttons_flutter: ^1.0.2
+  rounded_loading_button: ^1.0.4
+  direct_select: "^1.0.0"
+  youtube_player_flutter: ^6.1.0+4
+  simple_animations: ^1.3.11
+  wave_slider: ^0.2.0
+  step_progress_indicator: ^0.2.1+4 #https://pub.dev/packages/step_progress_indicator#-readme-tab-
 
 
 dev_dependencies:
@@ -48,11 +59,59 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
+  assets:
+    - Images/
+  #List of general app Images (Home Screen)
+    - Images/AppImage2.jpg
+    - Images/AppImage1.jpg
+    - Images/AppImage3.jpg
+    - Images/AppImage4.jpg
+    - Images/AppImage5.jpg
+    - Images/AppImage6.jpg
+    - Images/AppImage7.jpg
+  #List Popular callenges images
+    - Images/Challenges/Burpees.jpg
+    - Images/Challenges/Fruits.jpg
+    - Images/Challenges/Meditation.jpg
+    - Images/Challenges/Pushup.jpg
+    - Images/Challenges/Water.jpg
+  #Emoji List
+    - Images/Emoji/Sunglasses.png
+    - Images/Emoji/Hurt.png
+    - Images/Emoji/Dead.png
+   #TrainPreferences
+    - Images/TrainPreference/Gym.jpg
+    - Images/TrainPreference/Home.jpg
+    - Images/TrainPreference/Machine.jpg
+    - Images/TrainPreference/Running.jpg
+   #Equipment
+    - Images/Equipment/Barbell.jpg
+    - Images/Equipment/Battle Rope.jpg
+    - Images/Equipment/Bench.jpg
+    - Images/Equipment/Bike.jpg
+    - Images/Equipment/Box.jpg
+    - Images/Equipment/Cable Machine.jpg
+    - Images/Equipment/Cone.jpg
+    - Images/Equipment/Dips Bar.jpg
+    - Images/Equipment/Dumbbell.jpg
+    - Images/Equipment/Elastic Band.jpg
+    - Images/Equipment/Gym Machine.jpg
+    - Images/Equipment/Jump Rope.jpg
+    - Images/Equipment/Kettlebell.jpg
+    - Images/Equipment/Med Ball.jpg
+    - Images/Equipment/Mini Band.jpg
+    - Images/Equipment/Plate.jpg
+    - Images/Equipment/Pullup Bar.jpg
+    - Images/Equipment/PVC Pipe.jpg
+    - Images/Equipment/Resistance Band.jpg
+    - Images/Equipment/Rowing Machine.jpg
+    - Images/Equipment/Sandbag.jpg
+    - Images/Equipment/Smith Machine.jpg
+    - Images/Equipment/Speed Ladder.jpg
+    - Images/Equipment/Swiss Ball.jpg
+    - Images/Equipment/Treadmill.jpg
+    - Images/Equipment/TRX.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:personal_trainer/Screens/Authenticate/authenticate.dart';
-import 'package:personal_trainer/Screens/Home/home.dart';
 import 'package:personal_trainer/Models/user.dart';
+import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
@@ -15,7 +15,7 @@ class Wrapper extends StatelessWidget {
     if (user == null){
       return Authenticate();
     } else{
-      return Home();
+      return InicioNew();
     }
   }
 }
