@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class ExerciseFeedback extends StatefulWidget {
@@ -84,11 +85,10 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                 Text(
                   "How did it go with the " + widget.exercise +"?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: GoogleFonts.montserrat(
                     color: Colors.black,
-                    fontSize: 25.0,
-                    fontFamily: "Roboto",
-                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
 
@@ -195,11 +195,12 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: TextField(
+                    style: GoogleFonts.montserrat(fontSize: 14),
                     cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(
                         border: InputBorder.none,                        
                         hintText:
-                            'Leave a note (e.g. changed weight, could not do as many reps...)'),
+                            'Leave a note (e.g. changed weight...)'),
                      onChanged: (val){
                           setState(() => _notes = val);
                         },
@@ -212,7 +213,7 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                   width: 250.0,
                   child: RoundedLoadingButton(
                     color: _buttonColor,
-                    child: Text('Submit', style: TextStyle(color: Colors.white)),
+                    child: Text('Submit', style: GoogleFonts.montserrat(color: Colors.white)),
                     controller: _btnController,
                     onPressed: _sendFeedback,
                     width: 200,

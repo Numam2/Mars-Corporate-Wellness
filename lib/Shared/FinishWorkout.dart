@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 
 class FinishWorkout extends StatefulWidget {
@@ -78,11 +79,10 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                       child: Text(
                         "Did you complete the workout?",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: Colors.black,
                           fontSize: 20.0,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -109,7 +109,7 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                                   hoursCounter = 
                                       (snapshot.data["Accumulated Hours"] + (widget.workoutMinutes/60)).round();
                                   print(caloriesCounter);
-                                  await updateUserData(workoutCounter, caloriesCounter, hoursCounter);                                  
+                                  await updateUserData(workoutCounter, caloriesCounter, hoursCounter);                                 
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -123,7 +123,7 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                                   child: Text(
                                     "Yes",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.montserrat(
                                         fontSize: 14, color: Colors.white),
                                   ),
                                 ),
@@ -142,7 +142,7 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                                   child: Text(
                                     "No",
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.montserrat(
                                         fontSize: 14, color: Colors.white),
                                   ),
                                 ),

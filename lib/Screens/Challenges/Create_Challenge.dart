@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:wave_slider/wave_slider.dart';
 
@@ -33,7 +34,6 @@ class _CreateChallengeState extends State<CreateChallenge> {
   Color _roundedButtonColor = Colors.black;
   String newChallenge;
   int duration = 0;
-  List<String> durations = [for (var i = 1; i < 15; i += 1) i.toString()];
   String newDuration = '3';
   int startFromZero;
 
@@ -67,11 +67,10 @@ class _CreateChallengeState extends State<CreateChallenge> {
                   child: Text(
                     "Create a challenge",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                       color: Colors.black,
                       fontSize: 20.0,
-                      fontFamily: "Roboto",
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -86,7 +85,7 @@ class _CreateChallengeState extends State<CreateChallenge> {
                         borderRadius: BorderRadius.circular(25.0),
                         border: Border.all(color: Colors.grey, width: 0.8)),
                     child: TextFormField(
-                      style: TextStyle(color: Colors.black, fontSize: 14),
+                      style: GoogleFonts.montserrat(color: Colors.black, fontSize: 12),
                       validator: (val) =>
                           val.isEmpty ? "Please enter a description" : null,
                       cursorColor: Colors.redAccent[700],
@@ -109,7 +108,7 @@ class _CreateChallengeState extends State<CreateChallenge> {
                 //Duration
                 Text(
                   '$newDuration days',
-                  style: TextStyle(fontSize: 14),
+                  style: GoogleFonts.montserrat(fontSize: 12),
                 ),
                 Container(
                   height: 60,
@@ -131,7 +130,7 @@ class _CreateChallengeState extends State<CreateChallenge> {
                   width: 250.0,
                   child: RoundedLoadingButton(
                     color: _roundedButtonColor,
-                    child: Text('Create', style: TextStyle(color: Colors.white)),
+                    child: Text('Create', style: GoogleFonts.montserrat(color: Colors.white,fontSize: 12)),
                     controller: _btnController,
                     onPressed: () async {
                       String lastcheck = '0';

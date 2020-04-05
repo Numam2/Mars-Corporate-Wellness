@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Workouts/WeekList.dart';
 
 class WorkoutView extends StatefulWidget {
@@ -16,7 +17,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                ///////////////// App bar /////////////////
                appBar: AppBar(
                   backgroundColor: Colors.black,
-                  title: Text('My Plan', style: TextStyle(color:Colors.white),),
+                  title: Text('My Plan', style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w300 ,color:Colors.white),),
                   leading: InkWell(
                         onTap: () {Navigator.pop(context);},
                         child: Icon(

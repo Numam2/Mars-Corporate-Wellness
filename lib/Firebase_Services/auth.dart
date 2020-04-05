@@ -14,9 +14,7 @@ class AuthService {
 
   //Get UID for Firestore collection calls
   Future<String>getcurrentUID() async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    final String uid = user.uid.toString();
-    return uid;
+    return (await FirebaseAuth.instance.currentUser()).uid;
   }
 
 
@@ -58,8 +56,6 @@ class AuthService {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
 
-      //Create new database doc with uid
-      //await DatabaseService(uid: user.uid).updateUserData(name,'Sex', '00', '0.0', '0.0', 'None', 'None', 'None',0,0,0);
       await DatabaseService(uid: user.uid).createUserRoutine([1,2,3,4]);
 
       return _userFromFirebaseUser(user);

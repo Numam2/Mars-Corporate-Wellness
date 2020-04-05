@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/auth.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
@@ -43,6 +44,7 @@ return loading ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey.shade900,
         elevation: 0.0,
+        automaticallyImplyLeading: false,
         title: Text("",textAlign: TextAlign.center
           ),
         ),
@@ -58,8 +60,8 @@ return loading ? Loading() : Scaffold(
           child: Text(
                   "Log in",
                   textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 40.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.white
+                  style: GoogleFonts.montserrat(
+                    fontSize: 40.0, fontWeight: FontWeight.bold, color: Colors.white
                   )
           ),
         ),
@@ -82,7 +84,7 @@ return loading ? Loading() : Scaffold(
                     cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(
                       hintText: "email",
-                      hintStyle: TextStyle(color: Colors.grey.shade700),
+                      hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade700),
                       prefixIcon: Icon(
                         Icons.person_outline,
                         color: Colors.grey,
@@ -104,7 +106,7 @@ return loading ? Loading() : Scaffold(
                     cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(
                       hintText: "password",
-                      hintStyle: TextStyle(color: Colors.grey.shade700),
+                      hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade700),
                       prefixIcon: Icon(
                         Icons.lock_outline,
                         color: Colors.grey,
@@ -128,24 +130,26 @@ return loading ? Loading() : Scaffold(
                       color: Colors.redAccent[700],
                       child: Text(
                         "Sign In",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: Colors.white),
                         ),
                       shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       ),
                       onPressed: () async {
-
+                        
                         if (_formKey.currentState.validate()){
                             setState(() => loading = true);
                             dynamic result = await _auth.signInWithEmailAndPassword(email,password);
-                            goHome();
+
                             if (result == null){
                               setState((){
                                 error = "Could not sign in with those credentials";
                                 loading = false;
                               });
-                          }
+                            } else {
+                              goHome();
+                            }
                         }
                       }
                     ),
@@ -156,17 +160,17 @@ return loading ? Loading() : Scaffold(
                   Text(
                     error,
                     style: 
-                    TextStyle(color: Colors.red, fontSize: 14.0),
+                    GoogleFonts.montserrat(color: Colors.red, fontSize: 14.0),
                     textAlign: TextAlign.center,
                   ),
                   
                   /// Switch to Register page
                   Column(
                     children: <Widget>[
-                      SizedBox(height: 30),
+                      SizedBox(height: 15),
                       Text(
                         "- OR -",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           fontSize: 12,
                           color: Colors.grey)
                       ),
@@ -176,7 +180,7 @@ return loading ? Loading() : Scaffold(
                         onPressed: () {
                           widget.toggleView();
                         },
-                        child: Text ("Not registered? Sign up", style: TextStyle(color: Colors.white))
+                        child: Text ("Not registered? Sign up", style: GoogleFonts.montserrat(color: Colors.white))
                         ),
                         ],
                     )

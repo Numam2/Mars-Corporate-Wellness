@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:personal_trainer/Firebase_Services/auth.dart';
-import 'package:personal_trainer/Screens/wrapper.dart';
+import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Models/challenge.dart';
+import 'package:personal_trainer/Models/explore.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
+import 'package:personal_trainer/Models/weeks.dart';
+import 'package:personal_trainer/Screens/SplashScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:personal_trainer/Models/user.dart';
 
@@ -21,12 +26,25 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    return StreamProvider<User>.value(
-
-      value: AuthService().user,
+    return MultiProvider(
+      providers:[
+        ///User Provider
+        StreamProvider<User>.value(value: AuthService().user),
+        ///Explore Routines Providers
+        StreamProvider<List<ExploreRoutines>>.value(value: DatabaseService().freeRoutinesList),
+        StreamProvider<List<ExploreWorkouts>>.value(value: DatabaseService().freeWorkoutsList),
+        ///User Profile Provider
+        StreamProvider<UserProfile>.value(value: DatabaseService().userData),
+        ///Workout Providers
+        StreamProvider<List<WeekDays>>.value(value: DatabaseService().weekDays),
+        ///Challenges Providers
+        StreamProvider<List<Challenge>>.value(value: DatabaseService().challengeList),
+        StreamProvider<List<PopularChallenges>>.value(value: DatabaseService().popularChallengeList),
+      ],      
+      
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Wrapper(),
+        home: SplashScreen()
       ),
     );
   }

@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import 'package:personal_trainer/Firebase_Services/auth.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Screens/Profile/Onboarding.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Register extends StatefulWidget {
 
@@ -35,7 +36,8 @@ String error = "";
       appBar: AppBar(
         backgroundColor: Colors.blueGrey.shade900,
         elevation: 0.0,
-        title: Text("",textAlign: TextAlign.center
+        automaticallyImplyLeading: false,
+        title: Text("",textAlign: TextAlign.center        
           ),
         ),
  
@@ -49,8 +51,8 @@ String error = "";
           padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
           child: Text(
                   "Sing Up",
-                  style: TextStyle(
-                    fontSize: 40.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.white
+                  style: GoogleFonts.montserrat(
+                    fontSize: 40.0, fontWeight: FontWeight.bold, color: Colors.white
                   )
           ),
         ),
@@ -72,7 +74,7 @@ String error = "";
                     cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(                      
                       hintText: "name",
-                      hintStyle: TextStyle(color: Colors.grey.shade700),
+                      hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade700),
                       prefixIcon: Icon(
                         Icons.person_outline,
                         color: Colors.grey,
@@ -95,7 +97,7 @@ String error = "";
                     cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(                      
                       hintText: "email",
-                      hintStyle: TextStyle(color: Colors.grey.shade700),
+                      hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade700),
                       prefixIcon: Icon(
                         Icons.person_outline,
                         color: Colors.grey,
@@ -117,7 +119,7 @@ String error = "";
                     cursorColor: Colors.redAccent[700],
                     decoration: InputDecoration(
                       hintText: "password",
-                      hintStyle: TextStyle(color: Colors.grey.shade700),
+                      hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade700),
                       prefixIcon: Icon(
                         Icons.lock_outline,
                         color: Colors.grey,
@@ -141,7 +143,7 @@ String error = "";
                       color: Colors.redAccent[700],
                       child: Text(
                         "Register",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: Colors.white),
                         ),
                       shape: RoundedRectangleBorder(
@@ -149,14 +151,19 @@ String error = "";
                       ),
                       onPressed: () async {
                         if (_formKey.currentState.validate()){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => Onboarding()));
+
                           dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-                          final FirebaseUser user = await FirebaseAuth.instance.currentUser();
-                          final String uid = user.uid.toString();
-                          await DatabaseService(uid: uid).updateUserData(name,'Sex', '00', '0.0', '0.0', 'None', 'None', 'None',0,0,0);                                            
-                           if (this.mounted && result == null) {
-                            setState(() => error = "Please provide a valid combination of email and password");
-                           }                          
+
+                          if (this.mounted && result == null) {
+                            setState(() => error = "This user is either taken or the combination of email and password is invalid");
+                           } else {
+                             Navigator.push(context, MaterialPageRoute(builder: (context) => Onboarding()));
+
+                            final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+                            final String uid = user.uid.toString();
+                            await DatabaseService(uid: uid).updateUserData(name,'Sex', '00', '0.0', '0.0', 'None', 'None', 'None',0,0,0);  
+                           }
+                            
                         }
                       }
                     ),
@@ -167,17 +174,17 @@ String error = "";
                   Text(
                     error,
                     style: 
-                    TextStyle(color: Colors.red, fontSize: 14.0),
+                    GoogleFonts.montserrat(color: Colors.red, fontSize: 14.0),
                     textAlign: TextAlign.center,
                   ),
 
                   /// Switch to Sign In page
                   Column(
                     children: <Widget>[
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       Text(
                         "- OR -",
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           fontSize: 12,
                           color: Colors.grey)
                       ),
@@ -187,7 +194,7 @@ String error = "";
                         onPressed: () {
                           widget.toggleView();
                         },
-                        child: Text ("Already registered? Sign in", style: TextStyle(color: Colors.white))
+                        child: Text ("Already registered? Sign in", style: GoogleFonts.montserrat(color: Colors.white))
                         ),
                         ],
                     )

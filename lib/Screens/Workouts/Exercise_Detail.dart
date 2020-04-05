@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -102,14 +103,14 @@ List<dynamic> equipment = [];
 
                         ///Text with exercise name
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20,15,20,15),
+                          padding: const EdgeInsets.fromLTRB(20,20,20,15),
                           child: Container(
                             width: double.infinity,                       
                               child: Text(
                                 widget.exercise, 
                                 textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 30.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.black
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 25.0, fontWeight: FontWeight.w500, color: Colors.black
                                   ),
                                 ),
                             ),
@@ -141,9 +142,9 @@ List<dynamic> equipment = [];
                                       child: Center(
                                         child: Text(
                                           tags[index],
-                                          style: TextStyle(
+                                          style: GoogleFonts.montserrat(
                                             color:Colors.white,
-                                            fontSize: 12,
+                                            fontSize: 11,
                                           )
                                           ),
                                       ),
@@ -163,8 +164,8 @@ List<dynamic> equipment = [];
                               child: Text(
                                 "Tips", 
                                 textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 20.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.black
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.black
                                   ),
                                 ),
                             ),
@@ -175,9 +176,10 @@ List<dynamic> equipment = [];
                           padding: const EdgeInsets.fromLTRB(20,15,20,0),
                           child: Container(
                             width: double.infinity,
-                            height: 50,                        
-                            //color: Colors.grey,
-                            child: Text(snapshot.data["Tips"].toString())
+                            height: 50,
+                            child: Text(snapshot.data["Tips"].toString(),
+                              style: GoogleFonts.montserrat(fontSize: 12),
+                            )
                           ),
                         ),
                        
@@ -190,8 +192,8 @@ List<dynamic> equipment = [];
                               child: Text(
                                 "Equipment Options", 
                                 textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: 20.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.black
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 20.0, fontWeight: FontWeight.w500, color: Colors.black
                                   ),
                                 ),
                             ),
@@ -251,6 +253,7 @@ List<dynamic> equipment = [];
                                               //color: Colors.blue,
                                               child: Text(
                                                 equipment[index],
+                                                style: GoogleFonts.montserrat(fontSize: 12),
                                               ),
                                             )
                                           ),

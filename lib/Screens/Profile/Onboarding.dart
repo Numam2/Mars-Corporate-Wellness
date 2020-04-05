@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:wave_slider/wave_slider.dart';
 
@@ -120,7 +121,7 @@ class _OnboardingState extends State<Onboarding> {
                                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 8),
                                 child: Text(
                                   "Hi there!",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:30),
+                                  style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:30),
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -128,7 +129,7 @@ class _OnboardingState extends State<Onboarding> {
                                 padding: const EdgeInsets.fromLTRB(30, 8, 30, 40),
                                 child: Text(
                                   "Tell us a bit about yourself to complete your profile information",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:16),
+                                  style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:16),
                                   textAlign: TextAlign.left,
                                 ),
                               ),                                
@@ -165,7 +166,7 @@ class _OnboardingState extends State<Onboarding> {
                                                 border: Border.all(color: maleBorderColor, width: 0.7),
                                                 borderRadius: BorderRadius.circular(25),
                                               ),
-                                              child: Center(child: Text("Male", style: TextStyle(fontSize: 14, color: sexText1))),
+                                              child: Center(child: Text("Male", style: GoogleFonts.montserrat(fontSize: 14, color: sexText1))),
                                             ),
                                           ),
                                         ),
@@ -194,7 +195,7 @@ class _OnboardingState extends State<Onboarding> {
                                                 border: Border.all(color: femaleBorderColor, width: 0.7),
                                                 borderRadius: BorderRadius.circular(25),
                                               ),
-                                              child: Center(child: Text("Female", style: TextStyle(fontSize: 14, color: sexText2))),
+                                              child: Center(child: Text("Female", style: GoogleFonts.montserrat(fontSize: 14, color: sexText2))),
                                             ),
                                           ),
                                         ),
@@ -209,13 +210,13 @@ class _OnboardingState extends State<Onboarding> {
                                     children:<Widget>[
                                       Container(
                                         child: Text(
-                                          "Select your age", style: TextStyle(fontSize: 11),
+                                          "Select your age", style: GoogleFonts.montserrat(fontSize: 12),
                                         ),
                                       ),
-                                    SizedBox(height:5),
+                                    SizedBox(height:10),
                                     Container(
                                       padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-                                      width: 250,
+                                      width: 100,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(25.0),
                                           border: Border.all(color:Colors.grey, width: 0.8)
@@ -227,7 +228,7 @@ class _OnboardingState extends State<Onboarding> {
                                           return DropdownMenuItem(
                                             value: age,
                                             child: Text('$age',
-                                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+                                              style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w500))
                                           );
                                           }).toList(),
                                           onChanged: (val){
@@ -260,7 +261,7 @@ class _OnboardingState extends State<Onboarding> {
                                   //Weight            
                                   Text(
                                     'Weight (Kg)',
-                                    style: TextStyle(fontSize: 12),
+                                    style: GoogleFonts.montserrat(fontSize: 12),
                                   ),
                                   Container(
                                     height: 60,
@@ -277,14 +278,14 @@ class _OnboardingState extends State<Onboarding> {
                                   ),
                                   Text(
                                     '$weight',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold),
                                   ),
 
                                   SizedBox(height:50),
                                   //Weight            
                                   Text(
                                     'Height (Cm)',
-                                    style: TextStyle(fontSize: 12),
+                                    style: GoogleFonts.montserrat(fontSize: 12),
                                   ),
                                   Container(
                                     height: 60,
@@ -301,7 +302,7 @@ class _OnboardingState extends State<Onboarding> {
                                   ),
                                   Text(
                                     '$height',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold),
                                   ),
 
                                   SizedBox(height:100),
@@ -323,7 +324,7 @@ class _OnboardingState extends State<Onboarding> {
                                 padding: const EdgeInsets.fromLTRB(20, 50, 20, 40),
                                 child: Text(  
                                   "What is your training experience?",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:20),
+                                  style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:20),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -348,7 +349,7 @@ class _OnboardingState extends State<Onboarding> {
                                           ),
                                           child: Center(
                                             child: Text(trainingExperience[index],
-                                              style: TextStyle(fontSize: 14, color: Colors.white)
+                                              style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white)
                                             )
                                           ),
                                         )
@@ -404,7 +405,7 @@ class _OnboardingState extends State<Onboarding> {
                                 padding: const EdgeInsets.fromLTRB(20, 50, 20, 40),
                                 child: Text(
                                   "How do you prefer to exercise?",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:20),
+                                  style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:20),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -464,7 +465,7 @@ class _OnboardingState extends State<Onboarding> {
                                                       width: double.infinity,                                                    
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Bodyweight", textAlign: TextAlign.center, style: TextStyle(fontSize:11)),
+                                                        child: Text("Bodyweight", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
                                                       ),
                                                     )
                                                   ],
@@ -518,7 +519,7 @@ class _OnboardingState extends State<Onboarding> {
                                                       width: double.infinity,                                                    
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Gym machines", textAlign: TextAlign.center, style: TextStyle(fontSize:11)),
+                                                        child: Text("Gym machines", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
                                                       ),
                                                     )
                                                   ],
@@ -576,7 +577,7 @@ class _OnboardingState extends State<Onboarding> {
                                                       width: double.infinity,                                                    
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Running", textAlign: TextAlign.center, style: TextStyle(fontSize:11)),
+                                                        child: Text("Running", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
                                                       ),
                                                     )
                                                   ],
@@ -629,7 +630,7 @@ class _OnboardingState extends State<Onboarding> {
                                                       width: double.infinity,                                                    
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Gym weights", textAlign: TextAlign.center, style: TextStyle(fontSize:11)),
+                                                        child: Text("Gym weights", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
                                                       ),
                                                     )
                                                   ],
@@ -661,7 +662,7 @@ class _OnboardingState extends State<Onboarding> {
                                 padding: const EdgeInsets.fromLTRB(10, 50, 20, 40),
                                 child: Text(
                                   "What do you want to achieve?",
-                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize:20),
+                                  style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:20),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -685,7 +686,7 @@ class _OnboardingState extends State<Onboarding> {
                                           ),
                                           child: Center(
                                             child: Text(objective[index],
-                                              style: TextStyle(fontSize: 14, color: Colors.white),
+                                              style: GoogleFonts.montserrat(fontSize: 14, color: Colors.white),
                                             )
                                           ),
                                         )
@@ -768,7 +769,7 @@ class _OnboardingState extends State<Onboarding> {
                                       children:<Widget> [
                                         Text(
                                           nextButton,
-                                          style: TextStyle(color: Colors.white, fontSize: 14),
+                                          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14),
                                         ),
                             ]
                          )

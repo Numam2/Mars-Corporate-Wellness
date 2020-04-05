@@ -1,7 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_trainer/Firebase_Services/auth.dart';
-import 'package:personal_trainer/Screens/Challenges/MyChallenges.dart';
+import 'package:personal_trainer/Screens/Challenges/MyChallenges_Provider.dart';
 import 'package:personal_trainer/Screens/Home/Workout_Home.dart';
 import 'package:personal_trainer/Screens/Profile/Profile.dart';
 import 'package:personal_trainer/Screens/wrapper.dart';
@@ -19,7 +19,7 @@ class _InicioNewState extends State<InicioNew> {
 
   //// Create all pages for Bottom bar Navigation
   final WorkoutsHome _workoutView = WorkoutsHome();
-  final MyChallenges _myChallenges = MyChallenges();
+  final MyChallengesProvider _myChallenges =  MyChallengesProvider(); //MyChallenges();
   final ProfilePage _profilePage = ProfilePage();
 
   Widget _showPage = new WorkoutsHome();
@@ -60,17 +60,19 @@ class _InicioNewState extends State<InicioNew> {
 
         //App Bar design
         appBar: AppBar(
-          backgroundColor: Colors.black,//Colors.blueGrey.shade900,
+          backgroundColor: Colors.white,//Colors.blueGrey.shade900,
           elevation: 0.0,
           title: Text("",textAlign: TextAlign.center
             ),
+          automaticallyImplyLeading: false,
           actions: <Widget>[
               FlatButton.icon(
-                icon: Icon(
+                icon: Icon(                  
                   Icons.exit_to_app,
-                   color: Colors.white,),
+                   color: Colors.grey,
+                   size: 20),
                 label: Text(
-                  "log out",
+                  "",
                    style: TextStyle(color: Colors.white, fontSize: 10)),
                 onPressed: () async {
                   await _auth.signOut();

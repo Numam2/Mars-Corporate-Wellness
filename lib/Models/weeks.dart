@@ -1,9 +1,10 @@
-class Weeks {
+class WeekDays {
 
-  String number;
-  String uid;
-  List weeks;
+  String day;
+  String focus;
+  String time;
+  String bodyPart;
 
-  Weeks({this.number, this.weeks, this.uid});
+  WeekDays({this.day, this.focus, this.time, this.bodyPart});
 
 }

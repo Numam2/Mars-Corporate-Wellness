@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Shared/FinishWorkout.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -92,7 +93,7 @@ class _StopwatchButtonState extends State<StopwatchButton> {
                           elevation: 10,
                           child: Text(
                             _buttonText,
-                            style: TextStyle(color: Colors.white),
+                            style: GoogleFonts.montserrat(color: Colors.white),
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),
@@ -110,7 +111,7 @@ class _StopwatchButtonState extends State<StopwatchButton> {
                 //   child: 
                   Text(
                     _stopwatchText,
-                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    style: GoogleFonts.montserrat(color: Colors.black, fontSize: 16),
                   ),
                 // ),
               ]

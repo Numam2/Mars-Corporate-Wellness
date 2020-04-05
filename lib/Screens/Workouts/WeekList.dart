@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:personal_trainer/Models/weeks.dart';
 import 'package:personal_trainer/Screens/Workouts/DayPage.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
+import 'package:provider/provider.dart';
 
 class DaysPage extends StatefulWidget {
   @override
@@ -45,18 +48,21 @@ class _DaysPageState extends State<DaysPage>
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.start, children: <
-        Widget>[
+
+    final _weekDay = Provider.of<List<WeekDays>>(context);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start, 
+      children: <Widget>[
       ///Weeks Text
       Container(
         padding: EdgeInsets.fromLTRB(20.0, 25.0, 10.0, 15.0),
         width: double.infinity,
         //color: Colors.blue,
         child: Text("Week",
-            style: TextStyle(
-                fontSize: 30.0,
-                fontFamily: "Roboto",
-                fontWeight: FontWeight.bold,
+            style: GoogleFonts.montserrat(
+                fontSize: 25.0,
+                fontWeight: FontWeight.w500,
                 color: Colors.black)),
       ),
 
@@ -88,7 +94,7 @@ class _DaysPageState extends State<DaysPage>
               isScrollable: true,
               unselectedLabelColor: Colors.grey,
               labelColor: Colors.white,
-              labelStyle: TextStyle(fontSize: 14.0),
+              labelStyle: GoogleFonts.montserrat(fontSize: 14.0),
               controller: _tabController,
               indicator: BoxDecoration(
                   color: Colors.redAccent[700],
@@ -115,10 +121,9 @@ class _DaysPageState extends State<DaysPage>
         //color: Colors.blue,
 
         child: Text("Day",
-            style: TextStyle(
-                fontSize: 30.0,
-                fontFamily: "Roboto",
-                fontWeight: FontWeight.bold,
+            style: GoogleFonts.montserrat(
+                fontSize: 25.0,
+                fontWeight: FontWeight.w500,
                 color: Colors.black)),
       ),
 
@@ -151,6 +156,7 @@ class _DaysPageState extends State<DaysPage>
                             padding: const EdgeInsets.all(50.0),
                             child: Text(
                                 "Oops!... Apparently the daily routines for this week are not yet available",
+                                style: GoogleFonts.montserrat(),
                                 textAlign: TextAlign.center),
                           ));
 
@@ -191,8 +197,8 @@ class _DaysPageState extends State<DaysPage>
                                                 ///Number of week
                                                 Container(
                                                   child: Text(
-                                                    snapshot.data[index].data["Day"],
-                                                    style: TextStyle(fontSize: 16, )
+                                                    _weekDay[index].day, //snapshot.data[index].data["Day"],
+                                                    style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w300)
                                                   ),
                                                 ),
                                                 SizedBox(height: 10),
@@ -200,21 +206,15 @@ class _DaysPageState extends State<DaysPage>
                                                 Row(
                                                   children:<Widget>[
                                                     Container(
-                                                       height: 30,
-                                                        // padding: EdgeInsets.fromLTRB(
-                                                        //     12, 8, 12, 8),
-                                                        // decoration: BoxDecoration(
-                                                        //     color: Colors.black87,
-                                                        //     borderRadius:
-                                                        //         BorderRadius.circular(25)),                                                                    
+                                                       height: 30,                                                                 
                                                         child: Text(
                                                           snapshot.data[index]
                                                               .data["Body part"],
                                                           textAlign: TextAlign.start,
-                                                          style: TextStyle(
+                                                          style: GoogleFonts.montserrat(
                                                             color: Colors.black,
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
                                                           ),
                                                         ),
                                                       ),
@@ -222,20 +222,14 @@ class _DaysPageState extends State<DaysPage>
                                                       ///Focus
                                                       Container(
                                                         height: 30,
-                                                        // padding: EdgeInsets.fromLTRB(
-                                                        //     12, 8, 12, 8),
-                                                        // decoration: BoxDecoration(
-                                                        //     color: Colors.black54,
-                                                        //     borderRadius:
-                                                        //         BorderRadius.circular(25)),
                                                         child: Text(
                                                           snapshot.data[index]
                                                               .data["Focus"],
                                                           textAlign: TextAlign.start,
-                                                          style: TextStyle(
+                                                          style: GoogleFonts.montserrat(
                                                             color: Colors.black,
-                                                            fontSize: 14, 
-                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
                                                           ),
                                                         ),
                                                       ),
@@ -252,10 +246,10 @@ class _DaysPageState extends State<DaysPage>
                                                 Text(
                                                   snapshot
                                                       .data[index].data["Time"],
-                                                  style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 12,
-                                                    //fontWeight: FontWeight.bold,
+                                                  style: GoogleFonts.montserrat(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 11,
                                                   ),
                                                 )
                                           ]),

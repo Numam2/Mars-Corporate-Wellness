@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Workouts/Exercise_Detail.dart';
 import 'package:personal_trainer/Screens/Workouts/Exercise_Feedback.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
@@ -68,15 +69,9 @@ void initState() {
                         ),
                       ),
                       centerTitle: true,
-                      title: Text(widget.individualWorkout),
-                        // actions: <Widget>[
-                        //   Padding(
-                        //     padding: const EdgeInsets.fromLTRB(30.0, 20.0, 30.0, 20.0),
-                        //     child: Text(_stopwatchText,                              
-                        //       style: TextStyle(fontSize: 16.0),
-                        //     ),
-                        //   ),
-                        // ],
+                      title: Text(widget.individualWorkout,
+                        style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w300 ,color:Colors.white)
+                      ),
                     ),
                   
                   body:
@@ -108,13 +103,13 @@ void initState() {
                                         Row(
                                           children: <Widget>[
                                             Text(snapshot.data[index].data["Stage"],
-                                              style: TextStyle(
-                                                fontSize: 23.0, fontFamily: "Roboto", fontWeight: FontWeight.bold),
+                                              style: GoogleFonts.montserrat(
+                                              fontSize: 16.0, color: Colors.black54),
                                             ),
                                             Spacer(),
                                               Text(snapshot.data[index].data["Rounds"],
-                                              style: TextStyle(
-                                              fontSize: 16.0, fontFamily: "Roboto", color: Colors.black54),
+                                              style: GoogleFonts.montserrat(
+                                              fontSize: 16.0, color: Colors.black54),
                                               ),
                                           ],
                                         ),
@@ -173,14 +168,14 @@ void initState() {
                                                           
                                                                   Row(children: <Widget>[
                                                                     Text(exercises.elementAt(index)["Description"],
-                                                                      style: TextStyle(
-                                                                        fontSize: 14.0, fontFamily: "Roboto", color: Colors.black
-                                                                        ),
+                                                                      style: GoogleFonts.montserrat(
+                                                                          fontSize: 13.0, color: Colors.black,
+                                                                          ),
                                                                       ),
                                                                     Spacer(),
                                                                       Text("x" + exercises.elementAt(index)["Reps"],
-                                                                      style: TextStyle(
-                                                                          fontSize: 14.0, fontFamily: "Roboto", color: Colors.black,
+                                                                      style: GoogleFonts.montserrat(
+                                                                          fontSize: 13.0, color: Colors.black,
                                                                           ),
                                                                       ),
                                                                     ],
@@ -246,8 +241,8 @@ void initState() {
 
                                                                     Text(exercises.elementAt(index)["Description"],
                                                                       textAlign: TextAlign.left,
-                                                                      style: TextStyle(
-                                                                          fontSize: 14.0, fontFamily: "Roboto", color: Colors.black,
+                                                                      style: GoogleFonts.montserrat(
+                                                                          fontSize: 13.0, color: Colors.black,
                                                                           ),
                                                                         ),
 
@@ -255,8 +250,8 @@ void initState() {
                                                                       padding: const EdgeInsets.only(top: 5.0),
                                                                       child: Text(exercises.elementAt(index)["Weight"],
                                                                         textAlign: TextAlign.left,
-                                                                        style: TextStyle(
-                                                                            fontSize: 12.0, fontFamily: "Roboto", color: Colors.black54,
+                                                                        style: GoogleFonts.montserrat(
+                                                                            fontSize: 11.0, fontWeight: FontWeight.w200, color: Colors.black,
                                                                             ),
                                                                           ),
                                                                     ),
@@ -270,8 +265,8 @@ void initState() {
 
                                                               /////Reps on the other side
                                                               Text("x" + exercises.elementAt(index)["Reps"],
-                                                                style: TextStyle(
-                                                                    fontSize: 14.0, fontFamily: "Roboto", color: Colors.black,
+                                                                style: GoogleFonts.montserrat(
+                                                                    fontSize: 13.0, color: Colors.black,
                                                                       ),
                                                                 ),
                                                               

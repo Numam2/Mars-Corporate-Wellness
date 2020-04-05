@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Workouts/DayPage.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
 
@@ -51,7 +52,9 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
 
         appBar: AppBar(
                   backgroundColor: Colors.black,
-                  title: Text(widget.freeRoutine),
+                  title: Text(widget.freeRoutine,
+                      style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w300 ,color:Colors.white),
+                    ),
                   leading: InkWell(
                         onTap: _goBack,
                         child: Icon(
@@ -71,9 +74,10 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
               //color: Colors.blue,
               child: Text(
                       "Week",
-                      style: TextStyle(
-                        fontSize: 30.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.black
-                      )
+                      style: GoogleFonts.montserrat(
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black)
                 ),
               ),
 
@@ -105,16 +109,11 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
               isScrollable: true,
               unselectedLabelColor: Colors.grey,
               labelColor: Colors.white,
-              labelStyle: TextStyle(fontSize: 14.0),
+              labelStyle: GoogleFonts.montserrat(fontSize: 14.0),
               controller: _tabController,
               indicator: BoxDecoration(
                   color: Colors.redAccent[700],
                   borderRadius: BorderRadius.circular(25)
-                  // BorderRadius.only(
-                  //   topRight: Radius.circular(12),
-                  //   bottomLeft: Radius.circular(12),
-                  //   bottomRight: Radius.circular(12),
-                  //   )
                   ),
               tabs: List<Widget>.generate(weekTab.length, (int index) {
                 int tabNo = index + 1;
@@ -132,9 +131,10 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
 
               child: Text(
                       "Day",
-                      style: TextStyle(
-                        fontSize: 30.0, fontFamily: "Roboto", fontWeight: FontWeight.bold, color: Colors.black
-                      )
+                      style: GoogleFonts.montserrat(
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black)
                 ),
               ),
 
@@ -171,6 +171,7 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
                                   child: 
                                   Text(
                                     "Oops!... Apparently the daily routines for this week are not yet available",
+                                    style: GoogleFonts.montserrat(),
                                     textAlign: TextAlign.center),
                                   )
                                 );
@@ -214,7 +215,7 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
                                                 Container(
                                                   child: Text(
                                                     snapshot.data[index].data["Day"],
-                                                    style: TextStyle(fontSize: 16, )
+                                                    style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w300)
                                                   ),
                                                 ),
                                                 SizedBox(height: 10),
@@ -222,21 +223,15 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
                                                 Row(
                                                   children:<Widget>[
                                                     Container(
-                                                       height: 30,
-                                                        // padding: EdgeInsets.fromLTRB(
-                                                        //     12, 8, 12, 8),
-                                                        // decoration: BoxDecoration(
-                                                        //     color: Colors.black87,
-                                                        //     borderRadius:
-                                                        //         BorderRadius.circular(25)),                                                                    
+                                                       height: 30,                                                                    
                                                         child: Text(
                                                           snapshot.data[index]
                                                               .data["Body part"],
                                                           textAlign: TextAlign.start,
-                                                          style: TextStyle(
+                                                          style: GoogleFonts.montserrat(
                                                             color: Colors.black,
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
                                                           ),
                                                         ),
                                                       ),
@@ -244,20 +239,14 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
                                                       ///Focus
                                                       Container(
                                                         height: 30,
-                                                        // padding: EdgeInsets.fromLTRB(
-                                                        //     12, 8, 12, 8),
-                                                        // decoration: BoxDecoration(
-                                                        //     color: Colors.black54,
-                                                        //     borderRadius:
-                                                        //         BorderRadius.circular(25)),
                                                         child: Text(
                                                           snapshot.data[index]
                                                               .data["Focus"],
                                                           textAlign: TextAlign.start,
-                                                          style: TextStyle(
+                                                          style: GoogleFonts.montserrat(
                                                             color: Colors.black,
-                                                            fontSize: 14, 
-                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 12,
+                                                            fontWeight: FontWeight.w500,
                                                           ),
                                                         ),
                                                       ),
@@ -274,10 +263,10 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
                                                 Text(
                                                   snapshot
                                                       .data[index].data["Time"],
-                                                  style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 12,
-                                                    //fontWeight: FontWeight.bold,
+                                                  style: GoogleFonts.montserrat(
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w200,
+                                                    fontSize: 11,
                                                   ),
                                                 )
                                           ]),
