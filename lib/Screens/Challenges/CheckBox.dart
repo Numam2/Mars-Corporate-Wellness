@@ -1,7 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Firebase_Services/levelTracker.dart';
 import 'package:personal_trainer/Models/challenge.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
+import 'package:personal_trainer/Shared/RecognitionHabitChallenge.dart';
+import 'package:personal_trainer/Shared/RecognitionLevelUp.dart';
+import 'package:provider/provider.dart';
 
 class ChallengeCheckBox extends StatefulWidget {
 
@@ -11,9 +17,6 @@ class ChallengeCheckBox extends StatefulWidget {
   @override
   _ChallengeCheckBoxState createState() => _ChallengeCheckBoxState();
 }
-
-  var currentTime = DateTime.now();
-  String today = currentTime.day.toString();
 
 class _ChallengeCheckBoxState extends State<ChallengeCheckBox> {
 
@@ -31,11 +34,67 @@ class _ChallengeCheckBoxState extends State<ChallengeCheckBox> {
     });
   }
 
+  Future saveCompletedChallenge (challenge, days, date) async {
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final String uid = user.uid.toString();
+    return await Firestore.instance.collection('User Profile').document(uid).collection("Challenges").document(challenge).setData({
+     'Challenge': challenge,
+     'Days': days,
+     'Date': date,
+    });
+  }
+
+  Future deleteChallenge () async {
+    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final String uid = user.uid.toString();
+    return await Firestore.instance.collection('Challenges').document(uid).collection("My Challenges").document(challenge).delete();
+  }
+
+  // void showCongrats(BuildContext context){
+    
+  //   setState(() {
+  //     Scaffold.of(context).showSnackBar(
+  //       SnackBar(
+  //         backgroundColor: Colors.green,
+  //         elevation: 20,
+  //         content: 
+  //           Text('Great work! We have saved this accomplishment on your profile',
+  //             style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14),
+  //           ),
+  //       ),
+  //     );
+  //     //  Flushbar(
+  //     //   titleText: Text("Great work!"),
+  //     //   messageText: Text("We have saved this accomplishment on your profile"),
+  //     //   backgroundColor: Colors.redAccent[700],
+  //     //   duration:  Duration(seconds: 3),
+  //     //   flushbarStyle: FlushbarStyle.FLOATING,
+  //     //   margin: EdgeInsets.all(8),
+  //     //   borderRadius: 12,
+  //     //   boxShadows: [BoxShadow(color: Colors.blue[800], offset: Offset(0.0, 2.0), blurRadius: 3.0)],
+  //     //   )..show(context);      
+  //   });
+
+  // }
+
+  DateTime currentTime;
+  String today;
+
+  @override
+  void initState() {
+    currentTime = DateTime.now();
+    today = currentTime.day.toString();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
 
+    final _profile = Provider.of<UserProfile>(context);
+
+  
     if (today == widget.chal.lastChecked){
-      _buttonColor = Colors.green;
+      _buttonColor = Theme.of(context).accentColor;
       return InkWell(
         onTap: () async {
 
@@ -69,13 +128,40 @@ class _ChallengeCheckBoxState extends State<ChallengeCheckBox> {
       _buttonColor = Colors.white;
       return InkWell(
         onTap: () async {
-            var completedDays = widget.chal.currentDay + 1;
-            challenge = widget.chal.description;          
-            await updateTodayStatus(today, completedDays);
 
-            setState(() {
-              _buttonColor = Colors.green;
-            });
+            var completedDays = widget.chal.currentDay + 1;
+            challenge = widget.chal.description;
+            var pointsCounter = (_profile.points + (widget.chal.totalDays * 2)).round();            
+
+            if (completedDays == widget.chal.totalDays){              
+
+              if(pointsCounter > _profile.levelTo){
+                DatabaseService().updateUserPoints(pointsCounter);
+                LevelTracker().updateLevel(_profile.levelTo);
+                DatabaseService().saveTrainingSession('Hábito', widget.chal.totalDays.toString() + ' días', challenge);
+                deleteChallenge();
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ReconitionLevelUp(
+                    level: _profile.level,
+                    points: pointsCounter,
+                    headline: '¡Subí al ' + _profile.level + '!',
+                    time: pointsCounter.toString() + ' PTS',
+                  )));
+              } else {
+                DatabaseService().updateUserPoints(pointsCounter);
+                DatabaseService().saveTrainingSession(challenge, widget.chal.totalDays.toString() + ' días', 'Hábito');
+                deleteChallenge();
+                Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => ReconitionHabitChallenge(
+                     headline: 'Completé un hábito: ' + challenge,
+                    time: widget.chal.totalDays.toString() + ' DÍAS',
+                  )));
+              }
+
+            } else {
+              await updateTodayStatus(today, completedDays);
+            }
+            
         },
         child: Container(
           height: 40,

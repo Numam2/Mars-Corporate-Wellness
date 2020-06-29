@@ -1,10 +1,17 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:personal_trainer/Firebase_Services/auth.dart';
+import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Models/challenge.dart';
+import 'package:personal_trainer/Models/goals.dart';
+import 'package:personal_trainer/Models/groups.dart';
+import 'package:personal_trainer/Models/messages.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Challenges/MyChallenges_Provider.dart';
-import 'package:personal_trainer/Screens/Home/Workout_Home.dart';
+import 'package:personal_trainer/Screens/Home/Explore.dart';
+import 'package:personal_trainer/Screens/Profile/Onboarding.dart';
 import 'package:personal_trainer/Screens/Profile/Profile.dart';
-import 'package:personal_trainer/Screens/wrapper.dart';
+import 'package:personal_trainer/Screens/Social/MyGroups.dart';
+import 'package:personal_trainer/Shared/Loading.dart';
+import 'package:provider/provider.dart';
 
 class InicioNew extends StatefulWidget {
 
@@ -13,100 +20,81 @@ class InicioNew extends StatefulWidget {
 }
 
 class _InicioNewState extends State<InicioNew> {
-  final AuthService _auth = AuthService();
 
-  int pageIndex = 1;
+  int pageIndex = 0;
 
-  //// Create all pages for Bottom bar Navigation
-  final WorkoutsHome _workoutView = WorkoutsHome();
-  final MyChallengesProvider _myChallenges =  MyChallengesProvider(); //MyChallenges();
-  final ProfilePage _profilePage = ProfilePage();
+  final tabs = [
+    MyChallengesProvider(),
+    Explore(),
+    MyGroups(),
+    ProfilePage(),
+  ];
 
-  Widget _showPage = new WorkoutsHome();
-
-  Widget _pageChooser(int page){
-    switch(page){
-
-      case 0:
-      return _workoutView;
-      break; 
-
-      case 1:
-      return _myChallenges;
-      break; 
-
-      case 2:
-      return _profilePage;
-      break;
-
-      default:
-      return new Container(
-        child: Center(
-          child: Text(
-            "Oops.. Seems like you have not selected any page"
-          ),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      
-      //Page color
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.white,
 
-        //App Bar design
-        appBar: AppBar(
-          backgroundColor: Colors.white,//Colors.blueGrey.shade900,
-          elevation: 0.0,
-          title: Text("",textAlign: TextAlign.center
-            ),
-          automaticallyImplyLeading: false,
-          actions: <Widget>[
-              FlatButton.icon(
-                icon: Icon(                  
-                  Icons.exit_to_app,
-                   color: Colors.grey,
-                   size: 20),
-                label: Text(
-                  "",
-                   style: TextStyle(color: Colors.white, fontSize: 10)),
-                onPressed: () async {
-                  await _auth.signOut();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Wrapper()));
-                },
-              )
-            ],
+    final userProfile = Provider.of<UserProfile>(context);
+
+    if (userProfile == null){
+      return Loading();
+    } else if (userProfile.goal == "None" || userProfile.sex == 'Sex'){
+      return Onboarding();
+    }
+
+    return MultiProvider(
+      providers: [
+        ///Chats Providers
+        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
+        ///Challenges Providers
+        StreamProvider<List<Challenge>>.value(value: DatabaseService().challengeList),
+        StreamProvider<List<PopularChallenges>>.value(value: DatabaseService().popularChallengeList),
+        ///Goals Provider
+        StreamProvider<List<Goals>>.value(value: DatabaseService().goalList),
+        ///Social Groups Provider
+        StreamProvider<List<Groups>>.value(value: DatabaseService().myGroupList),
+      ],
+      child: Scaffold(
+        
+        //Page color
+        resizeToAvoidBottomPadding: false,
+        backgroundColor: Colors.white,
+
+          body: Container(
+            child: tabs[pageIndex]
+            //child: _showPage,
           ),
 
-
-        body: Container(
-          child: _showPage,
-        ),
-
-        bottomNavigationBar: CurvedNavigationBar(
-          color: Colors.black,//.blueGrey.shade900,
-          backgroundColor: Colors.transparent,
-          //buttonBackgroundColor: Colors.white,
-          height: 60.0,
-          items: <Widget>[            
-            Icon(Icons.fitness_center, size: 20, color: Colors.white),   
-            Icon(Icons.event_available, size: 20, color: Colors.white),         
-            Icon(Icons.person, size: 20, color: Colors.white),            
-            // Icon(Icons.show_chart, size: 25, color: Colors.white),
-          ],
-          animationDuration: Duration(milliseconds: 250),
-          onTap: (int tappedIndex){
-            setState((){
-              _showPage = _pageChooser(tappedIndex);
-            });
-          }
-        ),
-
+          bottomNavigationBar: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 0.8),            
+            ),
+            child: new Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.today, size: 18, color: pageIndex == 0 ? Colors.black : Colors.grey), 
+                  onPressed: () {setState((){pageIndex = 0;});}
+                ),
+                IconButton(
+                  icon: Icon(Icons.explore, size: 18, color: pageIndex == 1 ? Colors.black : Colors.grey), 
+                  onPressed: ()  {setState((){pageIndex = 1;});}
+                ),
+                IconButton(
+                  icon: pageIndex == 2 ? Icon(Icons.people, size: 18, color: Colors.black): Icon(Icons.people_outline, size: 18, color: Colors.grey), 
+                  onPressed: ()  {setState((){pageIndex =  2;});}
+                ),
+                IconButton(
+                  icon: pageIndex == 3 ? Icon(Icons.person, size: 18, color: Colors.black): Icon(Icons.person_outline, size: 18, color: Colors.grey),
+                  onPressed: ()  {setState((){pageIndex = 3;});}
+                ),
+              ],
+            ),
+          ),
+         
+      ),
     );
   }
 }

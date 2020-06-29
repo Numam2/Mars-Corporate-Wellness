@@ -4,11 +4,9 @@ import 'package:personal_trainer/Firebase_Services/auth.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
 
-
 //////////////////// //////////////////////// /////// This is were we manage the Sign in/Register Page /////////////////////////////////////
 
 class SignIn extends StatefulWidget {
-
   final Function toggleView;
   SignIn({this.toggleView});
 
@@ -17,182 +15,204 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-
-final AuthService _auth = AuthService();
-final _formKey = GlobalKey<FormState>();
-bool loading = false;
+  final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
 //Text field state
-String email = "";
-String password = "";
-String error = "";
+  String email = "";
+  String password = "";
+  String error = "";
 
-goHome(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InicioNew()));    
+  goHome() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => InicioNew()));
   }
 
 ////////////////////////////////////////// Start Widget tree visible in Screen ///////////////////////////////////////////
 
-
   @override
   Widget build(BuildContext context) {
-    
-return loading ? Loading() : Scaffold(
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.blueGrey.shade900,
-
-      appBar: AppBar(
-        backgroundColor: Colors.blueGrey.shade900,
-        elevation: 0.0,
-        automaticallyImplyLeading: false,
-        title: Text("",textAlign: TextAlign.center
-          ),
-        ),
- 
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[      
-
-        ////// First Text 
-        Container(
-          padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
-          child: Text(
-                  "Log in",
-                  textAlign: TextAlign.left,
-                  style: GoogleFonts.montserrat(
-                    fontSize: 40.0, fontWeight: FontWeight.bold, color: Colors.white
-                  )
-          ),
-        ),
-        
-        ////// Register form
-        Container(
-          padding: EdgeInsets.fromLTRB(25.0, 25, 25.0, 0.0),
-          child:Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-
-                  ///Email input
-                  SizedBox(height: 25),
-                  TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(color:Colors.white), 
-                    validator: (val) => val.isEmpty ? "Enter an email" : null,
-                    cursorColor: Colors.redAccent[700],
-                    decoration: InputDecoration(
-                      hintText: "email",
-                      hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade700),
-                      prefixIcon: Icon(
-                        Icons.person_outline,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: UnderlineInputBorder(  
-                        borderSide: BorderSide(color: Colors.redAccent[700])
-                      )
-                    ),
-                    onChanged: (val){
-                      setState(() => email = val);
-                    },
+    return loading
+        ? Loading()
+        : Scaffold(            
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0.0,
+              automaticallyImplyLeading: false,
+              title: Text("", textAlign: TextAlign.center),
+            ),
+            body: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  ////// Logo
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:<Widget>[
+                      Container(
+                        height: 70,
+                        child: Image(image: AssetImage('Images/Brand/Blue Isologo.png'), height: 70)),
+                    ] 
                   ),
-                  
-                  ///Password input
-                  SizedBox(height: 25),
-                  TextFormField(
-                    style: TextStyle(color:Colors.white), 
-                    validator: (val) => val.length < 6 ? "Your password must have at least 6 characters" : null,
-                    cursorColor: Colors.redAccent[700],
-                    decoration: InputDecoration(
-                      hintText: "password",
-                      hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade700),
-                      prefixIcon: Icon(
-                        Icons.lock_outline,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: UnderlineInputBorder(  
-                        borderSide: BorderSide(color: Colors.redAccent[700])
-                      )
-                    ),
-                    obscureText: true,
-                    onChanged: (val){
-                      setState(() => password = val);
-                    },
-                  ),
-                  
-                  ///Button Register
-                  SizedBox(height: 60),
+                  SizedBox(height:15),
+
+                  ////// First Text
                   Container(
-                    padding: EdgeInsets.only(left:40,right:40),                    
-                    height: 40,
-                    child: RaisedButton(
-                      color: Colors.redAccent[700],
-                      child: Text(
-                        "Sign In",
+                    padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
+                    child: Text("Log in",
+                        textAlign: TextAlign.left,
                         style: GoogleFonts.montserrat(
-                          color: Colors.white),
-                        ),
-                      shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      ),
-                      onPressed: () async {
-                        
-                        if (_formKey.currentState.validate()){
-                            setState(() => loading = true);
-                            dynamic result = await _auth.signInWithEmailAndPassword(email,password);
+                            fontSize: 40.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black)),
+                  ),
 
-                            if (result == null){
-                              setState((){
-                                error = "Could not sign in with those credentials";
-                                loading = false;
-                              });
-                            } else {
-                              goHome();
-                            }
-                        }
-                      }
+                  ////// Register form
+                  Container(
+                    padding: EdgeInsets.fromLTRB(25.0, 25, 25.0, 0.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          ///Email input
+                          SizedBox(height: 25),
+                          TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            validator: (val) =>
+                                val.isEmpty ? "Agrega un email" : null,
+                            cursorColor: Theme.of(context).accentColor,
+                            decoration: InputDecoration(
+                                hintText: "email",
+                                hintStyle: GoogleFonts.montserrat(
+                                    color: Theme.of(context).canvasColor),
+                                errorStyle: GoogleFonts.montserrat(
+                                  color: Colors.redAccent[700], fontSize: 12),
+                                prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).accentColor))
+                            ),
+                            onChanged: (val) {
+                              setState(() => email = val);
+                            },
+                          ),
+
+                          ///Password input
+                          SizedBox(height: 25),
+                          TextFormField(
+                            style: TextStyle(color: Colors.black, fontSize: 14),
+                            validator: (val) => val.length < 6
+                                ? "La contraseña debe tener al menos 6 caracteres"
+                                : null,
+                            cursorColor: Theme.of(context).accentColor,
+                            decoration: InputDecoration(
+                                hintText: "contraseña",
+                                hintStyle: GoogleFonts.montserrat(
+                                    color: Theme.of(context).canvasColor),
+                                errorStyle: GoogleFonts.montserrat(
+                                  color: Colors.redAccent[700], fontSize: 12),
+                                prefixIcon: Icon(
+                                  Icons.lock_outline,
+                                  color: Theme.of(context).accentColor,
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context).accentColor))),
+                            obscureText: true,
+                            onChanged: (val) {
+                              setState(() => password = val);
+                            },
+                          ),
+
+                          ///Button Register
+                          SizedBox(height: 60),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              height: 35.0,
+                              child: RaisedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    setState(() => loading = true);
+                                    dynamic result =
+                                        await _auth.signInWithEmailAndPassword(
+                                            email, password);
+
+                                    if (result == null) {
+                                      setState(() {
+                                        error = "Las credenciales son inválidas";
+                                        loading = false;
+                                      });
+                                    }
+                                  }
+                                },
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Theme.of(context).accentColor,
+                                        Theme.of(context).primaryColor
+                                      ],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "ENTRAR",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //Show error if threr is an error signing in
+                          SizedBox(height: 5.0),
+                          Text(
+                            error,
+                            style: GoogleFonts.montserrat(
+                                color: Colors.redAccent[700], fontSize: 12.0),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          /// Switch to Register page
+                          Column(
+                            children: <Widget>[
+                              FlatButton(
+                                  onPressed: () {
+                                    widget.toggleView();
+                                  },
+                                  child: Text("¿No tienes cuenta? Regístrate",
+                                      style: GoogleFonts.montserrat(
+                                          color: Colors.black))),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-
-                   //Show error if threr is an error signing in
-                  SizedBox(height: 10.0),
-                  Text(
-                    error,
-                    style: 
-                    GoogleFonts.montserrat(color: Colors.red, fontSize: 14.0),
-                    textAlign: TextAlign.center,
-                  ),
-                  
-                  /// Switch to Register page
-                  Column(
-                    children: <Widget>[
-                      SizedBox(height: 15),
-                      Text(
-                        "- OR -",
-                        style: GoogleFonts.montserrat(
-                          fontSize: 12,
-                          color: Colors.grey)
-                      ),
-                      
-                      SizedBox(height: 10),
-                      FlatButton(
-                        onPressed: () {
-                          widget.toggleView();
-                        },
-                        child: Text ("Not registered? Sign up", style: GoogleFonts.montserrat(color: Colors.white))
-                        ),
-                        ],
-                    )
-              ],
-
+                ],
               ),
-          ),
-
-        ),
-
-      ],
-      )
-    );
+            ));
   }
 }

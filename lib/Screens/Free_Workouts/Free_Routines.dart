@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:personal_trainer/Screens/Workouts/DayPage.dart';
-import 'package:personal_trainer/Shared/Loading.dart';
+import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Models/weeks.dart';
+import 'package:personal_trainer/Screens/Workouts/DailyWorkout.dart';
+import 'package:provider/provider.dart';
 
 class FreeRoutineView extends StatefulWidget {
 
   final String freeRoutine;
-  FreeRoutineView ({Key key, this.freeRoutine}) : super(key:key);
+  final String routineImage;
+  final String routineTime;
+  final String description;
+  final List objective;
+  final List equipment;
+  FreeRoutineView ({Key key, this.freeRoutine, this.routineImage, this.routineTime, this.description, this.objective, this.equipment}) : super(key:key);
 
   @override
   _FreeRoutineViewState createState() => _FreeRoutineViewState();
@@ -15,279 +21,247 @@ class FreeRoutineView extends StatefulWidget {
 
 class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProviderStateMixin {
 
-  /// Create list from Firestore based on number of weeks in workout
-  List<int> weekTab = [1,2,3,4];
-
-  TabController _tabController;
-  int weekNo = 1;
-
-   //////// Create a future that retrieves Firestore data for Weeks collection
-  Future getDays() async {
-    var firestore = Firestore.instance;
-    QuerySnapshot qn = await firestore.collection("Free Routines").document(widget.freeRoutine).collection("Week $weekNo").getDocuments(); //'dsYJLfLsvGgMVEfWe18RnNa2VuX2'    
-    return qn.documents;
-  }
-
-  /////// Create a function to navigate into further details for every document printed
-  navigatetoDetail(DocumentSnapshot day){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => DayDetail(day: day)));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //_tabController = TabController(vsync: this, length:12);
-    _tabController = TabController(vsync: this, length: weekTab.length);
-  }
-
-  void _goBack() async {
-    Navigator.of(context).pop();
-  }
-
+  String collection = 'Free Routines';
 
   @override
   Widget build(BuildContext context) {
-    return 
-      Scaffold(
+    return StreamProvider<List<WeekDays>>.value(
+      value: DatabaseService().weekDays(collection, widget.freeRoutine, 'Week 1'),
+        child: Scaffold(
 
-        appBar: AppBar(
-                  backgroundColor: Colors.black,
-                  title: Text(widget.freeRoutine,
-                      style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w300 ,color:Colors.white),
-                    ),
-                  leading: InkWell(
-                        onTap: _goBack,
-                        child: Icon(
-                          Icons.keyboard_arrow_left
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+              ),
+            ),            
+          ),
+
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                 // mainAxisAlignment: MainAxisAlignment.start, 
+              children: <Widget>[
+
+              ///Image
+              Container(
+                height: 250,
+                width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(widget.routineImage),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(Colors.grey[800], BlendMode.hardLight)
+                      ),
+                  ),
+              ),
+              SizedBox(height:20),
+
+              //Title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  widget.freeRoutine,
+                  style: GoogleFonts.montserrat(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black)
+                ),
+              ),
+              SizedBox(height:10),
+              
+              ///Duration Text
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                width: double.infinity,
+                child: Text(widget.routineTime.toUpperCase(),
+                    style: GoogleFonts.montserrat(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black)),
+              ),
+              SizedBox(height:20),
+
+              ///Description Text
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                width: double.infinity,
+                child: Text(widget.description,
+                  style: GoogleFonts.montserrat(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black
+                  )
+                ),
+              ),
+              SizedBox(height:30),
+
+              ///Title for Objectives
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                width: double.infinity,
+                child: Text('Lo que obtendrás',
+                  style: Theme.of(context).textTheme.title
+                ),
+              ),
+              SizedBox(height:20),
+
+              ///List of Objectives
+              Container(
+                width: double.infinity,
+                child: ListView.builder(
+                  itemCount: widget.objective.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index){
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+                      child: Container(
+                        width: double.infinity,
+                        height: 30,
+                        child: Row(
+                          children:<Widget> [
+                            //Icon
+                            Icon(
+                              Icons.check_circle,
+                              color: Theme.of(context).accentColor,
+                              size: 25
+                            ),
+                            SizedBox(width: 15.0),
+                            ///Objetivo
+                            Text(widget.objective[index],
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black)),
+                          ]
                         ),
                       ),
-                  centerTitle: true,
-              ),
-
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 25.0, 10.0, 15.0),
-              width: double.infinity,            
-              //color: Colors.blue,
-              child: Text(
-                      "Week",
-                      style: GoogleFonts.montserrat(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black)
+                    );
+                  }
                 ),
               ),
+              SizedBox(height:20),
 
-            ///Weeks Tab Design
-      Padding(
-        padding: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
-        child: Container(
-            //color: Colors.yellowAccent,
-            child: SizedBox(
-          height: 50,
-          child: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: <BoxShadow>[
-                  new BoxShadow(
-                    color: Colors.black12,
-                    offset: new Offset(0.0, 10.0),
-                    blurRadius: 10.0,
-                  ),
-                ]),
-            child: TabBar(
-              onTap: (index) {
-                setState(() {});
-                weekNo = index + 1;
-                print(weekNo);
-              },
-              isScrollable: true,
-              unselectedLabelColor: Colors.grey,
-              labelColor: Colors.white,
-              labelStyle: GoogleFonts.montserrat(fontSize: 14.0),
-              controller: _tabController,
-              indicator: BoxDecoration(
-                  color: Colors.redAccent[700],
-                  borderRadius: BorderRadius.circular(25)
-                  ),
-              tabs: List<Widget>.generate(weekTab.length, (int index) {
-                int tabNo = index + 1;
-                return Tab(text: "$tabNo");
-              }),
-            ),
-          ),
-        )),
-      ),
-
-            Container(
-              padding: EdgeInsets.fromLTRB(20.0, 25.0, 10.0, 15.0),
-              width: double.infinity,
-              //color: Colors.blue,            
-
-              child: Text(
-                      "Day",
-                      style: GoogleFonts.montserrat(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black)
+              ///Title for Equipment
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                width: double.infinity,
+                child: Text('Materiales',
+                  style: Theme.of(context).textTheme.title
                 ),
               ),
+              SizedBox(height:15),
 
-          Expanded(
-            child: Padding(
-                padding: const EdgeInsets.only(top: 10.0),              
-                child:
-                TabBarView(
-                  controller: _tabController,                
-                  children:                 
+              ///List of Equipment Options
+              Container(
+                height: 110,
+                width: double.infinity,
+                margin: EdgeInsets.only(left: 15.0),
 
-                    List<Widget>.generate(weekTab.length, (int index){
-                      print(weekNo);
-
-                      return
-
-                      Container(
-                        height: double.infinity,
-                        child: FutureBuilder(
-                          future: getDays(),
-                          builder: (context,snapshot){
-
-                          ////handle wait time for the Future with connection state
-                          if (snapshot.connectionState == ConnectionState.waiting){
-                            return Center(
-                              child: Loading()
-                              );
-                    
-                            ///If the week has not been created, return a message
-                            } else if (snapshot.data.length == 0) {
-                              return Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(50.0),
-                                  child: 
-                                  Text(
-                                    "Oops!... Apparently the daily routines for this week are not yet available",
-                                    style: GoogleFonts.montserrat(),
-                                    textAlign: TextAlign.center),
-                                  )
-                                );
-
-                            ///Perform if there is data to show
-                            } else {
-                              return ListView.builder(
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (_,index){
-                    
-                                  return Padding(
-                                    padding: EdgeInsets.fromLTRB(20,5,20,5),
-                                    child: Container(
-                                      //width: double.infinity,
-                                      decoration: BoxDecoration(
-                                      //border: Border.fromBorderSide(BorderSide(color:Colors.grey, width: 0.5)),
-                                      shape: BoxShape.rectangle,
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8.0),
-                                        boxShadow: <BoxShadow> [
-                                          new BoxShadow(
-                                            color: Colors.black12,
-                                            offset: new Offset(0.0, 10.0),
-                                            blurRadius: 10.0,
-                                          )
-                                        ]
-                                      ),
-                                      // margin: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 0.0),
-                                      child: InkWell(
-                                        onTap: () => navigatetoDetail(
-                                            snapshot.data[index]),
-                                        child: Container(
-                                          padding: EdgeInsets.fromLTRB(25,15,40,10),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                ///Number of week
-                                                Container(
-                                                  child: Text(
-                                                    snapshot.data[index].data["Day"],
-                                                    style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w300)
-                                                  ),
-                                                ),
-                                                SizedBox(height: 10),
-                                                ///Body Part
-                                                Row(
-                                                  children:<Widget>[
-                                                    Container(
-                                                       height: 30,                                                                    
-                                                        child: Text(
-                                                          snapshot.data[index]
-                                                              .data["Body part"],
-                                                          textAlign: TextAlign.start,
-                                                          style: GoogleFonts.montserrat(
-                                                            color: Colors.black,
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      ///Focus
-                                                      Container(
-                                                        height: 30,
-                                                        child: Text(
-                                                          snapshot.data[index]
-                                                              .data["Focus"],
-                                                          textAlign: TextAlign.start,
-                                                          style: GoogleFonts.montserrat(
-                                                            color: Colors.black,
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.w500,
-                                                          ),
-                                                        ),
-                                                      ),
-
-                                                  ]
-                                                ),                                                                                              
-                                              ],
-                                            ),
-
-                                             Spacer(),
-
-                                                ///Time
-
-                                                Text(
-                                                  snapshot
-                                                      .data[index].data["Time"],
-                                                  style: GoogleFonts.montserrat(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.w200,
-                                                    fontSize: 11,
-                                                  ),
-                                                )
-                                          ]),
-                                        ),
-                                      ),
-                                    ));
-                      
-                                  });
-                                }
-                              }
-                            ),
-
+                ///List of equipment
+                child: ListView.builder(
+                    itemCount: widget.equipment.length,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (_, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: 100,
+                          //height: 350,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: <BoxShadow>[
+                                new BoxShadow(
+                                  color: Colors.grey[350],
+                                  offset: new Offset(0.0, 3.0),
+                                  blurRadius: 5.0,
+                                )
+                              ]),
+                          child: Column(
+                            children: <Widget>[
+                              //Equipment image
+                              Container(
+                                height: 50,
+                                width: 70,
+                                decoration: BoxDecoration(                                    
+                                  shape: BoxShape.rectangle,
+                                  image: DecorationImage(
+                                    image: AssetImage('Images/Equipment/' +
+                                          widget.equipment[index] +
+                                          '.jpg'),
+                                      fit: BoxFit.scaleDown,
+                                    )),
+                              ),
+                              SizedBox(height: 5),
+                              //Equipment name
+                              Text(
+                                widget.equipment[index],
+                                style: GoogleFonts.montserrat(fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
-                    },
+                    }),
                   ),
-              ),
+
+              /// Button
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                  ///Chat with Mars Coach
+                  Container(
+                    width: 150,
+                    child: RaisedButton(
+                      color: Theme.of(context).primaryColor,
+                      child: Text(
+                        "Empezar",
+                        style: GoogleFonts.montserrat(
+                          color: Colors.white),
+                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () {
+                        Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => DailyWorkout(
+                          collection: 'Free Routines',
+                          weekNo: 'Week 1',
+                          day: 'Day 1',
+                          id: widget.freeRoutine,
+                          )));
+                        }
+                      ),
+                    ),
+                  ],
+                )
+              ),   
+            
+                
+              ]),
             ),
           ),
-        ]
-    ),
-      );
+      ),
+    ); 
+      
   }
 }
 

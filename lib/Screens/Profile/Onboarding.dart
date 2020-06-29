@@ -1,9 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
-import 'package:wave_slider/wave_slider.dart';
 
 class Onboarding extends StatefulWidget {
 
@@ -17,7 +16,7 @@ class Onboarding extends StatefulWidget {
     final String uid = user.uid.toString();
     return await Firestore.instance.collection('User Profile').document(uid).updateData({
      'Sex': sex,
-     'Age': birthday,
+     'Birthday': birthday,
      'Weight': weight,
      'Height': height,
      'Experience': experience,
@@ -28,16 +27,18 @@ class Onboarding extends StatefulWidget {
 
 class _OnboardingState extends State<Onboarding> {
    final controller = PageController(initialPage:0);
-   final int totalPages = 5;
+   final int totalPages = 4;
   
    int currentpage = 0;
-   List trainingExperience = ["I never workout", "I try to be active sometimes", "I have some experience", "I exercise all the time"];
-   List objective = ["Lose Weight", "Gain Muscle", "Be Active", "Prepare for my Sport"];
-   List trainingPreference = ["Bodyweight", "Running", "With gym machines", "With all gym material"];
+   List trainingExperience = ["Nunca he hecho ejercicio", "Tengo poca experiencia", "Puedo entrenar solo", "Tengo mucho conocimiento"];
+   List objective = ["Perder peso", "Ganar músculo", "Mantenerme saludable", "Aliviar estrés"];
+   List trainingPreference = ["Peso Corporal", "Cardio", "Yoga", "Gimnasio"];
 
   ///User Data to save
   String sex = '';
-  String currentAge;
+  DateTime birthday = DateTime.parse("1994-01-01 12:00:00");
+  double _weightValue = 0.0;
+  double _heightValue = 0.0;
   String height = '140';
   String weight = '40';
   String experience = '';
@@ -54,14 +55,7 @@ class _OnboardingState extends State<Onboarding> {
   Color femaleBorderColor = Colors.black;
   Color buttonColor = Colors.black;
   Color buttonText = Colors.white;
-  List<String> ages = [for(var i=15; i<90; i+=1) i.toString()];
-   
-  onChangedAge(val){
-    setState(() {
-      currentAge = val;
-      print(currentAge);
-    });
-  }
+  
   ///SecondPage/FourthPage
   int selectedButton;
   int selectedButtonObj;
@@ -71,7 +65,7 @@ class _OnboardingState extends State<Onboarding> {
   Color preferenceColor3 = Colors.grey;
   Color preferenceColor4 = Colors.grey;
   ///End button
-  String nextButton = 'NEXT';
+  String nextButton = 'SIGUIENTE';
 
    Widget _buildPageIndicator (bool isCurrentPage){
      return AnimatedContainer(
@@ -84,12 +78,6 @@ class _OnboardingState extends State<Onboarding> {
        ),
     );
    }
-
- /////// Create a function to navigate into further details for every document printed
-  goHome(context){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => InicioNew()));
-    
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,22 +105,25 @@ class _OnboardingState extends State<Onboarding> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children:<Widget>[
                               ///Greetings Text
+                              SizedBox(height:20),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(30, 0, 30, 8),
+                                padding: const EdgeInsets.symmetric(horizontal: 30),
                                 child: Text(
-                                  "Hi there!",
+                                  "Hola!",
                                   style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:30),
                                   textAlign: TextAlign.left,
                                 ),
                               ),
+                              SizedBox(height:8),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(30, 8, 30, 40),
+                                padding: const EdgeInsets.symmetric(horizontal: 30),
                                 child: Text(
-                                  "Tell us a bit about yourself to complete your profile information",
+                                  "Dinos un poco sobre ti para completar la información de tu perfil",
                                   style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:16),
                                   textAlign: TextAlign.left,
                                 ),
                               ),                                
+                              SizedBox(height:20),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children:<Widget>[
@@ -143,174 +134,216 @@ class _OnboardingState extends State<Onboarding> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         ///Male
-                                        Material(
-                                          child: InkWell(
-                                            onTap: (){
-                                              setState(() {
-                                                sex = "Male";
-                                                sexColor1 = Colors.redAccent[700];
-                                                sexText1 = Colors.white;
-                                                sexColor2 = Colors.white;
-                                                sexText2 = Colors.black;
-                                                maleBorderColor = Colors.redAccent[700];
-                                                femaleBorderColor = Colors.black;
-                                              });
-                                              print(sex);
-                                            },
-                                            splashColor: Colors.black.withOpacity(0.5),
-                                            child: Container(
-                                              width: 100,
-                                              height: 30,
-                                              decoration: BoxDecoration(
-                                                color: sexColor1,
-                                                border: Border.all(color: maleBorderColor, width: 0.7),
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              child: Center(child: Text("Male", style: GoogleFonts.montserrat(fontSize: 14, color: sexText1))),
+                                        InkWell(
+                                          onTap: (){
+                                            setState(() {
+                                              sex = "Male";
+                                              sexColor1 = Theme.of(context).accentColor;
+                                              sexText1 = Colors.white;
+                                              sexColor2 = Colors.white;
+                                              sexText2 = Colors.black;
+                                              maleBorderColor = Theme.of(context).accentColor;
+                                              femaleBorderColor = Colors.black;
+                                            });
+                                            print(sex);
+                                          },
+                                          splashColor: Colors.black.withOpacity(0.5),
+                                          child: Container(
+                                            width: 100,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: sexColor1,
+                                              border: Border.all(color: maleBorderColor, width: 0.7),
+                                              borderRadius: BorderRadius.circular(25),
                                             ),
+                                            child: Center(child: Text("Masculino", style: GoogleFonts.montserrat(fontSize: 12, color: sexText1))),
                                           ),
                                         ),
                                         SizedBox(width: 30),
                                         ///Female
-                                        Material(
-                                          child: InkWell(
-                                            onTap: (){
-                                              setState(() {
-                                                sex = "Female";
-                                                sexColor1 = Colors.white;
-                                                sexText1 = Colors.black;
-                                                sexColor2 = Colors.redAccent[700];
-                                                sexText2 = Colors.white;
-                                                maleBorderColor = Colors.black;
-                                                femaleBorderColor = Colors.redAccent[700];
-                                              });
-                                              print(sex);
-                                            },
-                                            splashColor: Colors.black.withOpacity(0.5),
-                                            child: Container(
-                                              width: 100,
-                                              height: 30,                                      
-                                              decoration: BoxDecoration(
-                                                color: sexColor2,
-                                                border: Border.all(color: femaleBorderColor, width: 0.7),
-                                                borderRadius: BorderRadius.circular(25),
-                                              ),
-                                              child: Center(child: Text("Female", style: GoogleFonts.montserrat(fontSize: 14, color: sexText2))),
+                                        InkWell(
+                                          onTap: (){
+                                            setState(() {
+                                              sex = "Female";
+                                              sexColor1 = Colors.white;
+                                              sexText1 = Colors.black;
+                                              sexColor2 = Theme.of(context).accentColor;
+                                              sexText2 = Colors.white;
+                                              maleBorderColor = Colors.black;
+                                              femaleBorderColor = Theme.of(context).accentColor;
+                                            });
+                                            print(sex);
+                                          },
+                                          splashColor: Colors.black.withOpacity(0.5),
+                                          child: Container(
+                                            width: 100,
+                                            height: 30,                                      
+                                            decoration: BoxDecoration(
+                                              color: sexColor2,
+                                              border: Border.all(color: femaleBorderColor, width: 0.7),
+                                              borderRadius: BorderRadius.circular(25),
                                             ),
+                                            child: Center(child: Text("Femenino", style: GoogleFonts.montserrat(fontSize: 12, color: sexText2))),
                                           ),
                                         ),
                                       ],
                                       ),
                                   ),
 
-                                  SizedBox(height: 30),
+                                  SizedBox(height: 25),
 
                                   ///Birthday
-                                  Column(
-                                    children:<Widget>[
-                                      Container(
-                                        child: Text(
-                                          "Select your age", style: GoogleFonts.montserrat(fontSize: 12),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children:<Widget>[
+                                        Text(
+                                          "Fecha de nacimiento: ", style: GoogleFonts.montserrat(fontSize: 12),
                                         ),
+                                      ] 
+                                    ),
+                                  ),
+                                  SizedBox(width:20),                                  
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 30.0),
+                                    child: InkWell(
+                                      child: Container(
+                                        height: 100,
+                                        width: MediaQuery.of(context).size.width*0.8,
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width*0.8,
+                                          child: CupertinoDatePicker(
+                                            mode: CupertinoDatePickerMode.date,
+                                            initialDateTime: DateTime.parse("1990-01-01"),
+                                            onDateTimeChanged: (date){
+                                              birthday = date;
+                                            }
+                                          )
+                                          ),
                                       ),
-                                    SizedBox(height:10),
-                                    Container(
-                                      padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(25.0),
-                                          border: Border.all(color:Colors.grey, width: 0.8)
-                                        ),
-                                      child: DropdownButtonFormField(
-                                        decoration: InputDecoration.collapsed(hintText: null),
-                                        value: currentAge ?? '30',
-                                        items: ages.map((age){
-                                          return DropdownMenuItem(
-                                            value: age,
-                                            child: Text('$age',
-                                              style: GoogleFonts.montserrat(fontSize: 16, fontWeight: FontWeight.w500))
-                                          );
-                                          }).toList(),
-                                          onChanged: (val){
-                                            setState(() => currentAge = val);
-                                            print(currentAge);
-                                          },
-                                        ),
-                                      ),
-                                    ]
+                                    ),
                                   ),
                                   
-                                  SizedBox(height: 100),
+                                  SizedBox(height: 25),
+
+                                  //Weight            
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                                    child: Row(
+                                      children:<Widget>[
+                                        Text(
+                                          'Peso (Kg)',
+                                          style: GoogleFonts.montserrat(fontSize: 12),
+                                        ),
+                                        SizedBox(width: 15),
+                                        Text(
+                                          '$weight',
+                                          style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold),
+                                        ),
+                                      ] 
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                    child: SliderTheme(
+                                      data: SliderTheme.of(context).copyWith(
+                                        activeTrackColor: Theme.of(context).accentColor,
+                                        inactiveTrackColor: Colors.grey[200],
+                                        trackShape: RoundedRectSliderTrackShape(),
+                                        trackHeight: 4.0,
+                                        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                                        thumbColor: Theme.of(context).accentColor,
+                                        //overlayColor: Colors.grey[50],
+                                        overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+                                        tickMarkShape: RoundSliderTickMarkShape(),
+                                        activeTickMarkColor: Theme.of(context).accentColor,
+                                        inactiveTickMarkColor: Theme.of(context).disabledColor,
+                                        valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+                                        valueIndicatorColor: Theme.of(context).accentColor,
+                                        valueIndicatorTextStyle: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      child: Slider(
+                                        min: 0,
+                                        max: 100,
+                                        //divisions: 10,
+                                        value: _weightValue,
+                                        label: _weightValue.toStringAsFixed(0),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _weightValue = value;
+                                            weight = ((_weightValue)+40).toStringAsFixed(0);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  
+                                  
+                                  SizedBox(height:20),
+                                  //Height
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                                    child: Row(
+                                      children:<Widget>[
+                                        Text(
+                                          'Altura (Cm)',
+                                          style: GoogleFonts.montserrat(fontSize: 12),
+                                        ),
+                                        SizedBox(width: 15),
+                                        Text(
+                                          '$height',
+                                          style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold),
+                                        ),
+                                      ] 
+                                    ),
+                                  ),     
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                    child: SliderTheme(
+                                      data: SliderTheme.of(context).copyWith(
+                                        activeTrackColor: Theme.of(context).accentColor,
+                                        inactiveTrackColor:  Colors.grey[200],
+                                        trackShape: RoundedRectSliderTrackShape(),
+                                        trackHeight: 4.0,
+                                        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
+                                        thumbColor: Theme.of(context).accentColor,
+                                        //overlayColor: Colors.grey[50],
+                                        overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0),
+                                        tickMarkShape: RoundSliderTickMarkShape(),
+                                        activeTickMarkColor: Theme.of(context).accentColor,
+                                        inactiveTickMarkColor: Theme.of(context).disabledColor,
+                                        valueIndicatorShape: PaddleSliderValueIndicatorShape(),
+                                        valueIndicatorColor: Theme.of(context).accentColor,
+                                        valueIndicatorTextStyle: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      child: Slider(
+                                        min: 0,
+                                        max: 100,
+                                        //divisions: 10,
+                                        value: _heightValue,
+                                        label: _heightValue.toStringAsFixed(0),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _heightValue = value;
+                                            height = ((_heightValue)+120).toStringAsFixed(0);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height:80),
 
                                 ]
                               ),
                             ], 
                           ),
                         ),
-                      //Second Screen
-                      Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          color: Colors.white,
-                          child:                               
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children:<Widget>[
-
-                                  //Weight            
-                                  Text(
-                                    'Weight (Kg)',
-                                    style: GoogleFonts.montserrat(fontSize: 12),
-                                  ),
-                                  Container(
-                                    height: 60,
-                                    width: 300,
-                                    child: WaveSlider(
-                                      color: Colors.black,
-                                      displayTrackball: true,
-                                      onChanged: (double dragUpdate) {
-                                        setState(() {
-                                          weight = ((dragUpdate * 100)+40).toStringAsFixed(1); // dragUpdate is a fractional value between 0 and 1
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  Text(
-                                    '$weight',
-                                    style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold),
-                                  ),
-
-                                  SizedBox(height:50),
-                                  //Weight            
-                                  Text(
-                                    'Height (Cm)',
-                                    style: GoogleFonts.montserrat(fontSize: 12),
-                                  ),
-                                  Container(
-                                    height: 60,
-                                    width: 300,
-                                    child: WaveSlider(
-                                      color: Colors.black,
-                                      displayTrackball: true,
-                                      onChanged: (double dragUpdate) {
-                                        setState(() {
-                                          height = ((dragUpdate * 80)+140).toStringAsFixed(1); // dragUpdate is a fractional value between 0 and 1
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  Text(
-                                    '$height',
-                                    style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.bold),
-                                  ),
-
-                                  SizedBox(height:100),
-
-                                ]
-                              ),
-                        ),
-                      ///Third Screen
+                      //Second Screen                      
                       Container(
                           width: double.infinity,
                           height: double.infinity,
@@ -321,9 +354,9 @@ class _OnboardingState extends State<Onboarding> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children:<Widget>[
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 50, 20, 40),
+                                padding: const EdgeInsets.fromLTRB(20, 40, 20, 30),
                                 child: Text(  
-                                  "What is your training experience?",
+                                  "¿Cuál es tu experiencia con la actividad física?",
                                   style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:20),
                                   textAlign: TextAlign.center,
                                 ),
@@ -343,9 +376,9 @@ class _OnboardingState extends State<Onboarding> {
                                           height: 50,
                                           width: 250,
                                           decoration: BoxDecoration(
-                                            color: Colors.redAccent[700],
+                                            color: Theme.of(context).accentColor,
                                             //border: Border.all(color: Colors.black, width: 1),
-                                            borderRadius: BorderRadius.circular(15),                                            
+                                            borderRadius: BorderRadius.circular(25),                                            
                                           ),
                                           child: Center(
                                             child: Text(trainingExperience[index],
@@ -370,13 +403,13 @@ class _OnboardingState extends State<Onboarding> {
                                           height: 50,
                                           width: 250,
                                           decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            border: Border.all(color: Colors.black, width: 1),
-                                            borderRadius: BorderRadius.circular(15),                                            
+                                            color: Colors.white,
+                                            border: Border.all(color: Theme.of(context).canvasColor, width: 1),
+                                            borderRadius: BorderRadius.circular(25),                                            
                                           ),
                                           child: Center(
                                             child: Text(trainingExperience[index],
-                                              style: TextStyle(fontSize: 14, color: Colors.white),
+                                              style: TextStyle(fontSize: 14, color: Theme.of(context).canvasColor),
                                             )
                                           ),
                                         )
@@ -389,7 +422,7 @@ class _OnboardingState extends State<Onboarding> {
                               ], 
                             ),
                           ),
-                      ///Fourth Screen
+                      ///Third Screen
                       Container(
                           //padding: EdgeInsets.all(8.0),
                           width: double.infinity,
@@ -404,14 +437,12 @@ class _OnboardingState extends State<Onboarding> {
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(20, 50, 20, 40),
                                 child: Text(
-                                  "How do you prefer to exercise?",
+                                  "¿Cómo prefieres entrenar?",
                                   style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:20),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
                               Container(
-                                // color: Colors.green,
-                                //height: 300,
                                 width: double.infinity,
                                 child: Center(
                                   child: Column(
@@ -422,14 +453,13 @@ class _OnboardingState extends State<Onboarding> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           ///Bodyweight
-                                          Material(
-                                            child: InkWell(
+                                            InkWell(
                                               onTap: (){
                                                 setState(() {
                                                   preferenceColor1 = Colors.transparent;
-                                                  preferenceColor2 = Colors.grey;
-                                                  preferenceColor3 = Colors.grey;
-                                                  preferenceColor4 = Colors.grey;
+                                                  preferenceColor2 = Theme.of(context).disabledColor;
+                                                  preferenceColor3 = Theme.of(context).disabledColor;
+                                                  preferenceColor4 = Theme.of(context).disabledColor;
                                                   preference = "Bodyweight";
                                                 });
                                                 print(preference);
@@ -465,66 +495,63 @@ class _OnboardingState extends State<Onboarding> {
                                                       width: double.infinity,                                                    
                                                       child: Padding(
                                                         padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Bodyweight", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
+                                                        child: Text("Peso Corporal", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
                                                       ),
                                                     )
                                                   ],
                                                 )
                                               ),
-                                            ),
-                                          ),
+                                            ),                                      
 
                                           SizedBox(width: 15),
                                           ///Machines
-                                          Material(
-                                            child: InkWell(
-                                              onTap: (){
-                                                setState(() {
-                                                  preferenceColor1 = Colors.grey;
-                                                  preferenceColor2 = Colors.transparent;
-                                                  preferenceColor3 = Colors.grey;
-                                                  preferenceColor4 = Colors.grey;
-                                                  preference = "Machines";
-                                                });
-                                                 print(preference);
-                                              },
-                                              splashColor: Colors.black.withOpacity(0.5),
-                                              child: Container(
-                                                height: 120,
-                                                width: 150,
-                                                decoration: BoxDecoration(
-                                                  color: preferenceColor2,
-                                                  borderRadius: BorderRadius.circular(12)
-                                                ),
-                                                child:Column(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      height: 100,
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.only(topRight: Radius.circular(12), topLeft: Radius.circular(12)),
-                                                      image: DecorationImage(
-                                                        image: AssetImage('Images/TrainPreference/Machine.jpg'),
-                                                        fit: BoxFit.cover,
-                                                        colorFilter: ColorFilter.mode(preferenceColor2, BlendMode.hue)
-                                                        )
-                                                      ), 
-                                                    ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
-                                                        border: Border.all(color: Colors.black, width: 0.1),
-                                                        ),
-                                                      height: 20,
-                                                      width: double.infinity,                                                    
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Gym machines", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
+                                          InkWell(
+                                            onTap: (){
+                                              setState(() {
+                                                preferenceColor1 = Theme.of(context).disabledColor;
+                                                preferenceColor2 = Colors.transparent;
+                                                preferenceColor3 = Theme.of(context).disabledColor;
+                                                preferenceColor4 = Theme.of(context).disabledColor;
+                                                preference = "Machines";
+                                              });
+                                               print(preference);
+                                            },
+                                            splashColor: Colors.black.withOpacity(0.5),
+                                            child: Container(
+                                              height: 120,
+                                              width: 150,
+                                              decoration: BoxDecoration(
+                                                color: preferenceColor2,
+                                                borderRadius: BorderRadius.circular(12)
                                               ),
+                                              child:Column(
+                                                children: <Widget>[
+                                                  Container(
+                                                    height: 100,
+                                                    width: double.infinity,
+                                                    decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(topRight: Radius.circular(12), topLeft: Radius.circular(12)),
+                                                    image: DecorationImage(
+                                                      image: AssetImage('Images/TrainPreference/Machine.jpg'),
+                                                      fit: BoxFit.cover,
+                                                      colorFilter: ColorFilter.mode(preferenceColor2, BlendMode.hue)
+                                                      )
+                                                    ), 
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
+                                                      border: Border.all(color: Colors.black, width: 0.1),
+                                                      ),
+                                                    height: 20,
+                                                    width: double.infinity,                                                    
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top:2.0),
+                                                      child: Text("Gimnasio", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
                                             ),
                                           ),
                                         ],
@@ -534,108 +561,104 @@ class _OnboardingState extends State<Onboarding> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           ///Running
-                                          Material(
-                                            child: InkWell(
-                                              onTap: (){
-                                                setState(() {
-                                                  preferenceColor1 = Colors.grey;
-                                                  preferenceColor2 = Colors.grey;
-                                                  preferenceColor3 = Colors.transparent;
-                                                  preferenceColor4 = Colors.grey;
-                                                  preference = "Running";
-                                                });
-                                                 print(preference);
-                                              },
-                                              splashColor: Colors.black.withOpacity(0.5),
-                                              child: Container(
-                                                height: 120,
-                                                width: 150,
-                                                decoration: BoxDecoration(
-                                                  color: preferenceColor3,
-                                                  borderRadius: BorderRadius.circular(12)
-                                                ),
-                                                child:Column(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      height: 100,
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.only(topRight: Radius.circular(12), topLeft: Radius.circular(12)),
-                                                      image: DecorationImage(
-                                                        image: AssetImage('Images/TrainPreference/Running.jpg'),
-                                                        fit: BoxFit.cover,
-                                                        colorFilter: ColorFilter.mode(preferenceColor3, BlendMode.hue)
-                                                        )
-                                                      ), 
-                                                    ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
-                                                        border: Border.all(color: Colors.black, width: 0.1),
-                                                        ),
-                                                      height: 20,
-                                                      width: double.infinity,                                                    
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Running", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
+                                          InkWell(
+                                            onTap: (){
+                                              setState(() {
+                                                preferenceColor1 = Theme.of(context).disabledColor;
+                                                preferenceColor2 = Theme.of(context).disabledColor;
+                                                preferenceColor3 = Colors.transparent;
+                                                preferenceColor4 = Theme.of(context).disabledColor;
+                                                preference = "Cardio";
+                                              });
+                                               print(preference);
+                                            },
+                                            splashColor: Colors.black.withOpacity(0.5),
+                                            child: Container(
+                                              height: 120,
+                                              width: 150,
+                                              decoration: BoxDecoration(
+                                                color: preferenceColor3,
+                                                borderRadius: BorderRadius.circular(12)
                                               ),
+                                              child:Column(
+                                                children: <Widget>[
+                                                  Container(
+                                                    height: 100,
+                                                    width: double.infinity,
+                                                    decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(topRight: Radius.circular(12), topLeft: Radius.circular(12)),
+                                                    image: DecorationImage(
+                                                      image: AssetImage('Images/TrainPreference/Running.jpg'),
+                                                      fit: BoxFit.cover,
+                                                      colorFilter: ColorFilter.mode(preferenceColor3, BlendMode.hue)
+                                                      )
+                                                    ), 
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
+                                                      border: Border.all(color: Colors.black, width: 0.1),
+                                                      ),
+                                                    height: 20,
+                                                    width: double.infinity,                                                    
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top:2.0),
+                                                      child: Text("Cardio", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
                                             ),
                                           ),
                                           SizedBox(width: 15),
                                           ///Gym material
-                                          Material(
-                                            child: InkWell(
-                                              onTap: (){
-                                                setState(() {
-                                                  preferenceColor1 = Colors.grey;
-                                                  preferenceColor2 = Colors.grey;
-                                                  preferenceColor3 = Colors.grey;
-                                                  preferenceColor4 = Colors.transparent;
-                                                  preference = "Gym";
-                                                });
-                                                 print(preference);
-                                              },
-                                              splashColor: Colors.black.withOpacity(0.5),
-                                              child: Container(
-                                                height: 120,
-                                                width: 150,
-                                                decoration: BoxDecoration(
-                                                  color: preferenceColor4,
-                                                  borderRadius: BorderRadius.circular(12)
-                                                ),
-                                                child:Column(
-                                                  children: <Widget>[
-                                                    Container(
-                                                      height: 100,
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.only(topRight: Radius.circular(12), topLeft: Radius.circular(12)),
-                                                      image: DecorationImage(
-                                                        image: AssetImage('Images/TrainPreference/Gym.jpg'),
-                                                        fit: BoxFit.cover,
-                                                        colorFilter: ColorFilter.mode(preferenceColor4, BlendMode.hue)
-                                                        )
-                                                      ), 
-                                                    ),
-                                                    Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
-                                                        border: Border.all(color: Colors.black, width: 0.1),
-                                                        ),
-                                                      height: 20,
-                                                      width: double.infinity,                                                    
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.only(top:2.0),
-                                                        child: Text("Gym weights", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
+                                          InkWell(
+                                            onTap: (){
+                                              setState(() {
+                                                preferenceColor1 = Theme.of(context).disabledColor;
+                                                preferenceColor2 = Theme.of(context).disabledColor;
+                                                preferenceColor3 = Theme.of(context).disabledColor;
+                                                preferenceColor4 = Colors.transparent;
+                                                preference = "Yoga";
+                                              });
+                                               print(preference);
+                                            },
+                                            splashColor: Colors.black.withOpacity(0.5),
+                                            child: Container(
+                                              height: 120,
+                                              width: 150,
+                                              decoration: BoxDecoration(
+                                                color: preferenceColor4,
+                                                borderRadius: BorderRadius.circular(12)
                                               ),
+                                              child:Column(
+                                                children: <Widget>[
+                                                  Container(
+                                                    height: 100,
+                                                    width: double.infinity,
+                                                    decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.only(topRight: Radius.circular(12), topLeft: Radius.circular(12)),
+                                                    image: DecorationImage(
+                                                      image: AssetImage('Images/TrainPreference/Gym.jpg'),
+                                                      fit: BoxFit.cover,
+                                                      colorFilter: ColorFilter.mode(preferenceColor4, BlendMode.hue)
+                                                      )
+                                                    ), 
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(12), bottomLeft: Radius.circular(12)),
+                                                      border: Border.all(color: Colors.black, width: 0.1),
+                                                      ),
+                                                    height: 20,
+                                                    width: double.infinity,                                                    
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top:2.0),
+                                                      child: Text("Yoga", textAlign: TextAlign.center, style: GoogleFonts.montserrat(fontSize:11)),
+                                                    ),
+                                                  )
+                                                ],
+                                              )
                                             ),
                                           ),
                                         ],
@@ -648,7 +671,7 @@ class _OnboardingState extends State<Onboarding> {
                             ], 
                           ),
                         ),                        
-                      ///Fifth Screen
+                      ///Fourth Screen
                       Container(
                           width: double.infinity,
                           height: double.infinity,
@@ -659,9 +682,9 @@ class _OnboardingState extends State<Onboarding> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children:<Widget>[
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 50, 20, 40),
+                                padding: const EdgeInsets.fromLTRB(10, 40, 20, 30),
                                 child: Text(
-                                  "What do you want to achieve?",
+                                  "¿Qué te gustaría lograr?",
                                   style: GoogleFonts.montserrat(color: Colors.black, fontWeight: FontWeight.w500, fontSize:20),
                                   textAlign: TextAlign.center,
                                 ),
@@ -681,8 +704,8 @@ class _OnboardingState extends State<Onboarding> {
                                           height: 50,
                                           width: 250,
                                           decoration: BoxDecoration(
-                                            color: Colors.redAccent[700],
-                                            borderRadius: BorderRadius.circular(15),                                            
+                                            color: Theme.of(context).accentColor,
+                                            borderRadius: BorderRadius.circular(25),                                            
                                           ),
                                           child: Center(
                                             child: Text(objective[index],
@@ -707,13 +730,13 @@ class _OnboardingState extends State<Onboarding> {
                                           height: 50,
                                           width: 250,
                                           decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            border: Border.all(color: Colors.black, width: 1),
-                                            borderRadius: BorderRadius.circular(15),                                            
+                                            color: Colors.white,
+                                            border: Border.all(color: Theme.of(context).canvasColor, width: 1),
+                                            borderRadius: BorderRadius.circular(25),                                            
                                           ),
                                           child: Center(
                                             child: Text(objective[index],
-                                              style: TextStyle(fontSize: 14, color: Colors.white),
+                                              style: TextStyle(fontSize: 14, color: Theme.of(context).canvasColor),
                                             )
                                           ),
                                         )
@@ -732,7 +755,7 @@ class _OnboardingState extends State<Onboarding> {
                 ]
               ),
           ),
-        bottomSheet: 
+          bottomSheet: 
             Container(
               color: Colors.white,              
               height: 100,
@@ -740,41 +763,55 @@ class _OnboardingState extends State<Onboarding> {
               padding: EdgeInsets.only(left:20, right:20),
                 child: Column(
                   children:<Widget>[
-                    ///NEXT Button                    
-                    Container(
-                      width:200,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          ),
-                        color: Colors.redAccent[700],
-                              padding: EdgeInsets.all(0),
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                onPressed: ()async{
-                                  if(currentpage<3){
+                    ///NEXT Button
+                    Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 35.0,
+                            child: RaisedButton(
+                              onPressed: ()async{
+                                  if(currentpage<2){
                                         controller.nextPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
                                         print(currentpage);
-                                      }else if(currentpage==3){                                        
+                                      }else if(currentpage==2){                                        
                                         controller.nextPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
                                         setState(() {
-                                          nextButton = 'FINISH';
+                                          nextButton = 'LISTO!';
                                         });
                                       }else{
-                                        await updateUserData(sex, currentAge, weight, height, experience, preference, goal);
-                                        goHome(context);                                      
+                                        await updateUserData(sex, birthday, weight, height, experience, preference, goal);                                
                                       }
                                     }, 
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children:<Widget> [
-                                        Text(
-                                          nextButton,
-                                          style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14),
-                                        ),
-                            ]
-                         )
-                      ),
-                    ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25)),
+                              padding: EdgeInsets.all(0.0),
+                              child: Ink(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Theme.of(context).accentColor,
+                                      Theme.of(context).primaryColor
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    nextButton,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                     SizedBox(height:25),
                     ///Pages navigator Dots
                     Center(

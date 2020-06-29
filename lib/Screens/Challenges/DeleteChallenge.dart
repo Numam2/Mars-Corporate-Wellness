@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:personal_trainer/Screens/Challenges/MyChallenges_Provider.dart';
 
 class DeleteChallenge extends StatelessWidget {
   final String challengeDescription;
@@ -41,7 +40,7 @@ class DeleteChallenge extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 15.0, right: 5),
                 child: Text(
-                  "Forget this challenge?",
+                  "Descartar éste hábito?",
                   textAlign: TextAlign.center,
                   style: GoogleFonts.montserrat(
                     color: Colors.black,
@@ -60,47 +59,76 @@ class DeleteChallenge extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+
                     Container(
-                        height: 35,
-                        width: 100,
-                        child: RaisedButton(
-                          onPressed: () async {
+                      height: 35.0,
+                      width: 100,
+                      child: RaisedButton(
+                        onPressed: () async {
                             deleteChallenge();
                             Timer(Duration(seconds: 1), () {});
-                            Navigator.pop(context, MaterialPageRoute(builder: (context) => MyChallengesProvider()));
+                            Navigator.pop(context);
                           },
-                          color: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
+                        padding: EdgeInsets.all(0.0),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).accentColor,
+                            border: Border.all(color: Theme.of(context).accentColor, width: 0.8),
+                            borderRadius: BorderRadius.circular(25),
                           ),
-                          child: Center(
+                          child: Container(
+                            constraints: BoxConstraints(
+                                maxWidth: 200.0, minHeight: 50.0),
+                            alignment: Alignment.center,
                             child: Text(
-                              "Yes",
+                              "SI",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.montserrat(
-                                  fontSize: 14, color: Colors.white),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
                             ),
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
+
+                    
                     SizedBox(width: 20),
                     Container(
-                        height: 35,
-                        width: 100,
-                        child: RaisedButton(
-                          onPressed: () => Navigator.pop(context),
-                          color: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                      height: 35.0,
+                      width: 100,
+                      child: RaisedButton(
+                        onPressed: () => Navigator.pop(context),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
+                        padding: EdgeInsets.all(0.0),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).accentColor,
+                            border: Border.all(color: Theme.of(context).accentColor, width: 0.8),
+                            borderRadius: BorderRadius.circular(25),
                           ),
-                          child: Center(
+                          child: Container(
+                            constraints: BoxConstraints(
+                                maxWidth: 200.0, minHeight: 50.0),
+                            alignment: Alignment.center,
                             child: Text(
-                              "No",
+                              "NO",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.montserrat(
-                                  fontSize: 14, color: Colors.white),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
                             ),
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
+
+
                   ],
                 ),
               ),

@@ -15,7 +15,7 @@ class MissingProfile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: Text(
-              'Please complete your personal information to access your profile',
+              'Por favor, completa tu información para poder acceder a tu perfil',
               textAlign: TextAlign.center,
               style: GoogleFonts.montserrat(
                   fontSize: 16.0,
@@ -28,9 +28,9 @@ class MissingProfile extends StatelessWidget {
             padding: EdgeInsets.only(left: 40, right: 40),
             height: 40,
             child: RaisedButton(
-                color: Colors.redAccent[700],
+                color: Theme.of(context).buttonColor,
                 child: Text(
-                  "Start",
+                  "COMIENZA",
                   style: GoogleFonts.montserrat(color: Colors.white),
                 ),
                 shape: RoundedRectangleBorder(
