@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
+import 'package:personal_trainer/Screens/wrapper.dart';
 
 class Onboarding extends StatefulWidget {
 
@@ -12,9 +15,9 @@ class Onboarding extends StatefulWidget {
 
  //////// Create a future that saves Firestore data for User Profile
   Future updateUserData (sex, birthday, weight, height, experience, preference, goal) async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await Firestore.instance.collection('User Profile').document(uid).updateData({
+    return await FirebaseFirestore.instance.collection('User Profile').doc(uid).update({
      'Sex': sex,
      'Birthday': birthday,
      'Weight': weight,
@@ -114,7 +117,7 @@ class _OnboardingState extends State<Onboarding> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),
-                              SizedBox(height:8),
+                              SizedBox(height:10),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 30),
                                 child: Text(
@@ -123,7 +126,8 @@ class _OnboardingState extends State<Onboarding> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),                                
-                              SizedBox(height:20),
+                              SizedBox(height:35),
+                              ///Datos
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children:<Widget>[
@@ -189,45 +193,106 @@ class _OnboardingState extends State<Onboarding> {
                                       ],
                                       ),
                                   ),
-
-                                  SizedBox(height: 25),
-
+                                  SizedBox(height: 35),
                                   ///Birthday
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children:<Widget>[
-                                        Text(
-                                          "Fecha de nacimiento: ", style: GoogleFonts.montserrat(fontSize: 12),
-                                        ),
-                                      ] 
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey, width: 0.7)
                                     ),
-                                  ),
-                                  SizedBox(width:20),                                  
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 30.0),
-                                    child: InkWell(
-                                      child: Container(
-                                        height: 100,
-                                        width: MediaQuery.of(context).size.width*0.8,
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*0.8,
-                                          child: CupertinoDatePicker(
-                                            mode: CupertinoDatePickerMode.date,
-                                            initialDateTime: DateTime.parse("1990-01-01"),
-                                            onDateTimeChanged: (date){
-                                              birthday = date;
-                                            }
-                                          )
+                                    child: FlatButton(
+                                      onPressed: (){
+                                        showModalBottomSheet(
+                                          context: context,
+                                          backgroundColor: Colors.white,
+                                          isScrollControlled: true,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
                                           ),
+                                          builder: (context) {
+                                            return Wrap(
+                                              children:<Widget>[
+                                                Container(
+                                                  padding: EdgeInsets.all(25),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text('Fecha de nacimiento',
+                                                        style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w500),
+                                                      ),
+                                                      SizedBox(height: 30),
+                                                      Container(
+                                                        height: 100,
+                                                        width: MediaQuery.of(context).size.width*0.8,
+                                                        child: Container(
+                                                          width: MediaQuery.of(context).size.width*0.8,
+                                                          child: CupertinoDatePicker(
+                                                            mode: CupertinoDatePickerMode.date,
+                                                            initialDateTime: DateTime.parse("1990-01-01"),
+                                                            onDateTimeChanged: (date){
+                                                              setState(() {
+                                                                birthday = date;
+                                                              });                                                              
+                                                            }
+                                                          )
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 30),
+                                                      Align(
+                                                        alignment: Alignment.center,
+                                                        child: Container(
+                                                          height: 35.0,
+                                                          child: RaisedButton(
+                                                            onPressed: (){
+                                                              Navigator.of(context).pop();
+                                                            }, 
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(25)),
+                                                            padding: EdgeInsets.all(0.0),
+                                                            child: Ink(
+                                                              decoration: BoxDecoration(
+                                                                color: Theme.of(context).accentColor,
+                                                                borderRadius: BorderRadius.circular(25),
+                                                              ),
+                                                              child: Container(
+                                                                alignment: Alignment.center,
+                                                                child: Text(
+                                                                  nextButton,
+                                                                  textAlign: TextAlign.center,
+                                                                  style: GoogleFonts.montserrat(
+                                                                      fontSize: 12,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      color: Colors.white),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ]
+                                                  ),
+                                                ),
+                                              ]);
+                                          });
+                                      },
+                                        child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children:<Widget>[
+                                            Text(
+                                              "Fecha de nacimiento:", style: GoogleFonts.montserrat(fontSize: 14, fontWeight: FontWeight.w500),
+                                            ),
+                                            Spacer(),
+                                            Text(
+                                              "${DateFormat.yMMMd().format(birthday)}", style: GoogleFonts.montserrat(fontSize: 14),
+                                            ),
+                                          ] 
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  
                                   SizedBox(height: 25),
-
-                                  //Weight            
+                                  //Weight                                     
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 40.0),
                                     child: Row(
@@ -280,8 +345,7 @@ class _OnboardingState extends State<Onboarding> {
                                       ),
                                     ),
                                   ),
-                                  
-                                  
+
                                   SizedBox(height:20),
                                   //Height
                                   Padding(
@@ -779,7 +843,8 @@ class _OnboardingState extends State<Onboarding> {
                                           nextButton = 'LISTO!';
                                         });
                                       }else{
-                                        await updateUserData(sex, birthday, weight, height, experience, preference, goal);                                
+                                        await updateUserData(sex, birthday, weight, height, experience, preference, goal);
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => Wrapper()));                             
                                       }
                                     }, 
                               shape: RoundedRectangleBorder(

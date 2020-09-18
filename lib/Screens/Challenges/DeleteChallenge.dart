@@ -10,9 +10,9 @@ class DeleteChallenge extends StatelessWidget {
   DeleteChallenge({this.challengeDescription});
 
   Future deleteChallenge () async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await Firestore.instance.collection('Challenges').document(uid).collection("My Challenges").document(challengeDescription).delete();
+    return await FirebaseFirestore.instance.collection('Challenges').doc(uid).collection("My Challenges").doc(challengeDescription).delete();
   }
 
   @override

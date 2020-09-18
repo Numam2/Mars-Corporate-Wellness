@@ -87,8 +87,11 @@ class MessagesStart extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        StreamProvider<List<ChatsList>>.value(
-                                            value: DatabaseService().chatsList,
+                                        MultiProvider(
+                                            providers:[
+                                              StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
+                                              StreamProvider<UserProfile>.value(value: DatabaseService().userData)
+                                            ],
                                             child: MessagesHome())));
                           },
                           shape: RoundedRectangleBorder(

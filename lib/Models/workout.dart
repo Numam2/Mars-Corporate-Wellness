@@ -15,7 +15,8 @@ class Exercise {
   String reps;
   String weight;
   int duration;
+  String side;
 
-  Exercise({this.exerciseName,this.reps, this.weight, this.duration});
+  Exercise({this.exerciseName,this.reps, this.weight, this.duration, this.side});
 
 }

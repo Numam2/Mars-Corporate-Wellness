@@ -17,14 +17,14 @@ class PopularChallengeList extends StatefulWidget {
 class _PopularChallengeListState extends State<PopularChallengeList> {
   
   Future createChallenge(description, duration, start, completedDays) async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection('Challenges')
-        .document(uid)
+        .doc(uid)
         .collection("My Challenges")
-        .document(challenge)
-        .setData({
+        .doc(challenge)
+        .set({
       'Description': description,
       'Total Days': duration,
       'Last Checked': start,

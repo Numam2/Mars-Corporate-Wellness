@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Firebase_Services/levelTracker.dart';
@@ -115,6 +116,10 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                             hoursCounter = (_profile.accumulatedHours + (widget.workoutMinutes / 60)).round();
                             pointsCounter = _profile.points + 25;
 
+                            //Clean Cache Manager
+                            await DefaultCacheManager().emptyCache();
+
+                            //If individual workout, just save activity
                             if(widget.trainingRoutine == 'Individual Workouts'){
                               trainingType = widget.currentDay;
                               trainingSession = '';

@@ -29,19 +29,19 @@ class _CreatePostState extends State<CreatePost> {
   StorageUploadTask _uploadTask;
 
   Future getImagefromGallery() async {
-    File selectedImage =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+    PickedFile selectedImage =
+        await ImagePicker().getImage(source: ImageSource.gallery);
     setState(() {
-      postImage = selectedImage;
+      postImage = File(selectedImage.path);
       print(postImage);
     });
   }
 
   Future getImagefromCamera() async {
-    File selectedImage =
-        await ImagePicker.pickImage(source: ImageSource.camera);
+    PickedFile selectedImage =
+        await ImagePicker().getImage(source: ImageSource.camera);
     setState(() {
-      postImage = selectedImage;
+      postImage = File(selectedImage.path);
       print(postImage);
     });
   }
@@ -54,7 +54,7 @@ class _CreatePostState extends State<CreatePost> {
     } else {
 
         ////Upload to Clod Storage
-      final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+      final User user = FirebaseAuth.instance.currentUser;
       final String uid = user.uid.toString();
 
       String fileName = 'Posts/' + uid + postImage.path + '.png';

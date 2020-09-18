@@ -11,6 +11,7 @@ class ExerciseVideo extends StatefulWidget {
   final String exerciseName;
   final String exerciseReps;
   final String exerciseWeight;
+  final String exerciseSide;
   final int exerciseDuration;
   final String exerciseVideo;
   final PageController pageController;
@@ -19,6 +20,7 @@ class ExerciseVideo extends StatefulWidget {
       {this.exerciseName,
       this.exerciseReps,
       this.exerciseWeight,
+      this.exerciseSide,
       this.exerciseDuration,
       this.exerciseVideo,
       this.pageController,
@@ -138,7 +140,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.exerciseName == "Rest") {
+    if (widget.exerciseName == "Rest" || widget.exerciseName == "Descansa") {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children:<Widget>[
@@ -152,11 +154,10 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
             children: <Widget>[
               ///Navigate Before
               GestureDetector(
-                onTap: () async {
+                onTap: () {
                   setState(() {
                     _stopWatch.stop();
                   });
-                  _timer.cancel();
                   widget.pageController.previousPage(
                       duration: Duration(milliseconds: 500),
                       curve: Curves.ease);
@@ -227,11 +228,10 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
 
               ///Navigate Next
               GestureDetector(
-                onTap: () async {
+                onTap: () {
                   setState(() {
                     _stopWatch.stop();
                   });
-                  _timer.cancel();
                   widget.pageController.nextPage(
                       duration: Duration(milliseconds: 500),
                       curve: Curves.ease);
@@ -325,7 +325,10 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.7),
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(widget.exerciseName,
+                  child: (widget.exerciseSide == null || widget.exerciseSide == "")
+                  ? Text(widget.exerciseName,
+                      style: Theme.of(context).textTheme.title)
+                  : Text(widget.exerciseName + " (" + widget.exerciseSide + ")",
                       style: Theme.of(context).textTheme.title)),
               Spacer(),
               Padding(
@@ -340,7 +343,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                           fontWeight: FontWeight.w500)))
             ],
           ),
-          SizedBox(height: 20),
+          //SizedBox(height: 5),
 
           ///Timer/Reps
           Expanded(
@@ -356,8 +359,16 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             ///Navigate Before
-                            GestureDetector(
+                            GestureDetector(                              
                               onTap: () async {
+
+                                if (widget.exerciseDuration == null ||
+                                      widget.exerciseDuration == 0) {
+
+                                    widget.pageController.previousPage(
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.ease);
+                                }
                                 setState(() {
                                   _stopWatch.stop();
                                 });
@@ -440,6 +451,13 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                             ///Navigate Next
                             GestureDetector(
                               onTap: () async {
+                                if (widget.exerciseDuration == null ||
+                                      widget.exerciseDuration == 0) {
+                                        
+                                    widget.pageController.nextPage(
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.ease);
+                                }
                                 setState(() {
                                   _stopWatch.stop();
                                 });
@@ -457,7 +475,6 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                                       color: Colors.grey, size: 30)),
                             ),
                           ]),
-                      SizedBox(height: 10),
 
                       ///Start Timer
                       (widget.exerciseDuration == null ||
@@ -480,7 +497,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
               ),
             ),
           ),
-          SizedBox(height: 60),
+          //SizedBox(height: MediaQuery.of(context).size.height *0.2),
         ]),
       ),
     ]);

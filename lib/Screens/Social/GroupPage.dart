@@ -45,22 +45,22 @@ class _GroupPageState extends State<GroupPage> {
 
     loadingMorePosts = true;
     
-    QuerySnapshot qn = await Firestore.instance.collection('Groups').document(widget.groupName).collection('Posts')
+    QuerySnapshot qn = await FirebaseFirestore.instance.collection('Groups').doc(widget.groupName).collection('Posts')
     .orderBy('Time', descending: true)
     .startAfter([postList.last.date])
     .limit(15)
-    .getDocuments(); //snapshots().map(_messagesListFromSnapshot);
+    .get(); //snapshots().map(_messagesListFromSnapshot);
 
-    List<Post> newList = qn.documents.map((doc){
+    List<Post> newList = qn.docs.map((doc){
       return Post(
-        postID: doc.data['Post ID'],
-        ownerUID: doc.data['Owner ID'],
-        date: doc.data['Time'].toDate(),
-        likes: doc.data['Likes'] ?? [],
-        textContent: doc.data['Text Content'] ?? '',
-        media: doc.data['Media'] ?? '',
-        location: doc.data['Location'] ?? '',
-        comments: doc.data["Comments"].map<PostComments>((item){
+        postID: doc.data()['Post ID'],
+        ownerUID: doc.data()['Owner ID'],
+        date: doc.data()['Time'].toDate(),
+        likes: doc.data()['Likes'] ?? [],
+        textContent: doc.data()['Text Content'] ?? '',
+        media: doc.data()['Media'] ?? '',
+        location: doc.data()['Location'] ?? '',
+        comments: doc.data()["Comments"].map<PostComments>((item){
           return PostComments(
             userID: item['Sender'] ?? '',
             comment: item['Comment'] ?? '',            
@@ -315,8 +315,8 @@ class _GroupPageState extends State<GroupPage> {
                             width: 100,
                             child: RaisedButton(
                               onPressed: () {
-                                DatabaseService().leaveGroupList(_group.groupName, _group.memberCount);
-                                DatabaseService().deleteMyGroup(_group.groupName);
+                                // DatabaseService().leaveGroupList(_group.groupName, _group.memberCount);
+                                // DatabaseService().deleteMyGroup(_group.groupName);
                               },
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                               padding: EdgeInsets.all(0.0),

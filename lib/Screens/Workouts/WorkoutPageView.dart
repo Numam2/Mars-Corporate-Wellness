@@ -132,136 +132,149 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
         for (int i=0; i<totalPages; i++)
         (i == 0)
           ? Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              leading: InkWell(
-                onTap: () async {
-                  Navigator.of(context).pop();
-                  await DefaultCacheManager().emptyCache();
-                },
-                child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-              ),
-              centerTitle: true,
-              title: Text(widget.day,
-                  style: Theme.of(context).textTheme.headline),
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            leading: InkWell(
+              onTap: () async {
+                Navigator.of(context).pop();
+                await DefaultCacheManager().emptyCache();
+              },
+              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
             ),
-            body: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:<Widget> [
-                  ///Sets
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Container(
-                      child: ListView.builder(
-                        itemCount: widget.workout.length,
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index){
+            centerTitle: true,
+            title: Text(widget.day,
+                style: Theme.of(context).textTheme.headline),
+          ),
+          body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:<Widget> [
+                ///Sets
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: Container(
+                    child: ListView.builder(
+                      itemCount: widget.workout.length,
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (context, index){
 
-                          return Padding(
-                            padding: EdgeInsets.fromLTRB(15.0, 15, 15.0, 8.0),
-                            child: 
-                              
-                              Column(                
-                                children:<Widget>[
+                        return Padding(
+                          padding: EdgeInsets.fromLTRB(15.0, 15, 15.0, 8.0),
+                          child: 
+                            
+                            Column(                
+                              children:<Widget>[
 
-                                  ///// Display title of set
-                                  Padding(
-                                  padding: const EdgeInsets.fromLTRB(15.0, 8.0, 40.0, 8.0),
-                                  child: 
-                                    Row(
-                                      children: <Widget>[
-                                        Text(workout[index].stage,
-                                          style: Theme.of(context).textTheme.title
-                                        ),
-                                        Spacer(),
-                                        Text('x' + workout[index].rounds.toString(),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 16.0, color: Colors.black54),
-                                        ),
-                                      ],
-                                    ),
-                                ),
+                                ///// Display title of set
+                                Padding(
+                                padding: const EdgeInsets.fromLTRB(15.0, 8.0, 40.0, 8.0),
+                                child: 
+                                  Row(
+                                    children: <Widget>[
+                                      Text(workout[index].stage,
+                                        style: Theme.of(context).textTheme.title
+                                      ),
+                                      Spacer(),
+                                      Text('x' + workout[index].rounds.toString(),
+                                        style: GoogleFonts.montserrat(
+                                          fontSize: 16.0, color: Colors.black54),
+                                      ),
+                                    ],
+                                  ),
+                              ),
 
-                                ///// Nest inside the list of each exercise within sets
-                                ListView.builder(
-                                  itemCount: workout[index].sets.length,
-                                  shrinkWrap: true,
-                                  physics: ClampingScrollPhysics(),
-                                  itemBuilder: (context, i){
+                              ///// Nest inside the list of each exercise within sets
+                              ListView.builder(
+                                itemCount: workout[index].sets.length,
+                                shrinkWrap: true,
+                                physics: ClampingScrollPhysics(),
+                                itemBuilder: (context, i){
 
-                                    if(workout[index].sets[i].exerciseName == "Rest"){
-                                      return Padding(
-                                        padding: const EdgeInsets.only(top: 5.0),
-                                        child: Container(
-                                          height: 50,
-                                          color: Colors.white,
-                                          child: Padding(
-                                            padding: EdgeInsets.fromLTRB(25.0, 10.0, 40.0, 10.0),
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(workout[index].sets[i].exerciseName,
-                                                    style: GoogleFonts.montserrat(
-                                                      fontSize: 12.0, color: Theme.of(context).canvasColor,
-                                                    ),
-                                                ),
-                                                Spacer(),
-                                                Text(
-                                                  workout[index].sets[i].reps,
+                                  if(workout[index].sets[i].exerciseName == "Rest" || workout[index].sets[i].exerciseName == "Descansa"){
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: Container(
+                                        height: 50,
+                                        color: Colors.white,
+                                        child: Padding(
+                                          padding: EdgeInsets.fromLTRB(25.0, 10.0, 40.0, 10.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text('Descansa',
                                                   style: GoogleFonts.montserrat(
-                                                    fontSize: 12.0,
-                                                    color: Theme.of(context).canvasColor,
+                                                    fontSize: 12.0, color: Theme.of(context).canvasColor,
                                                   ),
+                                              ),
+                                              Spacer(),
+                                              Text(
+                                                "${workout[index].sets[i].duration} s",
+                                                style: GoogleFonts.montserrat(
+                                                  fontSize: 12.0,
+                                                  color: Theme.of(context).canvasColor,
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      );
-                                    } else {
-                                       return StreamProvider<ExerciseDetail>.value(
-                                        value: DatabaseService().exerciseDetail(workout[index].sets[i].exerciseName),
-                                        child: ExerciseCard(
-                                          exerciseName: workout[index].sets[i].exerciseName,
-                                          exerciseWeight: workout[index].sets[i].weight,
-                                          exerciseReps: workout[index].sets[i].reps,
-                                          exerciseDuration: workout[index].sets[i].duration,
-                                        ),
-                                      );
-                                    }
-
-
+                                      ),
+                                    );
+                                  } else {
+                                     return StreamProvider<ExerciseDetail>.value(
+                                      value: DatabaseService().exerciseDetail(workout[index].sets[i].exerciseName),
+                                      child: ExerciseCard(
+                                        exerciseName: workout[index].sets[i].exerciseName,
+                                        exerciseWeight: workout[index].sets[i].weight,
+                                        exerciseReps: workout[index].sets[i].reps,
+                                        exerciseDuration: workout[index].sets[i].duration,
+                                        exerciseSide: workout[index].sets[i].side,
+                                      ),
+                                    );
                                   }
-                                )
 
-                              ] 
-                            ), 
-                                
-                          );
-                        }
-                      )
-                    ),
+
+                                }
+                              )
+
+                            ] 
+                          ), 
+                              
+                        );
+                      }
+                    )
                   ),
-                ]
-              ),
-          )
+                ),
+              ]
+            ),
+            )
 
           : (i == totalPages - 1) 
-            ? Center(
-                child: Text(
+            ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:<Widget>[
+                Text(
                   "¡LISTO!",
                   style: GoogleFonts.montserrat(
                     fontSize: 16.0,
                     color: Colors.black,
                   ),
                 ),
-              )
+                SizedBox(height: 20),
+                Text(
+                  "Presiona el botón para finalizar",
+                  style: GoogleFonts.montserrat(
+                    fontSize: 14.0,
+                    color: Colors.black,
+                  ),
+                ),
+              ] 
+            )
             : StreamProvider<ExerciseDetail>.value(
               value: DatabaseService().exerciseDetail(exerciseList[i-1].exerciseName),
               child: ExerciseVideo(
                 exerciseName: exerciseList[i-1].exerciseName,
                 exerciseReps: exerciseList[i-1].reps,
                 exerciseWeight: exerciseList[i-1].weight,
+                exerciseSide: exerciseList[i-1].side,
                 exerciseDuration: exerciseList[i-1].duration,
                 pageController: widget.pageController,
                 totalExercises: totalPages,

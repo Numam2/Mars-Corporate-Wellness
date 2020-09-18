@@ -7,6 +7,18 @@ class ActivityLog extends StatelessWidget {
   final UserActivityList activities;
   ActivityLog({this.activities});
 
+  final fitnessIcon = Icon(
+    Icons.fitness_center,
+    size: 20,
+    color: Colors.black,
+  );
+
+  final calendarIcon = Icon(
+    Icons.calendar_today,
+    size: 20,
+    color: Colors.black,
+  );
+
   @override
   Widget build(BuildContext context) {
 
@@ -29,7 +41,7 @@ class ActivityLog extends StatelessWidget {
         ],
         title: Text(
           "Mi Actividad",
-            style: Theme.of(context).textTheme.headline,
+            style: Theme.of(context).textTheme.headline5,
           ),
         centerTitle: true,
       ),
@@ -55,7 +67,13 @@ class ActivityLog extends StatelessWidget {
                 children:<Widget>[
 
                   //Icon for activity
-                  Icon(
+                  (activityList[index].trainingSession == "Meta" || activityList[index].trainingSession == "Hábito")
+                  ? Icon(
+                      Icons.calendar_today,
+                      size: 20,
+                      color: Colors.black,
+                  )            
+                  : Icon(
                       Icons.fitness_center,
                       size: 20,
                       color: Colors.black,

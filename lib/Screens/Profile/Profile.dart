@@ -4,6 +4,7 @@ import 'package:personal_trainer/Firebase_Services/auth.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Profile/EditProfile.dart';
 import 'package:personal_trainer/Screens/Profile/ProfileContent.dart';
+import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -14,6 +15,12 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final _profile = Provider.of<UserProfile>(context);
+
+    if(_profile == null){
+      return Center(
+        child: Loading(),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(        
@@ -147,6 +154,12 @@ class ProfilePage extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     await _auth.signOut();
+                    // Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) =>
+                    //                     SignIn()));
+                    
                   },
                   child: Container(
                     width: double.infinity,

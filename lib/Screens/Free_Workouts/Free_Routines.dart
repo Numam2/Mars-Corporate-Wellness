@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/weeks.dart';
 import 'package:personal_trainer/Screens/Workouts/DailyWorkout.dart';
+import 'package:personal_trainer/Screens/Workouts/DownloadWorkout.dart';
 import 'package:provider/provider.dart';
 
 class FreeRoutineView extends StatefulWidget {
@@ -241,19 +242,21 @@ class _FreeRoutineViewState extends State<FreeRoutineView> with SingleTickerProv
                         borderRadius: BorderRadius.circular(20),
                       ),
                       onPressed: () {
-                        Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => DailyWorkout(
-                          collection: 'Free Routines',
-                          weekNo: 'Week 1',
-                          day: 'Day 1',
-                          id: widget.freeRoutine,
-                          )));
-                        }
+                        print('hey bro');
+                        // Navigator.push(context,
+                        // MaterialPageRoute(builder: (context) => //DailyWorkout(
+                        //   DownloadWorkout(
+                        //     collection: 'Free Routines',
+                        //     weekNo: 'Week 1',
+                        //     day: 'Day 1',
+                        //     id: widget.freeRoutine,
+                        //     )));
+                          }
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ),   
+                    ],
+                  )
+                ),   
             
                 
               ]),

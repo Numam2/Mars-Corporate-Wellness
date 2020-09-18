@@ -4,7 +4,7 @@ import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Models/workout.dart';
 import 'package:personal_trainer/Screens/Home/HirePersonalizedRoutine.dart';
-import 'package:personal_trainer/Screens/Workouts/DailyWorkout.dart';
+import 'package:personal_trainer/Screens/Workouts/DownloadWorkout.dart';
 import 'package:provider/provider.dart';
 
 class GoToWorkoutRoutine extends StatelessWidget {
@@ -30,6 +30,7 @@ class GoToWorkoutRoutine extends StatelessWidget {
       );
     } else if (_user.trainingRoutine == null || _user.trainingRoutine == '') {
       return Padding(
+      
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
         child: GestureDetector(
           onTap: () {
@@ -107,7 +108,7 @@ class GoToWorkoutRoutine extends StatelessWidget {
                       _user.currentTrainingWeek,
                       _user.currentTrainingDay,                      
                      ),
-                    child: DailyWorkout(
+                    child: DownloadWorkout(
                           collection: _user.personalizedRoutine
                               ? 'Training Routine'
                               : 'Free Routines',

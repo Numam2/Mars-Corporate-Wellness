@@ -214,7 +214,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       'Ingredientes',
-                      style: Theme.of(context).textTheme.title
+                      style: Theme.of(context).textTheme.headline6
                     ),
                   ),
                   Container(
@@ -271,7 +271,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Text(
                       'Preparación',
-                      style: Theme.of(context).textTheme.title
+                      style: Theme.of(context).textTheme.headline6
                     ),
                   ),
                   Container(
@@ -289,7 +289,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                               child: Row(children: <Widget>[
                                 //Icon
                                 Text((index+1).toString(),
-                                  style: Theme.of(context).textTheme.title
+                                  style: Theme.of(context).textTheme.headline6
                                 ),
                                 SizedBox(width: 15.0),
 

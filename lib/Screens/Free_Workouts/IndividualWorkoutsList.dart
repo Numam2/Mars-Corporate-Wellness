@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Models/explore.dart';
 import 'package:personal_trainer/Screens/Free_Workouts/IndividualWorkoutIntro.dart';
-import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class IndividualWorkoutsList extends StatelessWidget {

@@ -63,7 +63,20 @@ class ChatRoom extends StatelessWidget {
               
         ),
 
-        body: ChatMessages(docID: docID)
+        body: WillPopScope(
+          onWillPop: () async {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MessagesHome()));
+
+            final bool thisuserReadIndex = _chat.userReads.elementAt(0).user == myUID;
+            final DateTime lastRead = thisuserReadIndex
+            ? _chat.userReads.elementAt(0).lastChecked : _chat.userReads.elementAt(1).lastChecked;
+
+            await DatabaseService().deletePreviousLastRead(docID, lastRead);
+            await DatabaseService().updateMyLastRead(docID);
+
+            return null;
+          },
+          child: ChatMessages(docID: docID))
         
       ),
     );

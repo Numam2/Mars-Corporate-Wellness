@@ -15,15 +15,15 @@ class ExerciseFeedback extends StatefulWidget {
 
 class _ExerciseFeedbackState extends State<ExerciseFeedback> {
   Future updateUserData(String reaction, String notes) async {
-    var firestore = Firestore.instance;
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    var firestore = FirebaseFirestore.instance;
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
     return await firestore
         .collection('User Profile')
-        .document(uid)
+        .doc(uid)
         .collection('Feedback')
-        .document(widget.exercise)
-        .setData({
+        .doc(widget.exercise)
+        .set({
       'Reaction': reaction,
       'Notes': notes,
     });
@@ -64,7 +64,6 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
         child: Container(
-          height: 400,
           child: Padding(
             padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10),
             child: Stack(
@@ -250,7 +249,7 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                           ),
                         ),
                       ),
-                      //SizedBox(height: 25),
+                      SizedBox(height: 25),
                     ],
                   ),
                 ),

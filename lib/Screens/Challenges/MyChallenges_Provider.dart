@@ -6,7 +6,6 @@ import 'package:personal_trainer/Models/challenge.dart';
 import 'package:personal_trainer/Models/goals.dart';
 import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
-import 'package:personal_trainer/Screens/Challenges/GoalCreate.dart';
 import 'package:personal_trainer/Screens/Challenges/Goal_Select_Type.dart';
 import 'package:personal_trainer/Screens/Challenges/GoalsView.dart';
 import 'package:personal_trainer/Screens/Challenges/myChallengeList.dart';
@@ -34,84 +33,98 @@ class MyChallengesProvider extends StatelessWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(        
-        backgroundColor: Colors.white,          
-        centerTitle: true,
-        title: Container(
-          padding: EdgeInsets.symmetric(horizontal:8),
-          height: 90,
-          child: Image(image: AssetImage('Images/Brand/Primary Logo Blue.png')),
-        ),        
-        actions:<Widget>[
-          IconButton(
-            onPressed:(){
+    return StreamProvider<List<ChatsList>>.value(
+      value: DatabaseService().chatsList,
+      child: Scaffold(
+        appBar: AppBar(        
+          backgroundColor: Colors.white,          
+          centerTitle: true,
+          title: Container(
+            padding: EdgeInsets.symmetric(horizontal:8),
+            height: 90,
+            child: Image(image: AssetImage('Images/Brand/Primary Logo Blue.png')),
+          ),        
+          actions:<Widget>[
+            IconButton(
+              onPressed:(){
 
-              if (_chats.length == 0) {
-                Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MessagesStart()));
-              } else {
-                Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => 
-                    StreamProvider<List<ChatsList>>.value(
-                      value: DatabaseService().chatsList,
-                      child: MessagesHome())));
-              }
+                if (_chats.length == 0) {
+                  Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => 
+                    MultiProvider(
+                      providers:[
+                        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
+                        StreamProvider<UserProfile>.value(value: DatabaseService().userData)
+                      ],
+                      child: MessagesStart()),
+                    ));
+                } else {
+                  Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => 
+                      MultiProvider(
+                      providers:[
+                        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
+                        StreamProvider<UserProfile>.value(value: DatabaseService().userData)
+                      ],
+                      child: MessagesHome()),
+                  ));
+                }
 
-            },
-            icon: Icon(CupertinoIcons.conversation_bubble, color: Colors.black, size:20),
-          ),
-        ],
-      ),
+              },
+              icon: Icon(CupertinoIcons.conversation_bubble, color: Colors.black, size:20),
+            ),
+          ],
+        ),
 
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:<Widget>[
-              ///Workout Image
-              GoToWorkoutRoutine(),                                           
-              ///Daily Challenges
-              ChallengeList(),
-              ///Goals Text
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  children:<Widget>[
-                    Text(
-                        "Mis metas",
-                        style: Theme.of(context).textTheme.title,
-                        textAlign: TextAlign.start,
-                      ),                    
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.add, color: Theme.of(context).primaryColor, size: 30),
-                      onPressed: (){
-                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GoalSelectType()));
-                      }
-                    )
-                  ] 
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:<Widget>[
+                ///Workout Image
+                GoToWorkoutRoutine(),                                           
+                ///Daily Challenges
+                ChallengeList(),
+                ///Goals Text
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    children:<Widget>[
+                      Text(
+                          "Mis metas",
+                          style: Theme.of(context).textTheme.title,
+                          textAlign: TextAlign.start,
+                        ),                    
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(Icons.add, color: Theme.of(context).primaryColor, size: 30),
+                        onPressed: (){
+                           Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GoalSelectType()));
+                        }
+                      )
+                    ] 
+                  ),
+                ),              
+                ///Goals
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: GoalsView(),
                 ),
-              ),              
-              ///Goals
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: GoalsView(),
-              ),
-              SizedBox(height:35),
-              ///Recipes of the week              
-              StreamProvider<List<Recipes>>.value(
-                value: DatabaseService().featuredRecipes,
-                child: FeaturedRecipes()
-              ),
-              SizedBox(height:25),
-               
-            ]
+                SizedBox(height:35),
+                ///Recipes of the week              
+                StreamProvider<List<Recipes>>.value(
+                  value: DatabaseService().featuredRecipes,
+                  child: FeaturedRecipes()
+                ),
+                SizedBox(height:25),
+                 
+              ]
+            ),
           ),
         ),
       ),

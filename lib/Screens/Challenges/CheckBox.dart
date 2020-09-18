@@ -26,18 +26,18 @@ class _ChallengeCheckBoxState extends State<ChallengeCheckBox> {
   
 
   Future updateTodayStatus (todayDone, completedDays) async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await Firestore.instance.collection('Challenges').document(uid).collection("My Challenges").document(challenge).updateData({
+    return await FirebaseFirestore.instance.collection('Challenges').doc(uid).collection("My Challenges").doc(challenge).update({
      'Last Checked': todayDone,
      'Current Day': completedDays,
     });
   }
 
   Future saveCompletedChallenge (challenge, days, date) async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await Firestore.instance.collection('User Profile').document(uid).collection("Challenges").document(challenge).setData({
+    return await FirebaseFirestore.instance.collection('User Profile').doc(uid).collection("Challenges").doc(challenge).set({
      'Challenge': challenge,
      'Days': days,
      'Date': date,
@@ -45,37 +45,10 @@ class _ChallengeCheckBoxState extends State<ChallengeCheckBox> {
   }
 
   Future deleteChallenge () async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await Firestore.instance.collection('Challenges').document(uid).collection("My Challenges").document(challenge).delete();
+    return await FirebaseFirestore.instance.collection('Challenges').doc(uid).collection("My Challenges").doc(challenge).delete();
   }
-
-  // void showCongrats(BuildContext context){
-    
-  //   setState(() {
-  //     Scaffold.of(context).showSnackBar(
-  //       SnackBar(
-  //         backgroundColor: Colors.green,
-  //         elevation: 20,
-  //         content: 
-  //           Text('Great work! We have saved this accomplishment on your profile',
-  //             style: GoogleFonts.montserrat(color: Colors.white, fontSize: 14),
-  //           ),
-  //       ),
-  //     );
-  //     //  Flushbar(
-  //     //   titleText: Text("Great work!"),
-  //     //   messageText: Text("We have saved this accomplishment on your profile"),
-  //     //   backgroundColor: Colors.redAccent[700],
-  //     //   duration:  Duration(seconds: 3),
-  //     //   flushbarStyle: FlushbarStyle.FLOATING,
-  //     //   margin: EdgeInsets.all(8),
-  //     //   borderRadius: 12,
-  //     //   boxShadows: [BoxShadow(color: Colors.blue[800], offset: Offset(0.0, 2.0), blurRadius: 3.0)],
-  //     //   )..show(context);      
-  //   });
-
-  // }
 
   DateTime currentTime;
   String today;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/challenge.dart';
 import 'package:personal_trainer/Models/goals.dart';
@@ -42,58 +43,59 @@ class _InicioNewState extends State<InicioNew> {
       return Onboarding();
     }
 
-    return MultiProvider(
-      providers: [
-        ///Chats Providers
-        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
-        ///Challenges Providers
-        StreamProvider<List<Challenge>>.value(value: DatabaseService().challengeList),
-        StreamProvider<List<PopularChallenges>>.value(value: DatabaseService().popularChallengeList),
-        ///Goals Provider
-        StreamProvider<List<Goals>>.value(value: DatabaseService().goalList),
-        ///Social Groups Provider
-        StreamProvider<List<Groups>>.value(value: DatabaseService().myGroupList),
-      ],
-      child: Scaffold(
-        
-        //Page color
-        resizeToAvoidBottomPadding: false,
-        backgroundColor: Colors.white,
+    return WillPopScope(
+      onWillPop: () => SystemNavigator.pop(),
+      child: MultiProvider(
+        providers: [
+          ///Challenges Providers
+          StreamProvider<List<Challenge>>.value(value: DatabaseService().challengeList),
+          StreamProvider<List<PopularChallenges>>.value(value: DatabaseService().popularChallengeList),
+          ///Goals Provider
+          StreamProvider<List<Goals>>.value(value: DatabaseService().goalList),
+          ///Social Groups Provider
+          StreamProvider<List<Groups>>.value(value: DatabaseService().myGroupList),
+        ],
+        child: Scaffold(
+          
+          //Page color
+          resizeToAvoidBottomPadding: false,
+          backgroundColor: Colors.white,
 
-          body: Container(
-            child: tabs[pageIndex]
-            //child: _showPage,
-          ),
+            body: Container(
+              child: tabs[pageIndex]
+              //child: _showPage,
+            ),
 
-          bottomNavigationBar: Container(
-            height: 50,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 0.8),            
+            bottomNavigationBar: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 0.8),            
+              ),
+              child: new Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.today, size: 18, color: pageIndex == 0 ? Colors.black : Colors.grey), 
+                    onPressed: () {setState((){pageIndex = 0;});}
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.explore, size: 18, color: pageIndex == 1 ? Colors.black : Colors.grey), 
+                    onPressed: ()  {setState((){pageIndex = 1;});}
+                  ),
+                  IconButton(
+                    icon: pageIndex == 2 ? Icon(Icons.people, size: 18, color: Colors.black): Icon(Icons.people_outline, size: 18, color: Colors.grey), 
+                    onPressed: ()  {setState((){pageIndex =  2;});}
+                  ),
+                  IconButton(
+                    icon: pageIndex == 3 ? Icon(Icons.person, size: 18, color: Colors.black): Icon(Icons.person_outline, size: 18, color: Colors.grey),
+                    onPressed: ()  {setState((){pageIndex = 3;});}
+                  ),
+                ],
+              ),
             ),
-            child: new Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.today, size: 18, color: pageIndex == 0 ? Colors.black : Colors.grey), 
-                  onPressed: () {setState((){pageIndex = 0;});}
-                ),
-                IconButton(
-                  icon: Icon(Icons.explore, size: 18, color: pageIndex == 1 ? Colors.black : Colors.grey), 
-                  onPressed: ()  {setState((){pageIndex = 1;});}
-                ),
-                IconButton(
-                  icon: pageIndex == 2 ? Icon(Icons.people, size: 18, color: Colors.black): Icon(Icons.people_outline, size: 18, color: Colors.grey), 
-                  onPressed: ()  {setState((){pageIndex =  2;});}
-                ),
-                IconButton(
-                  icon: pageIndex == 3 ? Icon(Icons.person, size: 18, color: Colors.black): Icon(Icons.person_outline, size: 18, color: Colors.grey),
-                  onPressed: ()  {setState((){pageIndex = 3;});}
-                ),
-              ],
-            ),
-          ),
-         
+           
+        ),
       ),
     );
   }

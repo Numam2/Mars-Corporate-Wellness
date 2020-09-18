@@ -26,10 +26,10 @@ class _ProgressPicturesPageState extends State<ProgressPicturesPage> {
   bool loadingImagetoSend = false;
 
   Future getImagefromGallery() async {
-    File selectedImage =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+    PickedFile selectedImage =
+        await ImagePicker().getImage(source: ImageSource.gallery);
     setState(() {
-      postImage = selectedImage;
+      postImage = File(selectedImage.path);
       print(postImage);
     });
   }
@@ -41,7 +41,7 @@ class _ProgressPicturesPageState extends State<ProgressPicturesPage> {
     });
 
     ////Upload to Clod Storage
-      final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+      final User user = FirebaseAuth.instance.currentUser;
       final String uid = user.uid.toString();
 
       String fileName = 'Profile Images/Progress Pictures/' + uid + DateTime.now().toString() + '.png';

@@ -53,7 +53,7 @@ class HirePersonalizedRoutine extends StatelessWidget {
                         child: Container(
                           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.80),
                           child: Text(
-                            "Mars Personal Coach",
+                            "Mars Fitness Coach",
                             style: GoogleFonts.montserrat(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
@@ -69,7 +69,7 @@ class HirePersonalizedRoutine extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(30, 20, 30, 5),
                     child: Text(
-                      "Personaliza tu experiencia y alcanza un óptimo bienestar físico con la guía de un fitness coach",
+                      "Personaliza tu experiencia y alcanza un óptimo bienestar físico con la guía de tu fitness coach personal",
                       style: GoogleFonts.montserrat(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
@@ -206,58 +206,58 @@ class HirePersonalizedRoutine extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   ///3 MESES
-                  Container(
-                    height: 35.0,
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    child: RaisedButton(
-                      onPressed: () {
-                        ///// Create a certain Doc ID
-                        final String generateDocID = _user.uid + 'b6eWTBUmJnfRDgDhv4RtiT30HaI2';
+                  // Container(
+                  //   height: 35.0,
+                  //   width: MediaQuery.of(context).size.width * 0.85,
+                  //   child: RaisedButton(
+                  //     onPressed: () {
+                  //       ///// Create a certain Doc ID
+                  //       final String generateDocID = _user.uid + 'b6eWTBUmJnfRDgDhv4RtiT30HaI2';
 
-                        ///// Create Chat Room based on that Doc ID
-                        DatabaseService()
-                            .createFirstChat('b6eWTBUmJnfRDgDhv4RtiT30HaI2', generateDocID);
+                  //       ///// Create Chat Room based on that Doc ID
+                  //       DatabaseService()
+                  //           .createFirstChat('b6eWTBUmJnfRDgDhv4RtiT30HaI2', generateDocID);
 
-                        //// Set has personal coach to true
-                        DatabaseService()
-                            .havePersonalizedCoach(true);
+                  //       //// Set has personal coach to true
+                  //       DatabaseService()
+                  //           .havePersonalizedCoach(true);
 
-                        ///// Navigate to that chat room
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => StreamProvider.value(
-                                  value: DatabaseService().selectedChat(generateDocID),
-                                  child: ChatRoom(
-                                    docID: generateDocID, 
-                                    profilePic: 'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/Brand%20Images%2FB-W%20Logo%20in%20Column.png?alt=media&token=e8a7517b-53c0-4877-ae92-765bcce43d42', 
-                                    name: 'Mars Coach'),
-                                )));
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                      padding: EdgeInsets.all(0.0),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "MENSUAL US\$ 24 / mes",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8),
+                  //       ///// Navigate to that chat room
+                  //       Navigator.push(
+                  //           context,
+                  //           MaterialPageRoute(
+                  //               builder: (context) => StreamProvider.value(
+                  //                 value: DatabaseService().selectedChat(generateDocID),
+                  //                 child: ChatRoom(
+                  //                   docID: generateDocID, 
+                  //                   profilePic: 'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/Brand%20Images%2FB-W%20Logo%20in%20Column.png?alt=media&token=e8a7517b-53c0-4877-ae92-765bcce43d42', 
+                  //                   name: 'Mars Coach'),
+                  //               )));
+                  //     },
+                  //     shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(25)),
+                  //     padding: EdgeInsets.all(0.0),
+                  //     child: Ink(
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         border: Border.all(color: Colors.grey),
+                  //         borderRadius: BorderRadius.circular(25),
+                  //       ),
+                  //       child: Container(
+                  //         alignment: Alignment.center,
+                  //         child: Text(
+                  //           "MENSUAL US\$ 24 / mes",
+                  //           textAlign: TextAlign.center,
+                  //           style: GoogleFonts.montserrat(
+                  //               fontSize: 14,
+                  //               fontWeight: FontWeight.w500,
+                  //               color: Colors.grey),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 8),
                   ///6 MESES
                   Container(
                     height: 35.0,
@@ -305,7 +305,7 @@ class HirePersonalizedRoutine extends StatelessWidget {
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
-                            "6 MESES US\$ 16 / mes",
+                            "CHATEA CON TU COACH",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.montserrat(
                                 fontSize: 14,

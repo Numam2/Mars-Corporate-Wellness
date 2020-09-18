@@ -22,17 +22,17 @@ class _EditProfileState extends State<EditProfile> {
   StorageUploadTask _uploadTask;
 
   Future getImage() async {
-    File selectedImage =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+    PickedFile selectedImage =
+        await ImagePicker().getImage(source: ImageSource.gallery);
     setState(() {
-      profileImage = selectedImage;
+      profileImage = File(selectedImage.path);
       print(profileImage);
     });
   }
 
   Future uploadPic(BuildContext context) async {
     ////Upload to Clod Storage
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
 
     String fileName = 'Profile Images/' + uid + '.png';
@@ -42,7 +42,6 @@ class _EditProfileState extends State<EditProfile> {
     ///Save to Firestore
     var downloadUrl = await (await _uploadTask.onComplete).ref.getDownloadURL();
     var imageUrl = downloadUrl.toString();
-    print(imageUrl);
     DatabaseService().createUserImage(uid, imageUrl);
   }
 
@@ -119,40 +118,33 @@ class _EditProfileState extends State<EditProfile> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   ///Select Picture
-                  Container(
-                    height: 120,
-                    width: 120,
-                    child: Stack(children: <Widget>[
-                      Align(
-                        alignment: Alignment.center,
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.grey[100],
-                          child: ClipOval(
-                            child: Container(
-                                height: 100,
-                                width: 100,
-                                child: !(profileImage == null)
-                                    ? Image.file(profileImage,
-                                        fit: BoxFit.cover)
-                                    : Image.network(widget.profile.profilePic,
-                                        fit: BoxFit.cover)),
-                          ),
-                        ),
+                  Column(children: <Widget>[
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey[100],
+                      child: ClipOval(
+                        child: Container(
+                            height: 100,
+                            width: 100,
+                            child: !(profileImage == null)
+                                ? Image.file(profileImage,
+                                    fit: BoxFit.cover)
+                                : Image.network(widget.profile.profilePic,
+                                    fit: BoxFit.cover)),
                       ),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: IconButton(
-                          icon: Icon(Icons.camera_enhance, color: Colors.black),
-                          alignment: Alignment.topRight,
-                          //padding: EdgeInsets.only(top: 8),
-                          iconSize: 30,
-                          onPressed: getImage,
-                        ),
-                      )
-                    ]),
-                  ),
-                  SizedBox(height: 30),
+                    ),
+                    SizedBox(height:5),
+                    InkWell(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text('Cambiar foto',
+                          style: GoogleFonts.montserrat(
+                              color: Theme.of(context).primaryColor)),
+                      ),
+                      onTap: getImage,
+                    )
+                  ]),
+                  SizedBox(height: 20),
 
                   ///Sex
                   Container(
@@ -244,7 +236,7 @@ class _EditProfileState extends State<EditProfile> {
                         SizedBox(height: 8),
                         Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25.0),
                               border:
@@ -286,7 +278,7 @@ class _EditProfileState extends State<EditProfile> {
                         SizedBox(height: 8),
                         Container(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25.0),
                               border:

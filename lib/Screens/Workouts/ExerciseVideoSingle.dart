@@ -11,6 +11,7 @@ class ExerciseVideoSingle extends StatefulWidget {
   final String exerciseName;
   final String exerciseReps;
   final String exerciseWeight;
+  final String exerciseSide;
   final int exerciseDuration;
   final String exerciseVideo;
   final ExerciseDetail exercise;
@@ -18,6 +19,7 @@ class ExerciseVideoSingle extends StatefulWidget {
       {this.exerciseName,
       this.exerciseReps,
       this.exerciseWeight,
+      this.exerciseSide,
       this.exerciseDuration,
       this.exerciseVideo,
       this.exercise});
@@ -113,7 +115,11 @@ class _ExerciseVideoSingleState extends State<ExerciseVideoSingle> {
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.7),
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(widget.exerciseName,
+                  child: 
+                  (widget.exerciseSide == null || widget.exerciseSide == "")
+                  ? Text(widget.exerciseName,
+                      style: Theme.of(context).textTheme.title)
+                  : Text(widget.exerciseName + " (" + widget.exerciseSide + ")",
                       style: Theme.of(context).textTheme.title)),
               Spacer(),
               Padding(

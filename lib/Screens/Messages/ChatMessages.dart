@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/messages.dart';
-import 'package:personal_trainer/Models/user.dart';
 import 'package:personal_trainer/Screens/Messages/ChatPictureView.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
@@ -29,20 +28,19 @@ class _ChatMessagesState extends State<ChatMessages> {
   bool loadingImagetoSend = false;
 
   Future getImagefromGallery() async {
-    File selectedImage =
-        await ImagePicker.pickImage(source: ImageSource.gallery);
+    PickedFile selectedImage =
+        await ImagePicker().getImage(source: ImageSource.gallery);
     setState(() {
-      postImage = selectedImage;
+      postImage = File(selectedImage.path);
       print(postImage);
     });
   }
 
   Future getImagefromCamera() async {
-    File selectedImage =
-        await ImagePicker.pickImage(source: ImageSource.camera);
+    PickedFile selectedImage =
+        await ImagePicker().getImage(source: ImageSource.camera);
     setState(() {
-      postImage = selectedImage;
-      print(postImage);
+      postImage = File(selectedImage.path);
     });
   }
 
@@ -52,7 +50,7 @@ class _ChatMessagesState extends State<ChatMessages> {
     });
 
     ////Upload to Clod Storage
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
 
     String fileName =
@@ -136,6 +134,7 @@ class _ChatMessagesState extends State<ChatMessages> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+                            //Title
                             Container(
                                 constraints: BoxConstraints(maxWidth: 150),
                                 child: Text(
@@ -146,12 +145,16 @@ class _ChatMessagesState extends State<ChatMessages> {
                                     color: isMe ? Colors.black : Colors.white),
                                 )),
                             SizedBox(height: 5),
-                            Text(
-                              message.subtitle,
-                              style: GoogleFonts.montserrat(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w200,
-                                    color: isMe ? Colors.black : Colors.white),
+                            //SubTitle
+                            Container(
+                              constraints: BoxConstraints(maxWidth: 150),
+                              child: Text(
+                                message.subtitle,
+                                style: GoogleFonts.montserrat(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w200,
+                                      color: isMe ? Colors.black : Colors.white),
+                              ),
                             )
                           ])
                     ]),
@@ -163,10 +166,13 @@ class _ChatMessagesState extends State<ChatMessages> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children:<Widget>[
                     SizedBox(width: 35),
-                    Text(
-                      message.text,
-                      style: GoogleFonts.montserrat(
-                          color: isMe ? Colors.black : Colors.white, fontSize: 14),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 150),
+                      child: Text(
+                        message.text,
+                        style: GoogleFonts.montserrat(
+                            color: isMe ? Colors.black : Colors.white, fontSize: 14),
+                      ),
                     ),
                   ] 
                 )
@@ -212,21 +218,21 @@ class _ChatMessagesState extends State<ChatMessages> {
   _loadMoreMessages() async {
     print('_loadMoreMessages called');
 
-    QuerySnapshot qn = await Firestore.instance
+    QuerySnapshot qn = await FirebaseFirestore.instance
         .collection('Chat Rooms')
-        .document(widget.docID)
+        .doc(widget.docID)
         .collection('Messages')
         .orderBy('Time', descending: true)
         .startAfter([messageList.last.time])
         .limit(10)
-        .getDocuments(); //snapshots().map(_messagesListFromSnapshot);
+        .get(); //snapshots().map(_messagesListFromSnapshot);
 
-    List<Messages> newList = qn.documents.map((doc) {
+    List<Messages> newList = qn.docs.map((doc) {
       return Messages(
-        sender: doc.data['Sender'] ?? '',
-        text: doc.data['Text'] ?? '',
-        time: doc.data['Time'].toDate(),
-        docID: doc.documentID,
+        sender: doc.data()['Sender'] ?? '',
+        text: doc.data()['Text'] ?? '',
+        time: doc.data()['Time'].toDate(),
+        docID: doc.id,
       );
     }).toList();
 
@@ -257,60 +263,68 @@ class _ChatMessagesState extends State<ChatMessages> {
     if (_messages == null) {
       return Loading();
     } else if (postImage != null) {
-      return Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: Colors.black,
-          child: Stack(
-            children: <Widget>[
-              ///Loading
-              loadingImagetoSend
-                  ? Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      child: Center(child: Loading()))
-                  : SizedBox(),
+      return WillPopScope(
+        onWillPop: (){
+           setState(() {
+              postImage = null;
+           });
+           return null;
+        },
+          child: Container(
+            height: double.infinity,
+            width: double.infinity,
+            color: Colors.black,
+            child: Stack(
+              children: <Widget>[
+                ///Loading
+                loadingImagetoSend
+                    ? Container(
+                        height: double.infinity,
+                        width: double.infinity,
+                        child: Center(child: Loading()))
+                    : SizedBox(),
 
-              ///Image
-              Opacity(
-                opacity: loadingImagetoSend ? 0.2 : 1,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: double.infinity,
-                    child: Image.file(postImage, fit: BoxFit.fitWidth),
+                ///Image
+                Opacity(
+                  opacity: loadingImagetoSend ? 0.2 : 1,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: double.infinity,
+                      child: Image.file(postImage, fit: BoxFit.fitWidth),
+                    ),
                   ),
                 ),
-              ),
 
-              ///Buttons
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        FloatingActionButton(
-                            backgroundColor: Colors.redAccent[700],
-                            child: Icon(Icons.close, color: Colors.white),
-                            onPressed: () {
-                              setState(() {
-                                postImage = null;
-                              });
-                            }),
-                        SizedBox(width: 30),
-                        FloatingActionButton(
-                            backgroundColor: Theme.of(context).accentColor,
-                            child: Icon(Icons.send, color: Colors.white),
-                            onPressed: () {
-                              uploaMessage(context);
-                            }),
-                      ]),
-                ),
-              )
-            ],
-          ));
+                ///Buttons
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          FloatingActionButton(
+                              backgroundColor: Colors.redAccent[700],
+                              child: Icon(Icons.close, color: Colors.white),
+                              onPressed: () {
+                                setState(() {
+                                  postImage = null;
+                                });
+                              }),
+                          SizedBox(width: 30),
+                          FloatingActionButton(
+                              backgroundColor: Theme.of(context).accentColor,
+                              child: Icon(Icons.send, color: Colors.white),
+                              onPressed: () {
+                                uploaMessage(context);
+                              }),
+                        ]),
+                  ),
+                )
+              ],
+            )),
+      );
     }
 
     return Column(children: <Widget>[

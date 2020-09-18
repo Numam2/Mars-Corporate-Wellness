@@ -31,7 +31,7 @@ class _WeekViewState extends State<WeekView>
   @override
   Widget build(BuildContext context) {
 
-    final user = Provider.of<User>(context);
+    final user = Provider.of<AppUser>(context);
 
     return StreamProvider<List<WeekDays>>.value(
       value: DatabaseService().weekDays(collection, user.uid, "Week $weekNo"),

@@ -61,437 +61,442 @@ class _GoalCreateState extends State<GoalCreate> {
     print(widget.goalType);
     if(widget.goalType == 'Weight'){
       
-      return Scaffold(
-        resizeToAvoidBottomPadding: true,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          leading: InkWell(
-            onTap: ()=> Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => InicioNew())),
-            child: Icon(
-              Icons.keyboard_arrow_left,
-              color: Colors.black,
+      return WillPopScope(
+        onWillPop: () => Navigator.push(context, 
+          MaterialPageRoute(
+            builder: (context)=> InicioNew())),
+          child: Scaffold(
+          resizeToAvoidBottomPadding: true,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            leading: InkWell(
+              onTap: ()=> Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => InicioNew())),
+              child: Icon(
+                Icons.keyboard_arrow_left,
+                color: Colors.black,
+              ),
             ),
+            title: Text(
+              "Establece una meta",
+                style: Theme.of(context).textTheme.headline,
+              ),
+            centerTitle: true,
           ),
-          title: Text(
-            "Establece una meta",
-              style: Theme.of(context).textTheme.headline,
-            ),
-          centerTitle: true,
-        ),
-        body:
-            //Form
-            SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: Container(
-                  width: double.infinity,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
+          body:
+              //Form
+              SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
 
-                        ///Image
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:<Widget>[
-                            Container(
-                              height: 75,
-                              width: 75,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.fromBorderSide(BorderSide(color:Colors.grey, width: 0.5)),                          
-                              ),
-                              child: Icon(
-                                (widget.goalType == 'Weight') ? Icons.trending_down : Icons.today,
-                                size: 40,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            )
-                          ]
-                        ),
-                        SizedBox(height: 15),
-
-                        ///Goal Description
-                        Padding(
-                          padding: EdgeInsets.only(top:15),
-                          child: Text(
-                            "¿Cuál es tu nueva meta?",
-                            style: Theme.of(context).textTheme.subtitle
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Container(                       
-                          padding: EdgeInsets.symmetric(horizontal: 20.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                              borderRadius: BorderRadius.circular(25.0),
-                              border: Border.all(color: Colors.grey, width: 0.8)),
-                          child: TextFormField(
-                            focusNode: _descFocus,
-                            textInputAction: TextInputAction.next,
-                            style: Theme.of(context).textTheme.body1,
-                            inputFormatters: [LengthLimitingTextInputFormatter(30)],
-                            validator: (val) =>
-                                val.isEmpty ? "No olvides agregar la descripción" : null,
-                            cursorColor: Theme.of(context).accentColor,
-                            decoration: InputDecoration.collapsed(
-                              hintText:
-                                (widget.goalType == 'Weight')
-                                ? "Ej: Perder 5 Kg de grasa, Ganar músculo..."
-                                : "Ej: Correr un maratón, mejorar mi postura...",
-                              hintStyle: TextStyle(color: Colors.grey[400]),
-                            ),
-                            onFieldSubmitted: (term){
-                              _descFocus.unfocus();
-                              FocusScope.of(context).requestFocus(_amountFocus);
-                            },
-                            onChanged: (val) {
-                              setState(() => goalDescription = val);
-                            },
-                          ),
-                        ),
-                        SizedBox(height: 30),
-
-                        ///Goal Target
-                        Text(
-                          "Actual",
-                          style: Theme.of(context).textTheme.subtitle),
-                        SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:<Widget>[
-                            ///Number
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height:70,
-                                  width: 80,
-                                  constraints: BoxConstraints(maxWidth: 300),                           
-                                  child: Center(
-                                    child: TextFormField(
-                                      focusNode: _amountFocus,
-                                      textInputAction: TextInputAction.next,
-                                      validator: (val) =>
-                                          val.contains(',') ? "Usa punto" : null,
-                                      autovalidate: true,
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black, fontSize: 20),
-                                      textAlign: TextAlign.center,
-                                      //inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                                      keyboardType: TextInputType.number,
-                                      cursorColor: Theme.of(context).accentColor,
-                                      decoration: InputDecoration(
-                                        hintText: "70.5",
-                                        hintStyle: GoogleFonts.montserrat(color: Colors.grey[350]),
-                                        focusedBorder: UnderlineInputBorder(  
-                                          borderSide: BorderSide(color: Theme.of(context).accentColor)
-                                        ),
-                                        errorStyle: TextStyle(
-                                          fontSize: 12.0,
-                                        ),
-                                      ),
-                                      onFieldSubmitted: (term){
-                                        _amountFocus.unfocus();
-                                        FocusScope.of(context).requestFocus(_targetFocus);
-                                      },
-                                      onChanged: (val) {
-                                        setState(() => current = val);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width:10),
-                            ///Unit
-                            Text(
-                              'Kg',
-                              style: Theme.of(context).textTheme.display2
-                            )
-                          ]
-                        ),
-                        SizedBox(height: 20),
-
-                        ///Goal Target
-                        Text(
-                          "Objetivo",
-                          style: Theme.of(context).textTheme.subtitle),
-                        SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:<Widget>[
-                            ///Number
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height:70,
-                                  width: 80,
-                                  constraints: BoxConstraints(maxWidth: 300),                           
-                                  child: Center(
-                                    child: TextFormField(
-                                      focusNode: _targetFocus,
-                                      validator: (val) =>
-                                          val.contains(',') ? "Usa punto" : null,
-                                      autovalidate: true,
-                                      style: GoogleFonts.montserrat(
-                                          color: Colors.black, fontSize: 20),
-                                      textAlign: TextAlign.center,
-                                      //inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-                                      keyboardType: TextInputType.number,
-                                      cursorColor: Theme.of(context).accentColor,
-                                      decoration: InputDecoration(
-                                        hintText: "65",
-                                        hintStyle: GoogleFonts.montserrat(color: Colors.grey[350]),
-                                        focusedBorder: UnderlineInputBorder(  
-                                          borderSide: BorderSide(color: Theme.of(context).accentColor)
-                                        ),
-                                        errorStyle: TextStyle(
-                                          fontSize: 12.0,
-                                        ),
-                                      ),
-                                      onFieldSubmitted: (term){
-                                        _amountFocus.unfocus();
-                                      },
-                                      onChanged: (val) {
-                                        setState(() => target = val);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width:10),
-                            ///Unit
-                            Text(
-                              'Kg',
-                              style: Theme.of(context).textTheme.display2
-                            )
-                          ]
-                        ),
-                        SizedBox(height: 20),
-
-                        ///Goal Deadline
-                        Text(
-                          "Duración",
-                          style: Theme.of(context).textTheme.subtitle,
-                        ),
-                        SizedBox(height: 20),
-                        ///Deadline Options
-                        Container(
-                          width: double.infinity,
-                          child: Row(
+                          ///Image
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              ///1 Month
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    dateTo =
-                                        DateTime.now().add(Duration(days: 30));                                      
-                                    dateColor1month = Theme.of(context).accentColor;
-                                    dateText1month = Colors.white;
-                                    dateColor3month = Colors.white;
-                                    dateText3month = Colors.black;
-                                    dateColor6month = Colors.white;
-                                    dateText6month = Colors.black;
-                                    borderColor1month = Theme.of(context).accentColor;
-                                    borderColor3month = Colors.black;
-                                    borderColor6month = Colors.black;
-                                  });
-                                },
-                                splashColor: Colors.black.withOpacity(0.5),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width *0.25,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: dateColor1month,
-                                    border: Border.all(
-                                        color: borderColor1month, width: 0.7),
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  child: Center(
-                                      child: Text("1 mes",
-                                          style: GoogleFonts.montserrat(
-                                              fontSize: 12,
-                                              color: dateText1month))),
+                            children:<Widget>[
+                              Container(
+                                height: 75,
+                                width: 75,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.fromBorderSide(BorderSide(color:Colors.grey, width: 0.5)),                          
                                 ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width *0.05),
-
-                              ///3 month
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    dateTo =
-                                        DateTime.now().add(Duration(days: 180));
-                                    dateColor1month = Colors.white;
-                                    dateText1month = Colors.black;
-                                    dateColor3month = Theme.of(context).accentColor;
-                                    dateText3month = Colors.white;
-                                    dateColor6month = Colors.white;
-                                    dateText6month = Colors.black;
-                                    borderColor1month = Colors.black;
-                                    borderColor3month = Theme.of(context).accentColor;
-                                    borderColor6month = Colors.black;
-                                  });
-                                },
-                                splashColor: Colors.black.withOpacity(0.5),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width *0.25,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: dateColor3month,
-                                    border: Border.all(
-                                        color: borderColor3month, width: 0.7),
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  child: Center(
-                                      child: Text("3 meses",
-                                          style: GoogleFonts.montserrat(
-                                              fontSize: 12,
-                                              color: dateText3month))),
+                                child: Icon(
+                                  (widget.goalType == 'Weight') ? Icons.trending_down : Icons.today,
+                                  size: 40,
+                                  color: Theme.of(context).primaryColor,
                                 ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width *0.05),
-
-                              ///6 month
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    dateTo =
-                                        DateTime.now().add(Duration(days: 90));
-                                    dateColor1month = Colors.white;
-                                    dateText1month = Colors.black;
-                                    dateColor3month = Colors.white;
-                                    dateText3month = Colors.black;
-                                    dateColor6month = Theme.of(context).accentColor;
-                                    dateText6month =  Colors.white;
-                                    borderColor1month = Colors.black;
-                                    borderColor3month = Colors.black;
-                                    borderColor6month = Theme.of(context).accentColor;
-                                  });
-                                },
-                                splashColor: Colors.black.withOpacity(0.5),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width *0.25,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    color: dateColor6month,
-                                    border: Border.all(
-                                        color: borderColor6month, width: 0.7),
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  child: Center(
-                                      child: Text("6 meses",
-                                          style: GoogleFonts.montserrat(
-                                              fontSize: 12,
-                                              color: dateText6month))),
-                                ),
-                              ),
-                            ],
+                              )
+                            ]
                           ),
-                        ),
-                        SizedBox(height: 35),
-                        
-                        ///Button
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            height: 35.0,
-                            child: RaisedButton(
-                              onPressed: () {
-                                
-                                if(goalDescription == null){
-                                  setState(() {
-                                    errorText = 'No olvides agregar una descripción';
-                                    showErrorText = true;
-                                  });
-                                } else if (target.contains(",") || current.contains(",")){
-                                  setState(() {
-                                    errorText = 'Usa punto (.) para los decimales';
-                                    showErrorText = true;
-                                  });
-                                } else if (target == null) {
-                                  setState(() {
-                                    errorText = 'Debes completar el número objetivo y la medida';
-                                    showErrorText = true;
-                                  });
-                                } else {
+                          SizedBox(height: 15),
 
-                                    targetValue = double.tryParse(target);
-                                    currentValue = double.tryParse(current);                                  
+                          ///Goal Description
+                          Padding(
+                            padding: EdgeInsets.only(top:15),
+                            child: Text(
+                              "¿Cuál es tu nueva meta?",
+                              style: Theme.of(context).textTheme.subtitle
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Container(                       
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical:10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(color: Colors.grey, width: 0.8)),
+                            child: TextFormField(
+                              focusNode: _descFocus,
+                              textInputAction: TextInputAction.next,
+                              style: Theme.of(context).textTheme.body1,
+                              inputFormatters: [LengthLimitingTextInputFormatter(30)],
+                              validator: (val) =>
+                                  val.isEmpty ? "No olvides agregar la descripción" : null,
+                              cursorColor: Theme.of(context).accentColor,
+                              decoration: InputDecoration.collapsed(
+                                hintText:
+                                  (widget.goalType == 'Weight')
+                                  ? "Ej: Perder 5 Kg de grasa, Ganar músculo..."
+                                  : "Ej: Correr un maratón, mejorar mi postura...",
+                                hintStyle: TextStyle(color: Colors.grey[400]),
+                              ),
+                              onFieldSubmitted: (term){
+                                _descFocus.unfocus();
+                                FocusScope.of(context).requestFocus(_amountFocus);
+                              },
+                              onChanged: (val) {
+                                setState(() => goalDescription = val);
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 30),
 
-                                  if(targetValue == null || currentValue == null){
+                          ///Goal Target
+                          Text(
+                            "Actual",
+                            style: Theme.of(context).textTheme.subtitle),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:<Widget>[
+                              ///Number
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    height:70,
+                                    width: 80,
+                                    constraints: BoxConstraints(maxWidth: 300),                           
+                                    child: Center(
+                                      child: TextFormField(
+                                        focusNode: _amountFocus,
+                                        textInputAction: TextInputAction.next,
+                                        validator: (val) =>
+                                            val.contains(',') ? "Usa punto" : null,
+                                        autovalidate: true,
+                                        style: GoogleFonts.montserrat(
+                                            color: Colors.black, fontSize: 20),
+                                        textAlign: TextAlign.center,
+                                        //inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                        keyboardType: TextInputType.number,
+                                        cursorColor: Theme.of(context).accentColor,
+                                        decoration: InputDecoration(
+                                          hintText: "70.5",
+                                          hintStyle: GoogleFonts.montserrat(color: Colors.grey[350]),
+                                          focusedBorder: UnderlineInputBorder(  
+                                            borderSide: BorderSide(color: Theme.of(context).accentColor)
+                                          ),
+                                          errorStyle: TextStyle(
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                        onFieldSubmitted: (term){
+                                          _amountFocus.unfocus();
+                                          FocusScope.of(context).requestFocus(_targetFocus);
+                                        },
+                                        onChanged: (val) {
+                                          setState(() => current = val);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width:10),
+                              ///Unit
+                              Text(
+                                'Kg',
+                                style: Theme.of(context).textTheme.display2
+                              )
+                            ]
+                          ),
+                          SizedBox(height: 20),
+
+                          ///Goal Target
+                          Text(
+                            "Objetivo",
+                            style: Theme.of(context).textTheme.subtitle),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:<Widget>[
+                              ///Number
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    height:70,
+                                    width: 80,
+                                    constraints: BoxConstraints(maxWidth: 300),                           
+                                    child: Center(
+                                      child: TextFormField(
+                                        focusNode: _targetFocus,
+                                        validator: (val) =>
+                                            val.contains(',') ? "Usa punto" : null,
+                                        autovalidate: true,
+                                        style: GoogleFonts.montserrat(
+                                            color: Colors.black, fontSize: 20),
+                                        textAlign: TextAlign.center,
+                                        //inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                        keyboardType: TextInputType.number,
+                                        cursorColor: Theme.of(context).accentColor,
+                                        decoration: InputDecoration(
+                                          hintText: "65",
+                                          hintStyle: GoogleFonts.montserrat(color: Colors.grey[350]),
+                                          focusedBorder: UnderlineInputBorder(  
+                                            borderSide: BorderSide(color: Theme.of(context).accentColor)
+                                          ),
+                                          errorStyle: TextStyle(
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                        onFieldSubmitted: (term){
+                                          _amountFocus.unfocus();
+                                        },
+                                        onChanged: (val) {
+                                          setState(() => target = val);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width:10),
+                              ///Unit
+                              Text(
+                                'Kg',
+                                style: Theme.of(context).textTheme.display2
+                              )
+                            ]
+                          ),
+                          SizedBox(height: 20),
+
+                          ///Goal Deadline
+                          Text(
+                            "Duración",
+                            style: Theme.of(context).textTheme.subtitle,
+                          ),
+                          SizedBox(height: 20),
+                          ///Deadline Options
+                          Container(
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                ///1 Month
+                                InkWell(
+                                  onTap: () {
                                     setState(() {
-                                      errorText = 'Asegúrate de agregar un número válido';
+                                      dateTo =
+                                          DateTime.now().add(Duration(days: 30));                                      
+                                      dateColor1month = Theme.of(context).accentColor;
+                                      dateText1month = Colors.white;
+                                      dateColor3month = Colors.white;
+                                      dateText3month = Colors.black;
+                                      dateColor6month = Colors.white;
+                                      dateText6month = Colors.black;
+                                      borderColor1month = Theme.of(context).accentColor;
+                                      borderColor3month = Colors.black;
+                                      borderColor6month = Colors.black;
+                                    });
+                                  },
+                                  splashColor: Colors.black.withOpacity(0.5),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width *0.25,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: dateColor1month,
+                                      border: Border.all(
+                                          color: borderColor1month, width: 0.7),
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    child: Center(
+                                        child: Text("1 mes",
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 12,
+                                                color: dateText1month))),
+                                  ),
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width *0.05),
+
+                                ///3 month
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      dateTo =
+                                          DateTime.now().add(Duration(days: 180));
+                                      dateColor1month = Colors.white;
+                                      dateText1month = Colors.black;
+                                      dateColor3month = Theme.of(context).accentColor;
+                                      dateText3month = Colors.white;
+                                      dateColor6month = Colors.white;
+                                      dateText6month = Colors.black;
+                                      borderColor1month = Colors.black;
+                                      borderColor3month = Theme.of(context).accentColor;
+                                      borderColor6month = Colors.black;
+                                    });
+                                  },
+                                  splashColor: Colors.black.withOpacity(0.5),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width *0.25,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: dateColor3month,
+                                      border: Border.all(
+                                          color: borderColor3month, width: 0.7),
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    child: Center(
+                                        child: Text("3 meses",
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 12,
+                                                color: dateText3month))),
+                                  ),
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width *0.05),
+
+                                ///6 month
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      dateTo =
+                                          DateTime.now().add(Duration(days: 90));
+                                      dateColor1month = Colors.white;
+                                      dateText1month = Colors.black;
+                                      dateColor3month = Colors.white;
+                                      dateText3month = Colors.black;
+                                      dateColor6month = Theme.of(context).accentColor;
+                                      dateText6month =  Colors.white;
+                                      borderColor1month = Colors.black;
+                                      borderColor3month = Colors.black;
+                                      borderColor6month = Theme.of(context).accentColor;
+                                    });
+                                  },
+                                  splashColor: Colors.black.withOpacity(0.5),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width *0.25,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: dateColor6month,
+                                      border: Border.all(
+                                          color: borderColor6month, width: 0.7),
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    child: Center(
+                                        child: Text("6 meses",
+                                            style: GoogleFonts.montserrat(
+                                                fontSize: 12,
+                                                color: dateText6month))),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 35),
+                          
+                          ///Button
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              height: 35.0,
+                              child: RaisedButton(
+                                onPressed: () {
+                                  
+                                  if(goalDescription == null){
+                                    setState(() {
+                                      errorText = 'No olvides agregar una descripción';
+                                      showErrorText = true;
+                                    });
+                                  } else if (target.contains(",") || current.contains(",")){
+                                    setState(() {
+                                      errorText = 'Usa punto (.) para los decimales';
+                                      showErrorText = true;
+                                    });
+                                  } else if (target == null) {
+                                    setState(() {
+                                      errorText = 'Debes completar el número objetivo y la medida';
                                       showErrorText = true;
                                     });
                                   } else {
-                                    DatabaseService().createGoal(
-                                      goalDescription,
-                                      currentValue,
-                                      currentValue, 
-                                      targetValue, 
-                                      unit, dateTo, 
-                                      widget.goalType,
-                                      [],
-                                    );
-                                    Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => InicioNew()));
+
+                                      targetValue = double.tryParse(target);
+                                      currentValue = double.tryParse(current);                                  
+
+                                    if(targetValue == null || currentValue == null){
+                                      setState(() {
+                                        errorText = 'Asegúrate de agregar un número válido';
+                                        showErrorText = true;
+                                      });
+                                    } else {
+                                      DatabaseService().createGoal(
+                                        goalDescription,
+                                        currentValue,
+                                        currentValue, 
+                                        targetValue, 
+                                        unit, dateTo, 
+                                        widget.goalType,
+                                        [],
+                                      );
+                                      Navigator.push(context, MaterialPageRoute(
+                                          builder: (context) => InicioNew()));
+                                    }
+                                  
                                   }
-                                
-                                }
-                                
-                              },
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                              padding: EdgeInsets.all(0.0),
-                              child: Ink(
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(colors: [Theme.of(context).accentColor, Theme.of(context).primaryColor],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
+                                  
+                                },
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                padding: EdgeInsets.all(0.0),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(colors: [Theme.of(context).accentColor, Theme.of(context).primaryColor],
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  child: Container(
+                                    constraints: BoxConstraints(maxWidth: 200.0, minHeight: 50.0),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "GUARDAR META",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 12, fontWeight: FontWeight.w500 ,color: Colors.white),
                                     ),
-                                    borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: Container(
-                                  constraints: BoxConstraints(maxWidth: 200.0, minHeight: 50.0),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "GUARDAR META",
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.montserrat(
-                                      fontSize: 12, fontWeight: FontWeight.w500 ,color: Colors.white),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        showErrorText 
-                        ? Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Text(
-                            errorText,
-                            style: GoogleFonts.montserrat(
-                              color: Colors.redAccent[700],
-                              fontSize: 11,
-                              fontWeight: FontWeight.w300,
+                          SizedBox(height: 10),
+                          showErrorText 
+                          ? Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Text(
+                              errorText,
+                              style: GoogleFonts.montserrat(
+                                color: Colors.redAccent[700],
+                                fontSize: 11,
+                                fontWeight: FontWeight.w300,
+                              )
                             )
                           )
-                        )
-                        : SizedBox(height: 10),
-                        SizedBox(height: 20),
+                          : SizedBox(height: 10),
+                          SizedBox(height: 20),
 
-                      ],
-                    ),
-                  )),
-            ),
+                        ],
+                      ),
+                    )),
+              ),
+        ),
       );
 
     }
@@ -556,7 +561,7 @@ class _GoalCreateState extends State<GoalCreate> {
                       ),
                       SizedBox(height: 15),
                       Container(                       
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                             borderRadius: BorderRadius.circular(25.0),
@@ -597,7 +602,7 @@ class _GoalCreateState extends State<GoalCreate> {
                           ),
                           SizedBox(height: 15),
                           Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                             decoration: BoxDecoration(
                               color: Colors.white,
                                 borderRadius: BorderRadius.circular(25.0),
@@ -628,7 +633,7 @@ class _GoalCreateState extends State<GoalCreate> {
                           SizedBox(height: (milestones >= 2) ? 15 : 0),
                           (milestones >= 2)
                           ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                   borderRadius: BorderRadius.circular(25.0),
@@ -660,7 +665,7 @@ class _GoalCreateState extends State<GoalCreate> {
                           SizedBox(height: (milestones >= 3) ? 15 : 0),
                           (milestones >= 3)
                           ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                   borderRadius: BorderRadius.circular(25.0),
@@ -692,7 +697,7 @@ class _GoalCreateState extends State<GoalCreate> {
                           SizedBox(height: (milestones >= 4) ? 15 : 0),
                           (milestones >= 4)
                           ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                   borderRadius: BorderRadius.circular(25.0),
@@ -724,7 +729,7 @@ class _GoalCreateState extends State<GoalCreate> {
                           SizedBox(height: (milestones >= 5) ? 15 : 0),
                           (milestones >= 5)
                           ? Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
+                              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                   borderRadius: BorderRadius.circular(25.0),

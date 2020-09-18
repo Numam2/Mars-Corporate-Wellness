@@ -68,9 +68,7 @@ class _DownloadWorkoutState extends State<DownloadWorkout> {
   void initState() {
 
     getVideos().whenComplete((){
-      print(exerciseList);
         getVideoList().whenComplete((){
-          print(exerciseVideoList);
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (BuildContext context) =>

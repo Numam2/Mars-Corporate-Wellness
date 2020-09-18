@@ -11,8 +11,9 @@ class ExerciseCard extends StatelessWidget {
   final String exerciseReps;
   final String exerciseWeight;
   final int exerciseDuration;
+  final String exerciseSide;
 
-  ExerciseCard({this.exerciseName, this.exerciseReps, this.exerciseWeight, this.exerciseDuration});
+  ExerciseCard({this.exerciseName, this.exerciseReps, this.exerciseWeight, this.exerciseDuration, this.exerciseSide});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,7 @@ class ExerciseCard extends StatelessWidget {
                   exerciseWeight: exerciseWeight,
                   exerciseDuration: exerciseDuration,
                   exerciseVideo: exercise.video,
+                  exerciseSide: exerciseSide,
                   exercise: exercise,
                 )));
         },
@@ -61,7 +63,10 @@ class ExerciseCard extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 (exerciseWeight == "" || exerciseWeight == null)
-                ? Text(exerciseName,
+                ? Text(
+                  (exerciseSide == null || exerciseSide == '')
+                  ? exerciseName
+                  : exerciseName + " - $exerciseSide",
                     style: GoogleFonts.montserrat(
                       fontSize: 12.0, color: Colors.black,
                     ),
@@ -71,7 +76,9 @@ class ExerciseCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        exerciseName,
+                        (exerciseSide == null || exerciseSide == '')
+                        ? exerciseName
+                        : exerciseName + " - $exerciseSide",
                         style: GoogleFonts.montserrat(
                           fontSize: 12.0,
                           color: Colors.black,
@@ -92,7 +99,9 @@ class ExerciseCard extends StatelessWidget {
                     ]),
                 Spacer(),
                 Text(
-                  exerciseReps,
+                  (exerciseDuration == null || exerciseDuration == 0)
+                  ? exerciseReps
+                  : "$exerciseDuration s",
                   style: GoogleFonts.montserrat(
                     fontSize: 12.0,
                     color: Colors.black,

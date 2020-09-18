@@ -30,7 +30,7 @@ class _PopularGroupsState extends State<PopularGroups> {
               Icons.arrow_back_ios,
               color: Colors.black,),
             ),
-            title: Text('Search Groups',
+            title: Text('Buscar Grupos',
               style: Theme.of(context).textTheme.headline)            
           ),
 
@@ -44,6 +44,7 @@ class _PopularGroupsState extends State<PopularGroups> {
               color: Colors.white,
               padding: const EdgeInsets.only(top: 15, bottom: 10.0),
               child: Container(
+                padding: EdgeInsets.symmetric(vertical:10),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,

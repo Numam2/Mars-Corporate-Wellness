@@ -14,7 +14,9 @@ class FreeRoutinesList extends StatelessWidget {
       String routineTime,
       String description,
       List objectives,
-      List equipment) {
+      List equipment,
+      String firstWeek,
+      String firstDay) {
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -25,7 +27,9 @@ class FreeRoutinesList extends StatelessWidget {
                 routineTime: routineTime,
                 description: description,
                 objective: objectives,
-                equipment: equipment)));
+                equipment: equipment,
+                firstWeek: firstWeek,
+                firstDay: firstDay)));
   }
 
   @override
@@ -56,7 +60,9 @@ class FreeRoutinesList extends StatelessWidget {
             item.duration,
             item.description,
             item.objectives,
-            item.equipment
+            item.equipment,
+            item.firstWeek,
+            item.firstDay
           ),
           child: Container(
                 child: Container(
@@ -86,7 +92,7 @@ class FreeRoutinesList extends StatelessWidget {
                                 width: double.infinity,
                                 child: Row(children: <Widget>[
                                   Container(
-                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.6),
+                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.5),
                                     child: Text(
                                       item.name,
                                       textAlign: TextAlign.start,

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,7 +13,9 @@ import 'package:personal_trainer/Screens/SplashScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:personal_trainer/Models/user.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -46,14 +50,8 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers:[
         ///User Provider
-        StreamProvider<User>.value(value: AuthService().user),
-        StreamProvider<UserProfile>.value(value: DatabaseService().userData),
-        StreamProvider<ProgressPictureList>.value(value: DatabaseService().progressPictures),
-        ///Chat List Provider
-        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
-        ///Group Notifications Provider
-        StreamProvider<GroupNotificationList>.value(value: DatabaseService().groupNotifications),
-      ],      
+        StreamProvider<User>.value(value: FirebaseAuth.instance.userChanges()),        
+      ],
       
       child: MaterialApp(
         theme: ThemeData(
@@ -64,7 +62,7 @@ class _MyAppState extends State<MyApp> {
           disabledColor: Color(0xffDADADA), //// Grey (Light)
           buttonColor: Color(0xff0033A1),
           textTheme: TextTheme(
-            headline: GoogleFonts.montserrat(
+            headline5: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.w400,
               color: Colors.black),
@@ -72,27 +70,27 @@ class _MyAppState extends State<MyApp> {
               fontSize: 25.0,
               fontWeight: FontWeight.w500,
               color: Colors.white),
-            title: GoogleFonts.montserrat(
+            headline6: GoogleFonts.montserrat(
               fontSize: 20.0,
               fontWeight: FontWeight.w600,
               color: Colors.black),
-            subtitle: GoogleFonts.montserrat(
+            subtitle2: GoogleFonts.montserrat(
               fontSize: 16.0,
               fontWeight: FontWeight.w600,
               color: Colors.black),
-            display1: GoogleFonts.montserrat(
+            headline4: GoogleFonts.montserrat(
               fontSize: 14,
               fontWeight: FontWeight.w500,
               color: Colors.black),
-            display2: GoogleFonts.montserrat(
+            headline3: GoogleFonts.montserrat(
               fontSize: 10,
               fontWeight: FontWeight.w200,
               color: Colors.black),
-            body1:GoogleFonts.montserrat(
+            bodyText2:GoogleFonts.montserrat(
               fontSize: 12,
               fontWeight: FontWeight.w400,
               color: Colors.black),
-            body2: GoogleFonts.montserrat(
+            bodyText1: GoogleFonts.montserrat(
               fontSize: 12,
               fontStyle: FontStyle.italic, 
               fontWeight: FontWeight.w400,
@@ -101,7 +99,7 @@ class _MyAppState extends State<MyApp> {
               fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Colors.white),
-            display3: GoogleFonts.montserrat(
+            headline2: GoogleFonts.montserrat(
               fontSize: 12,
               fontWeight: FontWeight.w500,
               color: Color(0xff0033A1)),

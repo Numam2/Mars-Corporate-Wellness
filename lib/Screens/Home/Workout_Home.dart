@@ -26,20 +26,20 @@ class WorkoutsHome extends StatelessWidget {
                 ),
 
                 ///Workouts: Entrenamientos de la semana
-                Container(
-                  padding: EdgeInsets.fromLTRB(20.0, 15.0, 10.0, 10.0),
-                  width: double.infinity,
-                  //color: Colors.blue,
-                  child: Text("Entrenamientos de la semana",
-                      style: Theme.of(context).textTheme.title),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  height: 160,
-                  child: StreamProvider<List<ExploreWorkouts>>.value(
-                    value: DatabaseService().freeWorkoutsList('15 minute'),
-                    child: IndividualWorkoutsList()),               
-                ),
+                // Container(
+                //   padding: EdgeInsets.fromLTRB(20.0, 15.0, 10.0, 10.0),
+                //   width: double.infinity,
+                //   //color: Colors.blue,
+                //   child: Text("Entrenamientos de la semana",
+                //       style: Theme.of(context).textTheme.title),
+                // ),
+                // SizedBox(height: 10),
+                // Container(
+                //   height: 160,
+                //   child: StreamProvider<List<ExploreWorkouts>>.value(
+                //     value: DatabaseService().freeWorkoutsList('15 minute'),
+                //     child: IndividualWorkoutsList()),               
+                // ),
 
                 ///Workout: 15 min
                 Container(
@@ -57,7 +57,23 @@ class WorkoutsHome extends StatelessWidget {
                     child: IndividualWorkoutsList()),               
                 ),
 
-                ///Workout: En casa
+                ///Workout: Stretching
+                Container(
+                  padding: EdgeInsets.fromLTRB(20.0, 25.0, 10.0, 10.0),
+                  width: double.infinity,
+                  //color: Colors.blue,
+                  child: Text("Stretching",
+                      style: Theme.of(context).textTheme.title),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  height: 160,
+                  child: StreamProvider<List<ExploreWorkouts>>.value(
+                    value: DatabaseService().freeWorkoutsList('Stretching'),
+                    child: IndividualWorkoutsList()),               
+                ),
+
+                ///Workout: Home
                 Container(
                   padding: EdgeInsets.fromLTRB(20.0, 25.0, 10.0, 10.0),
                   width: double.infinity,
@@ -69,23 +85,7 @@ class WorkoutsHome extends StatelessWidget {
                 Container(
                   height: 160,
                   child: StreamProvider<List<ExploreWorkouts>>.value(
-                    value: DatabaseService().freeWorkoutsList('Med ball'),
-                    child: IndividualWorkoutsList()),               
-                ),
-
-                ///Workout: Estiramientos
-                Container(
-                  padding: EdgeInsets.fromLTRB(20.0, 25.0, 10.0, 10.0),
-                  width: double.infinity,
-                  //color: Colors.blue,
-                  child: Text("Estiramientos",
-                      style: Theme.of(context).textTheme.title),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  height: 160,
-                  child: StreamProvider<List<ExploreWorkouts>>.value(
-                    value: DatabaseService().freeWorkoutsList('15 minute'),
+                    value: DatabaseService().freeWorkoutsList('Home'),
                     child: IndividualWorkoutsList()),               
                 ),
 
