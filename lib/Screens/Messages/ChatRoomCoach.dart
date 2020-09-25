@@ -4,9 +4,10 @@ import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Messages/ChatMessages.dart';
 import 'package:personal_trainer/Screens/Messages/MessageHome.dart';
+import 'package:personal_trainer/Screens/wrapper.dart';
 import 'package:provider/provider.dart';
 
-class ChatRoom extends StatelessWidget {
+class ChatRoomCoach extends StatelessWidget {
 
   final String myUID;
   final String docID;
@@ -14,12 +15,10 @@ class ChatRoom extends StatelessWidget {
   final String name;
   // final DateTime lastRead;
   final UserProfile myUserProfile;
-  ChatRoom({Key key, this.myUID, this.docID, this.profilePic, this.name, this.myUserProfile}) : super(key: key);
+  ChatRoomCoach({Key key, this.myUID, this.docID, this.profilePic, this.name, this.myUserProfile}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    final _chat = Provider.of<ChatsList>(context);
 
     return StreamProvider<List<Messages>>.value(
       value: DatabaseService().messages(docID),
@@ -27,18 +26,7 @@ class ChatRoom extends StatelessWidget {
         appBar: AppBar(
             backgroundColor: Colors.white,
             leading: InkWell(
-              onTap: () async {
-
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MessagesHome(myUserProfile: myUserProfile)));
-                
-                final bool thisuserReadIndex = _chat.userReads.elementAt(0).user == myUID;
-                final DateTime lastRead = thisuserReadIndex
-                  ? _chat.userReads.elementAt(0).lastChecked : _chat.userReads.elementAt(1).lastChecked;
-
-                await DatabaseService().deletePreviousLastRead(docID, lastRead);
-                await DatabaseService().updateMyLastRead(docID);
-                
-              },
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Wrapper())),
               child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
             ),
             centerTitle: true,
@@ -66,18 +54,7 @@ class ChatRoom extends StatelessWidget {
         ),
 
         body: WillPopScope(
-          onWillPop: () async {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => MessagesHome(myUserProfile: myUserProfile)));
-
-            final bool thisuserReadIndex = _chat.userReads.elementAt(0).user == myUID;
-            final DateTime lastRead = thisuserReadIndex
-            ? _chat.userReads.elementAt(0).lastChecked : _chat.userReads.elementAt(1).lastChecked;
-
-            await DatabaseService().deletePreviousLastRead(docID, lastRead);
-            await DatabaseService().updateMyLastRead(docID);
-
-            return null;
-          },
+          onWillPop: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Wrapper())),
           child: ChatMessages(docID: docID))
         
       ),

@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Messages/ChatRoom.dart';
+import 'package:personal_trainer/Screens/Messages/ChatRoomCoach.dart';
 import 'package:provider/provider.dart';
 
 class HirePersonalizedRoutine extends StatelessWidget {
+
+  final UserProfile myUserProfile;
+  final List<ChatsList> chats;
+  HirePersonalizedRoutine({this.myUserProfile, this.chats});
   
   @override
   Widget build(BuildContext context) {
 
-    final _user = Provider.of<UserProfile>(context);
+    // final _user = Provider.of<UserProfile>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -265,7 +271,7 @@ class HirePersonalizedRoutine extends StatelessWidget {
                     child: RaisedButton(
                       onPressed: () {
                         ///// Create a certain Doc ID
-                        final String generateDocID = _user.uid + 'b6eWTBUmJnfRDgDhv4RtiT30HaI2';
+                        final String generateDocID = myUserProfile.uid + 'b6eWTBUmJnfRDgDhv4RtiT30HaI2';
 
                         ///// Create Chat Room based on that Doc ID
                         DatabaseService()
@@ -279,9 +285,12 @@ class HirePersonalizedRoutine extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => StreamProvider.value(
-                                  value: DatabaseService().selectedChat(generateDocID),
-                                  child: ChatRoom(
+                                builder: (context) => MultiProvider(
+                                  providers: [
+                                    StreamProvider<ChatsList>.value(value: DatabaseService().selectedChat(generateDocID)),
+                                  ],
+                                  child: ChatRoomCoach(
+                                    myUserProfile: myUserProfile,
                                     docID: generateDocID, 
                                     profilePic: 'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/Brand%20Images%2FB-W%20Logo%20in%20Column.png?alt=media&token=e8a7517b-53c0-4877-ae92-765bcce43d42', 
                                     name: 'Mars Coach'),

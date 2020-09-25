@@ -89,9 +89,10 @@ class _ShareChatState extends State<ShareChat> {
                             ])
                         ]),
                       ),
+                      SizedBox(height: 10),
                     //Text Input
                     Container(
-                      padding: EdgeInsets.only(left: 15),
+                      // padding: EdgeInsets.only(left: 15),
                       constraints: BoxConstraints(maxWidth: 200, maxHeight: 100),
                       child: TextField(
                         style: GoogleFonts.montserrat(

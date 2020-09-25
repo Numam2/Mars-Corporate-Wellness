@@ -8,11 +8,14 @@ import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class MessagesStart extends StatelessWidget {
+
+  final UserProfile myUserProfile;
+  MessagesStart({this.myUserProfile});
+
   @override
   Widget build(BuildContext context) {
-    final _profile = Provider.of<UserProfile>(context);
 
-    if (_profile == null){
+    if (myUserProfile == null){
       return Container(
         height: double.infinity,
         width: double.infinity,
@@ -52,7 +55,7 @@ class MessagesStart extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 20, 30, 5),
                 child: Text(
-                  "Hey " + _profile.name + "!",
+                  "Hey " + myUserProfile.name + "!",
                   style: GoogleFonts.montserrat(
                       color: Colors.black,
                       fontWeight: FontWeight.w500,
@@ -90,9 +93,9 @@ class MessagesStart extends StatelessWidget {
                                         MultiProvider(
                                             providers:[
                                               StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
-                                              StreamProvider<UserProfile>.value(value: DatabaseService().userData)
+                                              // StreamProvider<UserProfile>.value(value: DatabaseService().userData)
                                             ],
-                                            child: MessagesHome())));
+                                            child: MessagesHome(myUserProfile: myUserProfile))));
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25)),

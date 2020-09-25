@@ -436,13 +436,15 @@ class _ChatMessagesState extends State<ChatMessages> {
                     icon: Icon(Icons.send,
                         color: Theme.of(context).accentColor, size: 20),
                     onPressed: () {
-                      DatabaseService()
-                          .sendMessage(widget.docID, messageText, null);
-                      DatabaseService().updateChatDate(widget.docID);
-                      setState(() {
-                        _controller.clear();
-                        messageText = null;
-                      });
+                      if (messageText != ""){
+                          DatabaseService()
+                              .sendMessage(widget.docID, messageText, null);
+                          DatabaseService().updateChatDate(widget.docID);
+                          setState(() {
+                            _controller.clear();
+                            messageText = null;
+                        });
+                      }
                     },
                   ),
                 )

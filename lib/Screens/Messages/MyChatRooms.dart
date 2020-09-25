@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/messages.dart';
@@ -9,11 +10,15 @@ import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class MyChatRooms extends StatelessWidget {
+
+  final UserProfile userProfile;
+  MyChatRooms({this.userProfile});
+
   @override
   Widget build(BuildContext context) {
 
     final _chats = Provider.of<List<ChatsList>>(context);
-    final _user = Provider.of<UserProfile>(context);
+    final _user = userProfile;
 
     if (_chats == null || _user == null){
       return Loading();
@@ -37,9 +42,9 @@ class MyChatRooms extends StatelessWidget {
           ),
 
           ///Chat With Coach
-          _user.hasPersonalCoach ? SizedBox() : ChatCoach(user:_user.uid),
+          _user.hasPersonalCoach ? SizedBox() : ChatCoach(user:_user.uid, userProfile: _user, chats: _chats),
 
-          ///Chat Rooms          
+          ///Chat Rooms 
           Container(
             width: double.infinity,
             child: ListView.builder(
@@ -66,9 +71,10 @@ class MyChatRooms extends StatelessWidget {
                   return StreamProvider<UserProfile>.value(
                     value: DatabaseService().postOwner(otherUserUID),
                     child: MessagesUserData(
+                        userProfile: userProfile,
                         myUID: _user.uid,
                         usersinChat: _chats[index].users.length,
-                        chatDocID: _chats[index].docID, 
+                        chatDocID: _chats[index].docID,
                         lastMessageTime: _chats[index].lastMessageTime,
                         lastRead: lastRead,
                       ));

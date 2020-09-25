@@ -6,6 +6,7 @@ import 'package:personal_trainer/Models/challenge.dart';
 import 'package:personal_trainer/Models/goals.dart';
 import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
+import 'package:personal_trainer/Screens/Authenticate/authenticate.dart';
 import 'package:personal_trainer/Screens/Challenges/Goal_Select_Type.dart';
 import 'package:personal_trainer/Screens/Challenges/GoalsView.dart';
 import 'package:personal_trainer/Screens/Challenges/myChallengeList.dart';
@@ -56,17 +57,17 @@ class MyChallengesProvider extends StatelessWidget {
                         StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
                         StreamProvider<UserProfile>.value(value: DatabaseService().userData)
                       ],
-                      child: MessagesStart()),
+                      child: MessagesStart(myUserProfile: _user)),
                     ));
                 } else {
                   Navigator.push(
                     context, MaterialPageRoute(builder: (context) => 
                       MultiProvider(
-                      providers:[
-                        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
-                        StreamProvider<UserProfile>.value(value: DatabaseService().userData)
+                      providers:[                        
+                        // StreamProvider<UserProfile>.value(value: DatabaseService().userData),
+                        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList)
                       ],
-                      child: MessagesHome()),
+                      child: MessagesHome(myUserProfile: _user)),
                   ));
                 }
 
@@ -84,7 +85,8 @@ class MyChallengesProvider extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children:<Widget>[
                 ///Workout Image
-                GoToWorkoutRoutine(),                                           
+                StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList,
+                  child: GoToWorkoutRoutine()),                                           
                 ///Daily Challenges
                 ChallengeList(),
                 ///Goals Text

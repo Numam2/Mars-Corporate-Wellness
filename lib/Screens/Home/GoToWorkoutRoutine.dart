@@ -35,7 +35,7 @@ class GoToWorkoutRoutine extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HirePersonalizedRoutine()));
+                MaterialPageRoute(builder: (context) => HirePersonalizedRoutine(myUserProfile: _user)));
           },
           child: Padding(
             padding: const EdgeInsets.only(bottom: 15.0),

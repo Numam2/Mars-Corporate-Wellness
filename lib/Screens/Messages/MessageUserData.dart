@@ -16,7 +16,8 @@ class MessagesUserData extends StatelessWidget {
   final String chatDocID;
   final DateTime lastMessageTime;
   final DateTime lastRead;
-  MessagesUserData({this.chatDocID, this.lastMessageTime, this.lastRead, this.myUID, this.usersinChat});
+  final UserProfile userProfile;
+  MessagesUserData({this.chatDocID, this.lastMessageTime, this.lastRead, this.myUID, this.usersinChat, this.userProfile});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class MessagesUserData extends StatelessWidget {
     final _user = Provider.of<UserProfile>(context);
 
     if (_user == null || lastRead == null){
-      return MessagesLoading();
+      return MessagesLoading();      
     }
   
     return Slidable(
@@ -54,7 +55,8 @@ class MessagesUserData extends StatelessWidget {
                     builder: (context) => StreamProvider<ChatsList>.value(
                       value: DatabaseService().selectedChat(chatDocID),
                       child: ChatRoom(
-                        myUID: myUID,
+                        myUserProfile: userProfile,
+                        myUID: userProfile.uid,
                         docID: chatDocID, 
                         profilePic: _user.profilePic, 
                         name: _user.name,

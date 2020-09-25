@@ -46,7 +46,7 @@ class _InicioNewState extends State<InicioNew> {
     return WillPopScope(
       onWillPop: () => SystemNavigator.pop(),
       child: MultiProvider(
-        providers: [
+        providers: [          
           ///Challenges Providers
           StreamProvider<List<Challenge>>.value(value: DatabaseService().challengeList),
           StreamProvider<List<PopularChallenges>>.value(value: DatabaseService().popularChallengeList),
@@ -54,6 +54,8 @@ class _InicioNewState extends State<InicioNew> {
           StreamProvider<List<Goals>>.value(value: DatabaseService().goalList),
           ///Social Groups Provider
           StreamProvider<List<Groups>>.value(value: DatabaseService().myGroupList),
+          ///Chat List
+          StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
         ],
         child: Scaffold(
           

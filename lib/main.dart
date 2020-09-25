@@ -10,6 +10,7 @@ import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/SplashScreen.dart';
+import 'package:personal_trainer/Screens/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:personal_trainer/Models/user.dart';
 
@@ -20,6 +21,9 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+
+  final bool signedOut;
+  MyApp({this.signedOut});
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -47,10 +51,18 @@ class _MyAppState extends State<MyApp> {
 
     HttpOverrides.global = new MyHttpOverrides();
 
+
     return MultiProvider(
       providers:[
         ///User Provider
-        StreamProvider<User>.value(value: FirebaseAuth.instance.userChanges()),        
+        StreamProvider<UserProfile>.value(value: DatabaseService().userData),
+        StreamProvider<User>.value(value: FirebaseAuth.instance.userChanges()),
+        StreamProvider<ProgressPictureList>.value(value: DatabaseService().progressPictures),
+        ///Chat List Provider
+        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
+                                               
+        ///Group Notifications Provider
+        StreamProvider<GroupNotificationList>.value(value: DatabaseService().groupNotifications),
       ],
       
       child: MaterialApp(
@@ -106,7 +118,10 @@ class _MyAppState extends State<MyApp> {
           )
         ),
         debugShowCheckedModeBanner: false,
-        home: SplashScreen()
+        home: (widget.signedOut == null) 
+        ? SplashScreen()
+        : Wrapper()
+      
       ),
     );
   }

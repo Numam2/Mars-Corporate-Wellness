@@ -7,6 +7,10 @@ import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class SearchUserstoChat extends StatefulWidget {
+
+  final UserProfile myUserProfile;
+  SearchUserstoChat({this.myUserProfile});
+
   @override
   _SearchUserstoChatState createState() => _SearchUserstoChatState();
 }
@@ -14,7 +18,7 @@ class SearchUserstoChat extends StatefulWidget {
 class _SearchUserstoChatState extends State<SearchUserstoChat> {
   @override
   Widget build(BuildContext context) {
-    final _user = Provider.of<UserProfile>(context);
+
     final _users = Provider.of<List<UserProfile>>(context);
 
     if (_users == null){
@@ -25,7 +29,8 @@ class _SearchUserstoChatState extends State<SearchUserstoChat> {
           MessagesLoading()
         ]
       );
-    } else if (_users.length == 0) {
+    } 
+    else if (_users.length == 0) {
       return GestureDetector(
         onTap: (){
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -50,9 +55,11 @@ class _SearchUserstoChatState extends State<SearchUserstoChat> {
             itemCount: _users.length ?? 0,
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              return StreamProvider<List<SearchChatsList>>.value(
+              return 
+              StreamProvider<List<SearchChatsList>>.value(
                 value: DatabaseService().searchChatsList(_users[index].uid),
-                child: SearchUserData(myUID: _user.uid, searchUser: _users[index])
+                child:
+                 SearchUserData(myUserProfile: widget.myUserProfile, searchUser: _users[index]), //myUID: widget.myUserProfile.uid
               );
             }),
       ),

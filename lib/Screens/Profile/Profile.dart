@@ -5,6 +5,7 @@ import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Profile/EditProfile.dart';
 import 'package:personal_trainer/Screens/Profile/ProfileContent.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
+import 'package:personal_trainer/main.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -154,11 +155,11 @@ class ProfilePage extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     await _auth.signOut();
-                    // Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) =>
-                    //                     SignIn()));
+                    Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        MyApp(signedOut: true)));
                     
                   },
                   child: Container(

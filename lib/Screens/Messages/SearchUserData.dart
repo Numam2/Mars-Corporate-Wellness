@@ -8,10 +8,11 @@ import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class SearchUserData extends StatelessWidget {
-  final String myUID;
+
+  final UserProfile myUserProfile;
   final UserProfile searchUser;
 
-  SearchUserData({this.myUID, this.searchUser});
+  SearchUserData({this.searchUser, this.myUserProfile});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class SearchUserData extends StatelessWidget {
         onTap: () async {
 
             ///// Create a certain Doc ID
-            final String generateDocID = myUID + searchUser.uid;
+            final String generateDocID = myUserProfile.uid + searchUser.uid;
 
             /// Create Chat Room based on that Doc ID
             await DatabaseService().createFirstChat(searchUser.uid, generateDocID);
@@ -38,10 +39,11 @@ class SearchUserData extends StatelessWidget {
                     builder: (context) => StreamProvider<ChatsList>.value(
                       value: DatabaseService().selectedChat(generateDocID),
                       child: ChatRoom(
-                        myUID: myUID,
+                        myUID: myUserProfile.uid,
                         docID: generateDocID, 
                         profilePic: searchUser.profilePic, 
                         name: searchUser.name,
+                        myUserProfile: myUserProfile,
                       ),
                     )));
         

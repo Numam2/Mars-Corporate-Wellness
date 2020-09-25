@@ -136,7 +136,7 @@ class _CreateGroupState extends State<CreateGroup> {
                   ),
                   SizedBox(height: 5),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.0),
                         border: Border.all(color: Colors.grey, width: 0.8)),

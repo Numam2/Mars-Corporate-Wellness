@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:personal_trainer/Screens/wrapper.dart';
 
+
 class SplashScreen extends StatefulWidget {
 
   @override

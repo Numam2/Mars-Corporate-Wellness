@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:personal_trainer/Models/messages.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Home/HirePersonalizedRoutine.dart';
 
 class ChatCoach extends StatelessWidget {
+  final List<ChatsList> chats;
   final String user;
-  ChatCoach({this.user});
+  final UserProfile userProfile;
+  ChatCoach({this.user, this.userProfile, this.chats});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +17,7 @@ class ChatCoach extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HirePersonalizedRoutine()));
+                builder: (context) => HirePersonalizedRoutine(myUserProfile: userProfile, chats: chats)));
       },
       child: Container(
         width: double.infinity,

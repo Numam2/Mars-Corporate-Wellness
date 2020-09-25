@@ -118,8 +118,8 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                                 });
                               },
                               child: Container(
-                                height: 75,
-                                width: 75,
+                                height: MediaQuery.of(context).size.width * 0.17,
+                                width: MediaQuery.of(context).size.width * 0.17,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(color:_emojiColor, width: 1.5),
@@ -145,8 +145,8 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                                 });
                               },
                               child: Container(
-                                height: 75,
-                                width: 75,
+                                height: MediaQuery.of(context).size.width * 0.17,
+                                width: MediaQuery.of(context).size.width * 0.17,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(color:_emojiColor1, width: 1.5),
@@ -172,8 +172,8 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                                 });
                               },
                               child: Container(
-                                height: 75,
-                                width: 75,
+                                height: MediaQuery.of(context).size.width * 0.17,
+                                width: MediaQuery.of(context).size.width * 0.17,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(color:_emojiColor2, width: 1.5),
@@ -205,7 +205,7 @@ class _ExerciseFeedbackState extends State<ExerciseFeedback> {
                           cursorColor: Theme.of(context).accentColor,
                           decoration: InputDecoration(
                               border: InputBorder.none,
-                              hintText: 'Deja un comentario (ej. cambié las repeticiones)'),
+                              hintText: 'Deja un comentario'),
                           onChanged: (val) {
                             setState(() => _notes = val);
                           },

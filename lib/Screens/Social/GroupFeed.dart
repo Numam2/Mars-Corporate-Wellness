@@ -210,7 +210,7 @@ class _GroupFeedState extends State<GroupFeed> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Container(
-                                            constraints: BoxConstraints(maxWidth: 200),
+                                            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.75),
                                             child: Text(
                                               _post[index].headline,
                                               style: Theme.of(context).textTheme.display1,

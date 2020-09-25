@@ -92,7 +92,7 @@ class FreeRoutinesList extends StatelessWidget {
                                 width: double.infinity,
                                 child: Row(children: <Widget>[
                                   Container(
-                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.5),
+                                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.45),
                                     child: Text(
                                       item.name,
                                       textAlign: TextAlign.start,

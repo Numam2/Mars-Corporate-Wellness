@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
-import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Screens/Messages/MyChatRooms.dart';
 import 'package:personal_trainer/Screens/Messages/SearchUsers.dart';
 import 'package:personal_trainer/Screens/wrapper.dart';
@@ -13,6 +12,9 @@ import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class MessagesHome extends StatefulWidget {
+
+  final UserProfile myUserProfile;
+  MessagesHome({this.myUserProfile});
 
   @override
   _MessagesHomeState createState() => _MessagesHomeState();
@@ -51,7 +53,7 @@ class _MessagesHomeState extends State<MessagesHome> {
   Widget build(BuildContext context) {
 
     final _chats = Provider.of<List<ChatsList>>(context);
-    final _user = Provider.of<UserProfile>(context);
+    final _user = widget.myUserProfile;
 
     if (_chats == null || _user == null){
       return Loading();
@@ -165,11 +167,11 @@ class _MessagesHomeState extends State<MessagesHome> {
               ),
 
               //Either My Chat Rooms or Search
-              userToSearch == null
-               ? MyChatRooms()
+              (userToSearch == null || userToSearch == '')
+               ? MyChatRooms(userProfile:_user)
                : StreamProvider<List<UserProfile>>.value(
                   value: DatabaseService().searchUsers(userToSearch, searchLimit),
-                  child: SearchUserstoChat()
+                  child: SearchUserstoChat(myUserProfile: _user)
                 ),
               
               //Loading new searches
