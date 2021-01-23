@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Workouts/DailyWorkout.dart';
-import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class DownloadWorkout extends StatefulWidget {
@@ -11,7 +10,8 @@ class DownloadWorkout extends StatefulWidget {
   final String day;
   final String weekNo;
   final String id;
-  DownloadWorkout({this.collection, this.day, this.weekNo, this.id});
+  final String uid;
+  DownloadWorkout({this.collection, this.day, this.weekNo, this.id, this.uid});
 
   @override
   _DownloadWorkoutState createState() => _DownloadWorkoutState();
@@ -24,21 +24,21 @@ class _DownloadWorkoutState extends State<DownloadWorkout> {
   bool loading = true;
 
   Future getExerciseList() async {
-    var firestore = Firestore.instance;
+    var firestore = FirebaseFirestore.instance;
     DocumentSnapshot dn = await firestore
         .collection(widget.collection)
-        .document(widget.id)
+        .doc(widget.id)
         .collection(widget.weekNo)
-        .document(widget.day)
+        .doc(widget.day)
         .get();
     return dn;
   }
 
   Future getExerciseVideo(exercise) async {
-    var firestore = Firestore.instance;
+    var firestore = FirebaseFirestore.instance;
     DocumentSnapshot dn = await firestore
         .collection('Exercise List')
-        .document(exercise)
+        .doc(exercise)
         .get();
     return dn;
   }
@@ -49,7 +49,7 @@ class _DownloadWorkoutState extends State<DownloadWorkout> {
   Future getVideos() async {
 
     await getExerciseList().then((result){
-      exerciseList = List.from(result.data["Exercises"]);
+      exerciseList = List.from(result.data()["Exercises"]);
     });      
 
   }
@@ -58,7 +58,7 @@ class _DownloadWorkoutState extends State<DownloadWorkout> {
 
     for(int i = 0; i < exerciseList.length; i++){          
       await getExerciseVideo(exerciseList[i]).then((snap){
-        exerciseVideoList.add(snap.data['Video'].toString()); 
+        exerciseVideoList.add(snap.data()['Video'].toString()); 
       });
     }
 
@@ -77,6 +77,7 @@ class _DownloadWorkoutState extends State<DownloadWorkout> {
                     id: widget.id,
                     weekNo: widget.weekNo,
                     day: widget.day,
+                    uid: widget.uid,
                     
                     exerciseList:exerciseList,
                     exerciseVideoList:exerciseVideoList,
@@ -90,7 +91,7 @@ class _DownloadWorkoutState extends State<DownloadWorkout> {
 
   /// UI Widget 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     
     return SafeArea(
       child: Scaffold(

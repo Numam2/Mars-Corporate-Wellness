@@ -25,6 +25,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+///release version
 def keystoreProperties = new Properties()
    def keystorePropertiesFile = rootProject.file('key.properties')
    if (keystorePropertiesFile.exists()) {
@@ -52,6 +53,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    ///release version
     signingConfigs {
        release {
            keyAlias keystoreProperties['keyAlias']
@@ -83,3 +85,5 @@ dependencies {
 
 
 apply plugin: 'com.google.gms.google-services'
+
+// android.buildTypes.release.ndk.debugSymbolLevel = { FULL }

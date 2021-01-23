@@ -236,7 +236,7 @@ class _RegisterState extends State<Register> {
                                       email: email,
                                       password: password)).user;
 
-                                      await DatabaseService(uid: user.uid).createUserRoutine('Day 1');
+                                      await DatabaseService(uid: user.uid).createUserRoutine('Día 1');
                                       await DatabaseService(uid: user.uid).createUserProfile(name, setSearchParam(name.toLowerCase()));
 
                                       Navigator.push(context, MaterialPageRoute(builder: (context) => Wrapper()));
@@ -318,7 +318,7 @@ class _RegisterState extends State<Register> {
                         /// Switch to Sign In page
                         Column(
                           children: <Widget>[
-                            FlatButton(
+                            TextButton(
                                 onPressed: () {
                                   //widget.toggleView();
                                   Navigator.push(context, MaterialPageRoute(

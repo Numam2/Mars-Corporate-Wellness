@@ -53,10 +53,23 @@ class _StopwatchButtonState extends State<StopwatchButton> {
         _buttonText = "EMPEZAR";
         _buttonColor = Color(0xff00CE7C);
         _stopWatch.stop();
-        //print(_stopwatchText); /////// Get Time when I press Stop Button
         _startedLoading = false;
 
-        showDialog(
+        if (widget.trainingRoutine == 'Individual Workouts') {
+          showDialog(
+            context: context,
+            builder: (context) {
+              print(_stopWatch.elapsed.inMinutes);
+              minutesElapsed = _stopWatch.elapsed.inMinutes;
+              return FinishWorkout(
+                workoutMinutes: minutesElapsed, 
+                trainingRoutine: widget.trainingRoutine,
+                currentTrainingDuration: _trainingDay.time ?? '',
+                currentDay: widget.currentDay ?? '',
+              );
+            });
+        } else {
+          showDialog(
             context: context,
             builder: (context) {
               print(_stopWatch.elapsed.inMinutes);
@@ -74,6 +87,8 @@ class _StopwatchButtonState extends State<StopwatchButton> {
                 currentWeek: widget.currentWeek ?? '',
               );
             });
+        }   
+
       } else {
         _buttonText = "DETENER";
         _buttonColor = Colors.redAccent[700];
@@ -92,7 +107,7 @@ class _StopwatchButtonState extends State<StopwatchButton> {
         ":" +
         (_stopWatch.elapsed.inSeconds % 60).toString().padLeft(2, "0");
   }
-  
+
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +146,7 @@ class _StopwatchButtonState extends State<StopwatchButton> {
                           onPressed:_startStopButtonPressed
                         ),
                       );
+                    
                     }
                   ),
               

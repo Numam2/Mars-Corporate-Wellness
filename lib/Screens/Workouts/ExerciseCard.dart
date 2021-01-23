@@ -20,6 +20,93 @@ class ExerciseCard extends StatelessWidget {
 
     final exercise = Provider.of<ExerciseDetail>(context);
     
+    //If image is loading, show grey box
+    if(exercise == null){
+      return Padding(
+        padding: const EdgeInsets.only(top: 5.0),
+        child: Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.white,
+            ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 0.0),
+            child: Row(
+              children: <Widget>[
+                //Image
+                Container(
+                  height: MediaQuery.of(context).size.width * 0.18,
+                  width: MediaQuery.of(context).size.width * 0.18,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(12.0),     
+                    ),
+                ),
+                SizedBox(width: 10),
+                //Text / Text and Weight
+                (exerciseWeight == "" || exerciseWeight == null)
+                ? Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.5,
+                  ),
+                  child: Text(
+                    (exerciseSide == null || exerciseSide == '')
+                    ? exerciseName
+                    : exerciseName + " - $exerciseSide",
+                      style: GoogleFonts.montserrat(
+                        fontSize: 12.0, color: Colors.black,
+                      ),
+                    ),
+                )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.5,
+                        ),
+                        child: Text(
+                          (exerciseSide == null || exerciseSide == '')
+                          ? exerciseName
+                          : exerciseName + " - $exerciseSide",
+                          style: GoogleFonts.montserrat(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: Text(
+                          exerciseWeight,
+                          textAlign: TextAlign.left,
+                          style: GoogleFonts.montserrat(
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.w200,
+                            color: Theme.of(context).canvasColor,
+                          ),
+                        ),
+                      ),
+                    ]),
+                Spacer(),
+                Text(
+                  (exerciseDuration == null || exerciseDuration == 0)
+                  ? exerciseReps
+                  : "$exerciseDuration s",
+                  style: GoogleFonts.montserrat(
+                    fontSize: 12.0,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
       child: InkWell(
@@ -41,47 +128,63 @@ class ExerciseCard extends StatelessWidget {
               context: context,
               builder: (context) {
                 String exercise = exerciseName;
-                print(exercise);
                 return ExerciseFeedback(exercise: exercise);
               });
         },
         child: Container(
-          height: 70,
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: <BoxShadow>[
-                new BoxShadow(
-                  color: Colors.black12,
-                  offset: new Offset(0.0, 1.0),
-                  blurRadius: 3.0,
-                )
-              ]),
+            ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(25.0, 10.0, 40.0, 10.0),
+            padding: EdgeInsets.fromLTRB(10.0, 10.0, 20.0, 0.0),
             child: Row(
               children: <Widget>[
-                (exerciseWeight == "" || exerciseWeight == null)
-                ? Text(
-                  (exerciseSide == null || exerciseSide == '')
-                  ? exerciseName
-                  : exerciseName + " - $exerciseSide",
-                    style: GoogleFonts.montserrat(
-                      fontSize: 12.0, color: Colors.black,
+                //Image
+                Container(
+                  height: MediaQuery.of(context).size.width * 0.18,
+                  width: MediaQuery.of(context).size.width * 0.18,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.grey[200],               
                     ),
-                  )
+                    child: Image.network(
+                      exercise.image,
+                      fit: BoxFit.cover
+                    )
+                ),
+                SizedBox(width: 10),
+                //Text / Text and Weight
+                (exerciseWeight == "" || exerciseWeight == null)
+                ? Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.5,
+                  ),
+                  child: Text(
+                    (exerciseSide == null || exerciseSide == '')
+                    ? exerciseName
+                    : exerciseName + " - $exerciseSide",
+                      style: GoogleFonts.montserrat(
+                        fontSize: 12.0, color: Colors.black,
+                      ),
+                    ),
+                )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        (exerciseSide == null || exerciseSide == '')
-                        ? exerciseName
-                        : exerciseName + " - $exerciseSide",
-                        style: GoogleFonts.montserrat(
-                          fontSize: 12.0,
-                          color: Colors.black,
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.5,
+                        ),
+                        child: Text(
+                          (exerciseSide == null || exerciseSide == '')
+                          ? exerciseName
+                          : exerciseName + " - $exerciseSide",
+                          style: GoogleFonts.montserrat(
+                            fontSize: 12.0,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                       Padding(

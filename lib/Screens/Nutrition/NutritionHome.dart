@@ -14,7 +14,7 @@ class NutritionHome extends StatefulWidget {
 class _NutritionHomeState extends State<NutritionHome> {
 
   final List filters = ['Todo', 'Perder peso', 'Ganar músculo', 'Alto en Proteína', 'Bajo en calorías', 'Vegetariano', 'Vegano', 'Apto Celíacos', 'Desayuno', 'Snack'];
-  String isSelected = 'Todo'; 
+  String isSelected = 'Todo';
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,6 @@ class _NutritionHomeState extends State<NutritionHome> {
               ////Filters List
               Container(
                 height: 70,
-                padding: EdgeInsets.only(left: 20.0),
                 child: ListView.builder(
                   itemCount: filters.length,
                   scrollDirection: Axis.horizontal,
@@ -33,7 +32,9 @@ class _NutritionHomeState extends State<NutritionHome> {
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index){
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical:20.0, horizontal: 5),
+                      padding: (index == 0)
+                      ? const EdgeInsets.fromLTRB(20, 20, 5, 20)
+                      : const EdgeInsets.fromLTRB(5, 20, 5, 20),
                       child: InkWell(
                         onTap: (){
                           setState(() {

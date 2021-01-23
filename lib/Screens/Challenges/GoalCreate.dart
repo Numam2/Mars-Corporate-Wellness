@@ -185,7 +185,7 @@ class _GoalCreateState extends State<GoalCreate> {
                                         style: GoogleFonts.montserrat(
                                             color: Colors.black, fontSize: 20),
                                         textAlign: TextAlign.center,
-                                        //inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                         keyboardType: TextInputType.number,
                                         cursorColor: Theme.of(context).accentColor,
                                         decoration: InputDecoration(

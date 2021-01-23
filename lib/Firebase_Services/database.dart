@@ -98,7 +98,7 @@ class DatabaseService {
 
   Future createUserRoutine (String day) async {
     return await routine.doc(uid).collection('Semana 1').doc('Día 1').set({
-      'Día': day,
+      'Day': day,
     });
   }
 
@@ -271,7 +271,7 @@ class DatabaseService {
   Stream<List<Workout>> dayWorkout (collection, id, weekNumber, dayNumber) async* {
     yield* FirebaseFirestore.instance.collection(collection).doc(id).collection(weekNumber).doc(dayNumber).collection('Workout').snapshots().map(_workoutFromSnapshot);
   }
-
+  
 
 
   // Exercise Detail from snapshot
@@ -439,11 +439,11 @@ class DatabaseService {
 
         groups: snapshot.data()['Groups'] ?? [],
 
-        currentTrainingWeek: snapshot.data()['Current Training Week'] ?? 'Week 1',
-        currentTrainingDay: snapshot.data()['Current Training Day'] ?? 'Day 1',
+        currentTrainingWeek: snapshot.data()['Current Training Week'] ?? '',
+        currentTrainingDay: snapshot.data()['Current Training Day'] ?? '',
         currentTrainingDuration: snapshot.data()['Current Training Duration'] ?? '',
         trainingRoutine: snapshot.data()['Current Training Routine'] ?? '',
-        personalizedRoutine: snapshot.data()['Personalized Routine'] ?? true,
+        personalizedRoutine: snapshot.data()['Personalized Routine'] ?? false,
 
         hasPersonalCoach: snapshot.data()['Personal Coach'] ?? false,
       );
@@ -838,6 +838,7 @@ class DatabaseService {
      'Image': image,
     });
   }
+  
   Future sendSharedMessage(docID, text, type, headline, subtitle) async {
 
     final User user = FirebaseAuth.instance.currentUser;
@@ -961,7 +962,7 @@ class DatabaseService {
 
 
   // Create Group
-  Future createGroup(groupName, groupImage, groupDescription, List groupSearchName) async {
+  Future createGroup(groupName, groupImage, groupDescription, List groupSearchName, bool private) async {
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
 

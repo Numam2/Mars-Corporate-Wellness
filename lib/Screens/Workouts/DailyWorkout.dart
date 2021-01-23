@@ -4,12 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/weeks.dart';
 import 'package:personal_trainer/Models/workout.dart';
-import 'package:personal_trainer/Screens/Home/Explore.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
-import 'package:personal_trainer/Screens/Home/Workout_Home.dart';
 import 'package:personal_trainer/Screens/Workouts/WorkoutPage.dart';
 import 'package:personal_trainer/Shared/WorkoutStopwatch.dart';
 import 'package:provider/provider.dart';
+import 'package:screen/screen.dart';
 
 class DailyWorkout extends StatefulWidget {
 
@@ -17,11 +16,12 @@ class DailyWorkout extends StatefulWidget {
   final String day;
   final String weekNo;
   final String id;
+  final String uid;
 
   final List<String> exerciseVideoList;
   final List exerciseList;
 
-  DailyWorkout({this.collection, this.day, this.weekNo, this.id , this.exerciseVideoList, this.exerciseList});
+  DailyWorkout({this.collection, this.day, this.weekNo, this.id , this.exerciseVideoList, this.exerciseList, this.uid});
 
   @override
   _DailyWorkoutState createState() => _DailyWorkoutState();
@@ -31,9 +31,15 @@ class _DailyWorkoutState extends State<DailyWorkout> {
 
   final pageController = PageController(initialPage: 0);
 
+  @override
+  void initState() {
+    Screen.keepOn(true);
+    super.initState();
+  }
+
   /// UI Widget 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     
     return MultiProvider(
       providers:[
@@ -92,9 +98,9 @@ class _DailyWorkoutState extends State<DailyWorkout> {
                               width: 100,
                               child: RaisedButton(
                                 onPressed: () async {
-                                  Navigator.push(context, 
-                                    MaterialPageRoute(
-                                      builder: (context) => InicioNew()));
+                                   Navigator.of(context).pushAndRemoveUntil(
+                                     MaterialPageRoute(builder: (context) => InicioNew()), (Route<dynamic> route) => false);
+                                  
                                   await DefaultCacheManager().emptyCache();
                                 },
                                 shape: RoundedRectangleBorder(
@@ -171,19 +177,13 @@ class _DailyWorkoutState extends State<DailyWorkout> {
 
             body: Stack(
               children: <Widget>[
-                      ///// Parent List view showing number of sets with their titles
-                      // Padding(
-                      //   padding: const EdgeInsets.only(bottom:70.0),
-                      //   child: WorkoutSets(),
-                      // ),
-
                 Padding(
                   padding: const EdgeInsets.only(bottom:75.0),
-                  child: WorkoutPage(day:widget.day, exerciseVideoList: widget.exerciseVideoList, pageController: pageController),
+                  child: WorkoutPage(day: widget.day, exerciseVideoList: widget.exerciseVideoList, pageController: pageController),
                 ),
 
                 StopwatchButton(
-                  trainingRoutine: widget.id, 
+                  trainingRoutine: (widget.id == widget.uid) ? 'My Routine': widget.id,
                   currentDay: widget.day ?? '', 
                   currentWeek: widget.weekNo ?? '', 
                   pageController: pageController

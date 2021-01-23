@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Models/Recipes.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
+import 'package:personal_trainer/Screens/Nutrition/NutritionContainer.dart';
 import 'package:personal_trainer/Screens/Nutrition/NutritionHome.dart';
 import 'package:personal_trainer/Screens/Nutrition/RecipeDetails.dart';
 import 'package:provider/provider.dart';
@@ -127,7 +128,7 @@ class SavedRecipesHome extends StatelessWidget {
                           icon: Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20), 
                           onPressed: (){
                             Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => NutritionHome()));
+                              MaterialPageRoute(builder: (context) => NutritionContainer()));
                           }
                         ),
                       )

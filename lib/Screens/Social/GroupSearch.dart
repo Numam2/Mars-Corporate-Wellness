@@ -11,10 +11,11 @@ import 'package:intl/intl.dart';
 class GroupSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     final _groupSearch = Provider.of<List<Groups>>(context);
 
     if (_groupSearch == null) {
-      return Loading();
+      return SizedBox.shrink(child: Loading());
     } else if (_groupSearch.length == 0) {
       return GestureDetector(
         onTap: () {
@@ -30,8 +31,7 @@ class GroupSearch extends StatelessWidget {
           ),
         ),
       );
-    }
-
+    } 
     return Flexible(
       fit: FlexFit.loose,
       child: Container(

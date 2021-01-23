@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Models/workout.dart';
 import 'package:personal_trainer/Screens/Workouts/WorkoutPageView.dart';
+import 'package:personal_trainer/Screens/wrapper.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutPage extends StatelessWidget {
@@ -15,9 +17,76 @@ class WorkoutPage extends StatelessWidget {
 
     final workout = Provider.of<List<Workout>>(context);
 
-    if (workout == null){
-      return Center(
-      );
+    if (workout == null || workout.length == null || workout.length == 0){
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            //Empty Workout Illustration
+            Container(
+              width: MediaQuery.of(context).size.width *0.7,
+              child: Image(
+                image: NetworkImage(
+                  'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FEmptyWorkout_undraw.png?alt=media&token=d160dc10-959f-4e0e-b3ee-f1d8e4b22c74')),
+                ),
+            SizedBox(height: 20),
+            //Text
+            Container(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width*0.7
+              ),
+              child: Text(
+                "Oops.. Este entrenamiento aún no está disponible",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.montserrat(
+                  fontSize: 14.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            ///Button
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 35.0,
+                      child: RaisedButton(
+                        onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => Wrapper())),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
+                        padding: EdgeInsets.all(0.0),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Theme.of(context).accentColor,
+                                Theme.of(context).primaryColor
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Container(
+                            constraints: BoxConstraints(
+                                maxWidth: 200.0, minHeight: 50.0),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "VOLVER",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.montserrat(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+          ],
+        );
     }    
 
     return WorkoutPageView(workout: workout, exerciseVideoList: exerciseVideoList, day: day, pageController: pageController);

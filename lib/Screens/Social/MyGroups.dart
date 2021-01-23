@@ -238,7 +238,7 @@ class MyGroups extends StatelessWidget {
                   ]),
                   SizedBox(height: 20),
                   !(_myGroup.length == 0)
-                      ? Flexible(
+                      ? Flexible(                        
                           fit: FlexFit.loose,
                           child: Container(
                             width: double.infinity,
@@ -352,7 +352,6 @@ class MyGroups extends StatelessWidget {
                                 }),
                           ),
                         )
-
                       /// if user has no groups yet
                       : Container(
                           height: MediaQuery.of(context).size.height * 0.6,

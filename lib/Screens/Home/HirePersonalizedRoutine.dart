@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
-import 'package:personal_trainer/Screens/Messages/ChatRoom.dart';
 import 'package:personal_trainer/Screens/Messages/ChatRoomCoach.dart';
 import 'package:provider/provider.dart';
 
@@ -211,71 +210,17 @@ class HirePersonalizedRoutine extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  ///3 MESES
-                  // Container(
-                  //   height: 35.0,
-                  //   width: MediaQuery.of(context).size.width * 0.85,
-                  //   child: RaisedButton(
-                  //     onPressed: () {
-                  //       ///// Create a certain Doc ID
-                  //       final String generateDocID = _user.uid + 'b6eWTBUmJnfRDgDhv4RtiT30HaI2';
-
-                  //       ///// Create Chat Room based on that Doc ID
-                  //       DatabaseService()
-                  //           .createFirstChat('b6eWTBUmJnfRDgDhv4RtiT30HaI2', generateDocID);
-
-                  //       //// Set has personal coach to true
-                  //       DatabaseService()
-                  //           .havePersonalizedCoach(true);
-
-                  //       ///// Navigate to that chat room
-                  //       Navigator.push(
-                  //           context,
-                  //           MaterialPageRoute(
-                  //               builder: (context) => StreamProvider.value(
-                  //                 value: DatabaseService().selectedChat(generateDocID),
-                  //                 child: ChatRoom(
-                  //                   docID: generateDocID, 
-                  //                   profilePic: 'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/Brand%20Images%2FB-W%20Logo%20in%20Column.png?alt=media&token=e8a7517b-53c0-4877-ae92-765bcce43d42', 
-                  //                   name: 'Mars Coach'),
-                  //               )));
-                  //     },
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(25)),
-                  //     padding: EdgeInsets.all(0.0),
-                  //     child: Ink(
-                  //       decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         border: Border.all(color: Colors.grey),
-                  //         borderRadius: BorderRadius.circular(25),
-                  //       ),
-                  //       child: Container(
-                  //         alignment: Alignment.center,
-                  //         child: Text(
-                  //           "MENSUAL US\$ 24 / mes",
-                  //           textAlign: TextAlign.center,
-                  //           style: GoogleFonts.montserrat(
-                  //               fontSize: 14,
-                  //               fontWeight: FontWeight.w500,
-                  //               color: Colors.grey),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(height: 8),
-                  ///6 MESES
                   Container(
                     height: 35.0,
                     width: MediaQuery.of(context).size.width * 0.85,
                     child: RaisedButton(
                       onPressed: () {
                         ///// Create a certain Doc ID
-                        final String generateDocID = myUserProfile.uid + 'b6eWTBUmJnfRDgDhv4RtiT30HaI2';
+                        final String generateDocID = myUserProfile.uid + 'eLCgS7xXVWMwvY5BQ0h86yryFZz2';
 
                         ///// Create Chat Room based on that Doc ID
                         DatabaseService()
-                            .createFirstChat('b6eWTBUmJnfRDgDhv4RtiT30HaI2', generateDocID);
+                            .createFirstChat('eLCgS7xXVWMwvY5BQ0h86yryFZz2', generateDocID);
 
                         //// Set has personal coach to true
                         DatabaseService()

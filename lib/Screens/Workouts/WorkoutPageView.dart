@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/exerciseDetail.dart';
 import 'package:personal_trainer/Models/workout.dart';
+import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Screens/Workouts/ExerciseCard.dart';
 import 'package:personal_trainer/Screens/Workouts/ExerciseVideo.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,6 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
       setState((){
         videoFile = fetchedFile;
         filesDownloaded = filesDownloaded + 1;
-        print ('File fetched: ${fetchedFile.path}');
       });
     }
 
@@ -57,8 +57,7 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
   }
 
   @override
-  void initState() {   
-
+  void initState() { 
     ///Create List of Pages based on total number of exercises * set
     for (int i=0; i<widget.workout.length; i++) {
       for (int n=0; n < widget.workout[i].rounds; n++){
@@ -71,9 +70,7 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
     ///Download all videos from Storage to view instantly
     downloadMedia().whenComplete(() {
       setState(() {});
-      print("success");
     }).catchError((error, stackTrace) {
-      print("outer: $error");
     });    
 
     super.initState();
@@ -119,7 +116,7 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
           ]
         )
       );
-    } 
+    }
 
     return PageView(
       physics: BouncingScrollPhysics(),
@@ -130,13 +127,15 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
         },
       children: <Widget>[
         for (int i=0; i<totalPages; i++)
+        //If first screen => show workout overview
         (i == 0)
-          ? Scaffold(
+        ? Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
             leading: InkWell(
               onTap: () async {
-                Navigator.of(context).pop();
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => InicioNew()), (Route<dynamic> route) => false);
                 await DefaultCacheManager().emptyCache();
               },
               child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
@@ -167,7 +166,7 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
 
                                 ///// Display title of set
                                 Padding(
-                                padding: const EdgeInsets.fromLTRB(15.0, 8.0, 40.0, 8.0),
+                                padding: const EdgeInsets.fromLTRB(15.0, 8.0, 20.0, 8.0),
                                 child: 
                                   Row(
                                     children: <Widget>[
@@ -192,12 +191,12 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
 
                                   if(workout[index].sets[i].exerciseName == "Rest" || workout[index].sets[i].exerciseName == "Descansa"){
                                     return Padding(
-                                      padding: const EdgeInsets.only(top: 5.0),
+                                      padding: const EdgeInsets.only(top: 15.0),
                                       child: Container(
                                         height: 50,
                                         color: Colors.white,
                                         child: Padding(
-                                          padding: EdgeInsets.fromLTRB(25.0, 10.0, 40.0, 10.0),
+                                          padding: EdgeInsets.fromLTRB(15.0, 10.0, 20.0, 10.0),
                                           child: Row(
                                             children: <Widget>[
                                               Text('Descansa',
@@ -205,7 +204,7 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
                                                     fontSize: 12.0, color: Theme.of(context).canvasColor,
                                                   ),
                                               ),
-                                              Spacer(),
+                                              SizedBox(width: 10),
                                               Text(
                                                 "${workout[index].sets[i].duration} s",
                                                 style: GoogleFonts.montserrat(
@@ -246,11 +245,18 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
               ]
             ),
             )
-
-          : (i == totalPages - 1) 
-            ? Column(
+        //If last screen => show End Page
+        : (i == totalPages - 1) 
+          ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children:<Widget>[
+              children:<Widget>[                
+                Container(
+                  width: MediaQuery.of(context).size.width *0.7,
+                  child: Image(
+                      image: NetworkImage(
+                          'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FFinishWorkout_undraw.png?alt=media&token=c91bc24c-0cfe-4ad1-8e20-0d9040358cf8')),
+                ),
+                SizedBox(height: 20),
                 Text(
                   "¡LISTO!",
                   style: GoogleFonts.montserrat(
@@ -260,7 +266,7 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  "Presiona el botón para finalizar",
+                  "Presiona DETENER para finalizar",
                   style: GoogleFonts.montserrat(
                     fontSize: 14.0,
                     color: Colors.black,
@@ -268,7 +274,8 @@ class _WorkoutPageViewState extends State<WorkoutPageView> {
                 ),
               ] 
             )
-            : StreamProvider<ExerciseDetail>.value(
+          //If exercise screen => show exercise
+          : StreamProvider<ExerciseDetail>.value(
               value: DatabaseService().exerciseDetail(exerciseList[i-1].exerciseName),
               child: ExerciseVideo(
                 exerciseName: exerciseList[i-1].exerciseName,

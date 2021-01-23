@@ -6,6 +6,8 @@ import 'package:personal_trainer/Models/exerciseDetail.dart';
 import 'package:personal_trainer/Screens/Workouts/VideoContainer.dart';
 import 'package:provider/provider.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:audioplayers/audio_cache.dart';
+
 
 class ExerciseVideo extends StatefulWidget {
   final String exerciseName;
@@ -37,6 +39,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
   int countdownMinutesElapsed;
   final _stopWatch = new Stopwatch();
   final _timeout = const Duration(seconds: 1);
+  static AudioCache player = new AudioCache();
 
   void _startTimeout() {
     new Timer(_timeout, _handleTimeout);
@@ -66,6 +69,10 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
     });
   }
 
+  void doNothing(){
+
+  }
+
   void _setWorkoutStopwatchText() async {
     _stopwatchText =
         (widget.exerciseDuration - _stopWatch.elapsed.inSeconds % 60)
@@ -75,6 +82,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
       setState(() {
         _stopWatch.stop();
       });
+      player.play('End Workout Bell.mp3');   
       await widget.pageController
           .nextPage(duration: Duration(milliseconds: 500), curve: Curves.ease);
     }
@@ -92,7 +100,10 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
       oneSec,
       (Timer timer) => setState(
         () {
-          if (_start < 1) {
+          if (_start == 3){
+            player.play('Start Workout Countdown.mp3');
+            _start = _start - 1;
+          } else if (_start < 1) {
             timer.cancel();
             countingdown = false;
             _stopWatch.start();
@@ -107,9 +118,10 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
 
   @override
   void dispose() {
-    if (widget.exerciseDuration != null && widget.exerciseDuration != 0) {
+    //if (widget.exerciseDuration != null && widget.exerciseDuration != 0) {
       _timer.cancel();
-    }
+      _stopWatch.stop();
+
     super.dispose();
   }
 
@@ -175,7 +187,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
               CircularStepProgressIndicator(
                 totalSteps: (widget.exerciseDuration == null ||
                         widget.exerciseDuration == 0)
-                    ? 100
+                    ? 60
                     : widget.exerciseDuration,
                 currentStep: (widget.exerciseDuration == null ||
                         widget.exerciseDuration == 0)
@@ -361,21 +373,24 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                             ///Navigate Before
                             GestureDetector(                              
                               onTap: () async {
+                                if (countingdown) {
+                                 //Do nothing  
+                                } else {
+                                  if (widget.exerciseDuration == null ||
+                                        widget.exerciseDuration == 0) {
 
-                                if (widget.exerciseDuration == null ||
-                                      widget.exerciseDuration == 0) {
-
-                                    widget.pageController.previousPage(
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.ease);
+                                      widget.pageController.previousPage(
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.ease);
+                                  }
+                                  setState(() {
+                                    _stopWatch.stop();
+                                  });
+                                  _timer.cancel();
+                                  widget.pageController.previousPage(
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.ease);
                                 }
-                                setState(() {
-                                  _stopWatch.stop();
-                                });
-                                _timer.cancel();
-                                widget.pageController.previousPage(
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.ease);
                               },
                               child: Container(
                                   padding: EdgeInsets.all(12.0),
@@ -404,12 +419,12 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                                   .disabledColor
                                   .withOpacity(0.2),
                               padding: 0,
-                              width: 150,
-                              height: 150,
+                              width: MediaQuery.of(context).size.height * 0.25,
+                              height: MediaQuery.of(context).size.height * 0.25,
                               child: ClipOval(
                                 child: Container(
-                                    height: 150,
-                                    width: 150,
+                                    height: MediaQuery.of(context).size.height * 0.25,
+                                    width: MediaQuery.of(context).size.height * 0.25,
                                     child: Center(
                                       child: Column(
                                           mainAxisAlignment:
@@ -451,20 +466,24 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                             ///Navigate Next
                             GestureDetector(
                               onTap: () async {
-                                if (widget.exerciseDuration == null ||
-                                      widget.exerciseDuration == 0) {
-                                        
-                                    widget.pageController.nextPage(
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.ease);
+                                if (countingdown){
+                                  //Don nothing
+                                } else {
+                                  if (widget.exerciseDuration == null ||
+                                        widget.exerciseDuration == 0) {
+                                          
+                                      widget.pageController.nextPage(
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.ease);
+                                  }
+                                  setState(() {
+                                    _stopWatch.stop();
+                                  });
+                                  _timer.cancel();
+                                  widget.pageController.nextPage(
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.ease);
                                 }
-                                setState(() {
-                                  _stopWatch.stop();
-                                });
-                                _timer.cancel();
-                                widget.pageController.nextPage(
-                                    duration: Duration(milliseconds: 500),
-                                    curve: Curves.ease);
                               },
                               child: Container(
                                   padding: EdgeInsets.all(12.0),
@@ -481,7 +500,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                               widget.exerciseDuration == 0)
                           ? SizedBox()
                           : GestureDetector(
-                              onTap: _startStopButtonPressed,
+                              onTap: countingdown ? doNothing : _startStopButtonPressed,
                               child: Container(
                                   padding: EdgeInsets.all(8.0),
                                   decoration: BoxDecoration(

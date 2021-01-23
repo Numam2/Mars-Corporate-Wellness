@@ -5,6 +5,7 @@ import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Profile/EditProfile.dart';
 import 'package:personal_trainer/Screens/Profile/ProfileContent.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
+import 'package:personal_trainer/Shared/TemporaryDisabledPopUp.dart';
 import 'package:personal_trainer/main.dart';
 import 'package:provider/provider.dart';
 
@@ -109,7 +110,10 @@ class ProfilePage extends StatelessWidget {
 
                 // //Invite a Friend
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => TemporaryDisabledPopUp()
+                  ),
                   child: Container(
                     width: double.infinity,
                     height: 50,
@@ -131,7 +135,10 @@ class ProfilePage extends StatelessWidget {
 
                 // //Terms and Conditions
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => TemporaryDisabledPopUp()
+                  ),
                   child: Container(
                     width: double.infinity,
                     height: 50,

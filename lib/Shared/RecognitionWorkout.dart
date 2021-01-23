@@ -25,7 +25,7 @@ class ReconitionWorkout extends StatelessWidget {
           children: <Widget>[
             ///Imgae
             Container(
-              height: 200,
+              width: MediaQuery.of(context).size.width *0.5,
               child: Image(
                   image: NetworkImage(
                       'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FRecognition%20Strong%20Happy%20Avocado.jpg?alt=media&token=6d308c8d-aa30-4554-a9b5-826e4f3c8c0d')),

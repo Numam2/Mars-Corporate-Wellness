@@ -21,7 +21,7 @@ class ChallengeList extends StatelessWidget {
     } else if (_challenges.length == 0) {
       return PopularChallengeList(displayOnHome: true);
     }
-
+    
     return Column(
       children: <Widget>[
         //Title

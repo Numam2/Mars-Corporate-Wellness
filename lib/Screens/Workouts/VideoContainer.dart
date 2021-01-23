@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoContainer extends StatefulWidget {
@@ -76,23 +75,13 @@ class _VideoContainerState extends State<VideoContainer>
 
     if (widget.exerciseVideoURL == null || widget.exerciseVideoURL == '' || videoFile == null) {
       return Container(
-        height: 200,
+        height: MediaQuery.of(context).size.height * 0.35,
       );
-      // Container(
-      //   height: 300,
-      //   width: double.infinity,
-      //   decoration: BoxDecoration(
-      //     image: DecorationImage(
-      //       image: NetworkImage(widget.exerciseImage),
-      //       fit: BoxFit.cover,
-      //     ),
-      //   ),
-      // );
     }
     return
       ///Video
       Container(
-        height: 200,
+        height: MediaQuery.of(context).size.height * 0.35,
         width: double.infinity,
         child: Stack(children: <Widget>[
           ///Video

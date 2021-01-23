@@ -157,12 +157,12 @@ class _ExerciseVideoSingleState extends State<ExerciseVideoSingle> {
                       unselectedStepSize: 4,
                       unselectedColor: Theme.of(context).disabledColor.withOpacity(0.2),
                       padding: 0,
-                      width: 150,
-                      height: 150,
+                      width: MediaQuery.of(context).size.height * 0.25,
+                      height: MediaQuery.of(context).size.height * 0.25,
                       child: ClipOval(
                         child: Container(
-                            height: 150,
-                            width: 150,
+                            height: MediaQuery.of(context).size.height * 0.25,
+                            width: MediaQuery.of(context).size.height * 0.25,
                             child: Center(
                               child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,

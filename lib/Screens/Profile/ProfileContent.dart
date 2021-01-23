@@ -16,6 +16,7 @@ import 'package:intl/intl.dart';
 class ProfileContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     final _profile = Provider.of<UserProfile>(context);
 
     if (_profile == null) {

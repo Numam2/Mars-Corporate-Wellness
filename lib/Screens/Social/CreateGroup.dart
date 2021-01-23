@@ -17,6 +17,7 @@ class _CreateGroupState extends State<CreateGroup> {
   String groupDescription;
   File groupImage;
   StorageUploadTask _uploadTask;
+  bool private = true;
 
   Future getImage() async {
     File selectedImage =
@@ -37,7 +38,7 @@ class _CreateGroupState extends State<CreateGroup> {
     var imageUrl = downloadUrl.toString();
     print(imageUrl);
     DatabaseService().createGroup(newGroupName, imageUrl, groupDescription,
-        setSearchParam(newGroupName.toLowerCase()));
+        setSearchParam(newGroupName.toLowerCase()), private);
     DatabaseService().addMyGroup(newGroupName);
     
     //Close
@@ -75,6 +76,7 @@ class _CreateGroupState extends State<CreateGroup> {
         ),
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Container(
           color: Colors.white,
           padding: const EdgeInsets.all(20.0),
@@ -125,6 +127,82 @@ class _CreateGroupState extends State<CreateGroup> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+
+                  SizedBox(height: 20),
+
+                  ///Private
+                  Container(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        ///Private
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              private = true;
+                            });
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: private
+                                  ? Theme.of(context).accentColor
+                                  : Colors.white,
+                              border: Border.all(
+                                  color: private
+                                      ? Theme.of(context).accentColor
+                                      : Colors.black,
+                                  width: 0.7),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Center(
+                                child: Text('Privado',
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 12,
+                                        color: private
+                                            ? Colors.white
+                                            : Colors.black))),
+                          ),
+                        ),
+                        SizedBox(width: 30),
+
+                        ///Female
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              private = false;
+                            });
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: !private
+                                  ? Theme.of(context).accentColor
+                                  : Colors.white,
+                              border: Border.all(
+                                  color: !private
+                                      ? Theme.of(context).accentColor
+                                      : Colors.black,
+                                  width: 0.7),
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Center(
+                                child: Text('Público',
+                                    style: GoogleFonts.montserrat(
+                                        fontSize: 12,
+                                        color: !private
+                                            ? Colors.white
+                                            : Colors.black))),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30),
+
                   ///Group Name
                   Padding(
                     padding: const EdgeInsets.only(left: 15.0),
@@ -168,7 +246,7 @@ class _CreateGroupState extends State<CreateGroup> {
                   SizedBox(height: 5),
                   Container(
                     height: 100,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.0),
                         border: Border.all(color: Colors.grey, width: 0.8)),
@@ -232,7 +310,7 @@ class _CreateGroupState extends State<CreateGroup> {
                   ),
                 ),
               ),
-
+              SizedBox(height: 20),
             ],
           ),
         ),

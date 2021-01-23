@@ -9,6 +9,7 @@ import 'package:personal_trainer/Firebase_Services/auth.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
+import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Screens/SplashScreen.dart';
 import 'package:personal_trainer/Screens/wrapper.dart';
 import 'package:provider/provider.dart';
@@ -117,6 +118,9 @@ class _MyAppState extends State<MyApp> {
               color: Color(0xff0033A1)),
           )
         ),
+        routes: <String, WidgetBuilder> {
+          '/Home': (BuildContext context) => InicioNew(),
+        },
         debugShowCheckedModeBanner: false,
         home: (widget.signedOut == null) 
         ? SplashScreen()

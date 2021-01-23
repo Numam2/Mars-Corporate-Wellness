@@ -74,7 +74,13 @@ final String collection = 'Free Routines';
                                     onTap: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Icon(Icons.keyboard_arrow_left, color: Colors.white),
+                                    child: Container(
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white38,
+                                      ),
+                                      child: Icon(Icons.keyboard_arrow_left, color: Colors.white)),
                                   ),
                                 ),
                               ),

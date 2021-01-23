@@ -41,7 +41,7 @@ class FinishWorkout extends StatefulWidget {
 
 class _FinishWorkoutState extends State<FinishWorkout> {
   
-  var firestore = Firestore.instance;
+  var firestore = FirebaseFirestore.instance;
   int workoutCounter;
   int hoursCounter;
   int caloriesFormula;
@@ -61,6 +61,8 @@ class _FinishWorkoutState extends State<FinishWorkout> {
   Widget build(BuildContext context) {
 
     final _profile = Provider.of<UserProfile>(context);
+
+    print(widget.trainingRoutine);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
@@ -121,8 +123,8 @@ class _FinishWorkoutState extends State<FinishWorkout> {
 
                             //If individual workout, just save activity
                             if(widget.trainingRoutine == 'Individual Workouts'){
-                              trainingType = widget.currentDay;
-                              trainingSession = '';
+                              trainingType = 'Workout';
+                              trainingSession = 'Workout List - ' + widget.currentDay;
                               DatabaseService().saveTrainingSession(trainingType, widget.workoutMinutes.toString() + ' min', trainingSession);
                             } else {
                               /////Save workout to Activity Log
@@ -132,15 +134,13 @@ class _FinishWorkoutState extends State<FinishWorkout> {
 
                               /////Logic to move to next day
                               DatabaseService().updateUserWorkoutProgress(
-                                widget.trainingRoutine == _profile.uid ? true : false,
+                                widget.trainingRoutine == 'My Routine' ? true : false,
                                 widget.trainingRoutine,
                                 widget.nextTrainingDay,
                                 widget.nextTrainingWeek,
                                 widget.nextTrainingDuration,
                               );                            
                             }
-                                                    
-
                             /////Logic to increase level if applicable
                             DatabaseService().updateUserStats(workoutCounter, caloriesCounter, hoursCounter, pointsCounter);
                             if(pointsCounter > _profile.levelTo){
@@ -154,13 +154,20 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                               )));
                             } else {
                               /////Go to congrats Page, then home
-                              Navigator.push(context,
+                              Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(builder: (context) => ReconitionWorkout(
                                   headline: (trainingSession == '' || trainingSession == null) ? 'Completé un entrenamiento: ' + trainingType : 'Completé un entrenamiento: ' + trainingType + ' - ' + trainingSession,
                                   time: widget.workoutMinutes,
                                   calories: caloriesFormula,
                                   points: 25,
-                                )));
+                                )), (Route<dynamic> route) => false);
+                              // Navigator.pushReplacement(context,
+                              //   MaterialPageRoute(builder: (context) => ReconitionWorkout(
+                              //     headline: (trainingSession == '' || trainingSession == null) ? 'Completé un entrenamiento: ' + trainingType : 'Completé un entrenamiento: ' + trainingType + ' - ' + trainingSession,
+                              //     time: widget.workoutMinutes,
+                              //     calories: caloriesFormula,
+                              //     points: 25,
+                              //   )));
                             }
                             
                             

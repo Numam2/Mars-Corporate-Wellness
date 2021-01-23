@@ -198,8 +198,7 @@ class ActivityLogBox extends StatelessWidget {
                           //Activity
                           Container(
                             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.42),
-                            child: Text(
-                              lastActvityType,
+                            child: Text(lastActvityType,
                               style: GoogleFonts.montserrat(
                                   fontSize: 16, fontWeight: FontWeight.w500),
                             ),
@@ -220,8 +219,8 @@ class ActivityLogBox extends StatelessWidget {
                         children: <Widget>[                          
                           //Ilustracion
                           Container(
-                              height: 80,
-                              child: Image(
+                            width: MediaQuery.of(context).size.width *0.25,
+                            child: Image(
                                   image: AssetImage(
                                       'Images/Illustration Woman Exercising.jpg'),
                                   fit: BoxFit.fitHeight))

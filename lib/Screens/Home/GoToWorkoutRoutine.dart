@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 class GoToWorkoutRoutine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     final _user = Provider.of<UserProfile>(context);
 
     if (_user == null) {
@@ -91,11 +92,11 @@ class GoToWorkoutRoutine extends StatelessWidget {
         ),
       );
     }
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15),
       child: GestureDetector(
         onTap: () {
+          //Go to Download Workout Page
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -114,7 +115,10 @@ class GoToWorkoutRoutine extends StatelessWidget {
                               : 'Free Routines',
                           weekNo: _user.currentTrainingWeek,
                           day: _user.currentTrainingDay,
-                          id: _user.trainingRoutine,
+                          id: _user.personalizedRoutine
+                              ? _user.uid
+                              : _user.trainingRoutine,
+                          uid: _user.uid,
                         ),
                   )));
         },
@@ -144,12 +148,17 @@ class GoToWorkoutRoutine extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              _user.personalizedRoutine
-                                  ? "Mi entrenamiento"
-                                  : _user.trainingRoutine,
-                              style: Theme.of(context).textTheme.title,
-                              textAlign: TextAlign.start,
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: MediaQuery.of(context).size.width *0.6,
+                              ),
+                              child: Text(
+                                _user.personalizedRoutine
+                                    ? "Mi entrenamiento"
+                                    : _user.trainingRoutine,
+                                style: Theme.of(context).textTheme.title,
+                                textAlign: TextAlign.start,
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
@@ -159,11 +168,16 @@ class GoToWorkoutRoutine extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 10),
-                            Text(
-                              _user.currentTrainingWeek +
-                                  " - " +
-                                  _user.currentTrainingDay,
-                              style: Theme.of(context).textTheme.display1,
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: MediaQuery.of(context).size.width *0.6,
+                              ),
+                              child: Text(
+                                _user.currentTrainingWeek +
+                                    " - " +
+                                    _user.currentTrainingDay,
+                                style: Theme.of(context).textTheme.display1,
+                              ),
                             ),
                             SizedBox(height: 5),
                             Text(
@@ -178,7 +192,7 @@ class GoToWorkoutRoutine extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Container(
-                              height: 110,
+                              width: MediaQuery.of(context).size.width *0.25,
                               child: Image(
                                   image: AssetImage('Images/ManMyPlan.jpg'),
                                   fit: BoxFit.fitHeight)),

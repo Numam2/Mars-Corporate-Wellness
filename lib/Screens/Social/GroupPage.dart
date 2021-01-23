@@ -117,7 +117,9 @@ class _GroupPageState extends State<GroupPage> {
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(      
+      floatingActionButton: (_group.private && !_group.members.contains(_profile.uid))
+      ? SizedBox()
+      : FloatingActionButton(      
         onPressed: (){
           Navigator.push(
             context, MaterialPageRoute(builder: (context) => CreatePost(groupName: _group.groupName)));
@@ -136,7 +138,6 @@ class _GroupPageState extends State<GroupPage> {
         onRefresh:()async{
 
           if (loadingMorePosts = true){
-            print('Reload already in progress');
           } else {
             await _refresh();
           }
@@ -236,8 +237,7 @@ class _GroupPageState extends State<GroupPage> {
                           child: 
                           (_profile.groups.contains(_group.groupName)) 
                           
-                          ?
-                          Container(
+                          ? Container(
                             height: 35.0,
                             width: 120,
                             child: RaisedButton(
@@ -271,8 +271,7 @@ class _GroupPageState extends State<GroupPage> {
                             ),
                           )
                             
-                          :
-                          Container(
+                          : Container(
                             height: 35.0,
                             width: 120,
                             child: RaisedButton(
