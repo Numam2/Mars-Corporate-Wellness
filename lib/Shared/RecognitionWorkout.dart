@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
-import 'package:personal_trainer/Shared/SharePrompt.dart';
+import 'package:personal_trainer/Screens/Social/CreatePost.dart';
 
 class ReconitionWorkout extends StatelessWidget {
 
@@ -9,7 +9,8 @@ class ReconitionWorkout extends StatelessWidget {
   final int time;
   final int calories;
   final int points;
-  ReconitionWorkout({this.headline, this.time, this.calories, this.points});
+  final String organization;
+  ReconitionWorkout({this.headline, this.time, this.calories, this.points, this.organization});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,11 @@ class ReconitionWorkout extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             ///Imgae
-            Container(
+            Container(              
               width: MediaQuery.of(context).size.width *0.5,
               child: Image(
-                  image: NetworkImage(
-                      'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FRecognition%20Strong%20Happy%20Avocado.jpg?alt=media&token=6d308c8d-aa30-4554-a9b5-826e4f3c8c0d')),
+                  image: AssetImage(
+                      'Images/App Pics/iconos ilust-16.png')),
             ),
             SizedBox(height: 20),
 
@@ -125,16 +126,13 @@ class ReconitionWorkout extends StatelessWidget {
               height: 35.0,
               child: RaisedButton(
                 onPressed: () {
-                  return showDialog(
-                    context: context,
-                      builder: (context) {
-                        return SharePrompt(
-                          type: 'Exercise',
-                          headline: headline,
-                          time: time.toString() + ' MIN',
-                          activityIcon: Icons.fitness_center,
-                        );
-                      });
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePost(
+                    groupName: organization,
+                    type: 'Exercise',
+                    headline: headline,
+                    time: time.toString() + ' MIN',
+                    activityIcon: Icons.fitness_center,
+                  )));
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25)),

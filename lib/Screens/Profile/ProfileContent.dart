@@ -21,7 +21,7 @@ class ProfileContent extends StatelessWidget {
 
     if (_profile == null) {
       return Center(child: Loading());
-    } else if (_profile.preference == "None" || _profile.preference == "") {
+    } else if (_profile.preferences == [] || _profile.goals == []) {
       MissingProfile();
     }
 
@@ -316,7 +316,7 @@ class ProfileContent extends StatelessWidget {
 
           //My saved Recipes          
           StreamProvider<List<Recipes>>.value(
-            value: DatabaseService().savedRecipes,
+            value: DatabaseService().savedRecipes(),
             child: SavedRecipesHome()
           ),
           SizedBox(height:25),

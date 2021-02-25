@@ -46,11 +46,11 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      endDrawer: Drawer(
+      endDrawer: Drawer(        
         child: Container(
           color: Theme.of(context).primaryColor,
           child: Padding(
-            padding: const EdgeInsets.all(30.0),
+            padding: const EdgeInsets.symmetric(vertical: 30.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,8 +81,8 @@ class ProfilePage extends StatelessWidget {
                 SizedBox(height:70),
 
                 //Edit profile
-                GestureDetector(
-                  onTap: () {
+                FlatButton(
+                  onPressed: () {
                     Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -95,7 +95,7 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       children:<Widget>[
                         Icon(Icons.person, color: Colors.white, size: 18),
-                        SizedBox(width:20),
+                        SizedBox(width:15),
                         Text(
                           'Editar perfil',
                           style: GoogleFonts.montserrat(
@@ -109,8 +109,8 @@ class ProfilePage extends StatelessWidget {
                 ),
 
                 // //Invite a Friend
-                GestureDetector(
-                  onTap: () => showDialog(
+                FlatButton(
+                  onPressed: () => showDialog(
                     context: context,
                     builder: (context) => TemporaryDisabledPopUp()
                   ),
@@ -120,7 +120,7 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       children:<Widget>[
                         Icon(Icons.group_add, color: Colors.white, size: 18),
-                        SizedBox(width:20),
+                        SizedBox(width:15),
                         Text(
                           'Invita a un amigo',
                           style: GoogleFonts.montserrat(
@@ -134,8 +134,8 @@ class ProfilePage extends StatelessWidget {
                 ),
 
                 // //Terms and Conditions
-                GestureDetector(
-                  onTap: () => showDialog(
+                FlatButton(
+                  onPressed: () => showDialog(
                     context: context,
                     builder: (context) => TemporaryDisabledPopUp()
                   ),
@@ -145,7 +145,7 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       children:<Widget>[
                         Icon(Icons.library_books, color: Colors.white, size: 18),
-                        SizedBox(width:20),
+                        SizedBox(width:15),
                         Text(
                           'Terminos y condiciones',
                           style: GoogleFonts.montserrat(
@@ -159,8 +159,8 @@ class ProfilePage extends StatelessWidget {
                 ),
 
                 // //Sign Out
-                GestureDetector(
-                  onTap: () async {
+                FlatButton(
+                  onPressed: () async {
                     await _auth.signOut();
                     Navigator.push(
                                 context,
@@ -175,7 +175,7 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       children:<Widget>[
                         Icon(Icons.exit_to_app, color: Colors.white, size: 18),
-                        SizedBox(width:20),
+                        SizedBox(width:15),
                         Text(
                           'Cerrar Sesión',
                           style: GoogleFonts.montserrat(

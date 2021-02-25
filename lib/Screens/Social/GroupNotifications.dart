@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/groups.dart';
+import 'package:personal_trainer/Models/organization.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Social/GroupNotificationCard.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
@@ -73,6 +75,23 @@ class GroupNotificationPage extends StatelessWidget {
             color: Colors.black,
           ),
         ),
+        actions: <Widget>[
+            InkWell(
+                onTap: () {
+                  DatabaseService().clearAllNotifications();
+                },
+                child: Container(
+                  height: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Center(
+                    child: Text('Limpiar',
+                        style: GoogleFonts.montserrat(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(context).primaryColor)),
+                  ),
+                )),
+          ],
       ),
       body: ListView.builder(
         physics: BouncingScrollPhysics(),
@@ -81,7 +100,7 @@ class GroupNotificationPage extends StatelessWidget {
           return MultiProvider(
             providers: [
               StreamProvider<UserProfile>.value(value: DatabaseService().postOwner(_notification.groupNotifications[index].senderID)),
-              StreamProvider<Groups>.value(value: DatabaseService().groupData(_notification.groupNotifications[index].group)),
+              StreamProvider<Organization>.value(value: DatabaseService().organizationData(_notification.groupNotifications[index].group)),
             ],           
             child: GroupNotificationCard(
               type: _notification.groupNotifications[index].type,

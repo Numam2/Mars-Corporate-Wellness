@@ -1,15 +1,17 @@
 class Recipes {
-  String name;
-  String image;
-  String author;
-  String intro;
-  String time;
-  String category;
-  List directions;
-  List tags;
-  List ingredients;
-  String recipeID;
-  List likes;
+  final String name;
+  final String image;
+  final String author;
+  final String intro;
+  final String time;
+  final String category;
+  final List directions;
+  final List tags;
+  final List ingredients;
+  final String recipeID;
+  final List likes;
+  DateTime dateUploaded;
+  List userGoals;
 
   Recipes(
       {this.name,
@@ -22,5 +24,8 @@ class Recipes {
       this.tags,
       this.ingredients,
       this.recipeID,
-      this.likes});
+      this.likes,
+      this.dateUploaded,
+      this.userGoals
+      });
 }

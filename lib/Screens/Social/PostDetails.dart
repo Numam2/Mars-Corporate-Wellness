@@ -10,7 +10,6 @@ import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class PostDetails extends StatefulWidget {
-
   final String groupName;
   final String postID;
   PostDetails({this.groupName, this.postID});
@@ -20,17 +19,15 @@ class PostDetails extends StatefulWidget {
 }
 
 class _PostDetailsState extends State<PostDetails> {
-  
   String commentPost;
   var _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
     final _post = Provider.of<Post>(context);
     final _user = Provider.of<UserProfile>(context);
 
-    if (_post == null){
+    if (_post == null) {
       return Loading();
     }
 
@@ -38,265 +35,218 @@ class _PostDetailsState extends State<PostDetails> {
       backgroundColor: Colors.white,
       //Appbar
       appBar: AppBar(
-        backgroundColor: Colors.white,          
-        centerTitle: true,
-        leading: InkWell(
-            onTap:() {Navigator.pop(context);},
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          leading: InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
             child: Icon(
               Icons.arrow_back_ios,
-              color: Colors.black,),
+              color: Colors.black,
             ),
-        title: Text('Comentarios',
-          style: Theme.of(context).textTheme.headline)        
-      ),
+          ),
+          title:
+              Text('Comentarios', style: Theme.of(context).textTheme.headline)),
 
       body: Container(
-        color: Colors.white,
+        padding: EdgeInsets.only(top: 20),
         child: Column(
           children: <Widget>[
-            
             //View Post and Comments list as scrollable
             Expanded(
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(children: <Widget>[
+                child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                children: <Widget>[
                   //Post
                   Container(
-                    width: double.infinity,            
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children:<Widget>[
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: Colors.white,
+                      ),
+                      child: Column(children: <Widget>[
                         //Header (User info)
-                            StreamProvider<UserProfile>.value(
-                              value: DatabaseService().postOwner(_post.ownerUID),
-                              child: PostHeader(date: _post.date),
-                            ),
+                        StreamProvider<UserProfile>.value(
+                          value: DatabaseService().postOwner(_post.ownerUID),
+                          child: PostHeader(date: _post.date),
+                        ),
 
-                            //Post
-                            Container(
-                              width: double.infinity,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children:<Widget>[
-
-                                  //Text Content
-                                  (_post.type == null || _post.type == '')
-                                  ? Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 20.0),
-                                      child: Text(
-                                        _post.textContent,
-                                        style: GoogleFonts.montserrat(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                      ),
-                                    )
-                                  : Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                      child: Container(
-                                      child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            (_post.type == 'Exercise')
-                                                ? Icon(Icons.fitness_center, color: Colors.black, size: 20)
-                                                : Icon(Icons.calendar_today, color: Colors.black, size: 20),
-                                            SizedBox(width: 15),
-                                            Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Container(
-                                                      constraints: BoxConstraints(maxWidth: 200),
-                                                      child: Text(
-                                                        _post.headline,
-                                                        style: Theme.of(context).textTheme.display1,
-                                                      )),
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    _post.subtitle,
-                                                    style: Theme.of(context).textTheme.display2,
-                                                  ),
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    _post.textContent,
-                                                    style: GoogleFonts.montserrat(
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w400,
-                                                      color: Colors.black),
-                                                  ),
-                                                ])
-                                          ]),
-                                      ),
-                                    ),
-                                    (_post.textContent != null || _post.textContent != '') ? SizedBox(height: 10) : SizedBox(),
-
-                                  //Media
-                                  (_post.media == null || _post.media == '')
-                                  ? Container(height: 0)
-                                  : Padding(
-                                      padding: EdgeInsets.all(15.0),
-                                      child: Container(
-                                        height: 250,
-                                        width: double.infinity,
-                                        child: Image.network(_post.media, fit: BoxFit.fitHeight),
+                        //Post
+                        Container(
+                          width: double.infinity,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                //Text Content
+                                (_post.type == null || _post.type == '')
+                                    ? Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20.0, vertical: 15),
+                                        child: Text(
+                                          _post.textContent,
+                                          style: GoogleFonts.montserrat(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black),
+                                        ),
                                       )
-                                    ),
-                                  
-                                  //Likes / comments
-                                  Padding(
-                                    padding: EdgeInsets.all(20.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        ///Likes
-                                        Icon(
-                                          Icons.thumb_up,
-                                          color: Colors.grey,
-                                          size: 12.0,
+                                    : Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20.0, vertical: 10),
+                                        child: Container(
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                (_post.type == 'Exercise')
+                                                    ? Icon(Icons.fitness_center,
+                                                        color: Colors.black,
+                                                        size: 20)
+                                                    : Icon(Icons.calendar_today,
+                                                        color: Colors.black,
+                                                        size: 20),
+                                                SizedBox(width: 15),
+                                                Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Container(
+                                                          constraints: BoxConstraints(
+                                                              maxWidth: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.75),
+                                                          child: Text(
+                                                            _post.headline,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .display1,
+                                                          )),
+                                                      SizedBox(height: 5),
+                                                      Text(
+                                                        _post.subtitle,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .display2,
+                                                      ),
+                                                      SizedBox(height: 5),
+                                                      Text(
+                                                        _post.textContent,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: Colors
+                                                                    .black),
+                                                      ),
+                                                    ])
+                                              ]),
                                         ),
-                                        SizedBox(width: 5.0),
-                                        Text(
-                                          NumberFormat.compact().format(_post.likes.length).toString(),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
-                                        ),
-                                        SizedBox(width: 20.0),
+                                      ),
+                                (_post.textContent != null ||
+                                        _post.textContent != '')
+                                    ? SizedBox(height: 10)
+                                    : SizedBox(),
 
-                                        ///Comments
-                                        Icon(
-                                          Icons.textsms,
-                                          color: Colors.grey,
-                                          size: 12.0,
-                                        ),
-                                        SizedBox(width: 5.0),
-                                        Text(
-                                          NumberFormat.compact().format(_post.comments.length).toString(),
-                                          style: GoogleFonts.montserrat(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: Colors.black),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                
-                                ]
-                              ),
-                            ),
-
-                            Divider(color: Colors.black),
-
-                            //Social Interactions (Likes, comments, share)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
+                                //Media
+                                (_post.media == null || _post.media == '')
+                                    ? Container(height: 0)
+                                    : Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
                               child: Container(
-                                height: 40,
+                                constraints: BoxConstraints(maxHeight: 400),
                                 width: double.infinity,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    ///Like
-                                    InkWell(
-                                      onTap: (){
-
-                                        if(_post.likes.contains(_user.uid)){
-                                          DatabaseService().unlikePost(widget.groupName, _post.postID);
-                                        } else {
-                                          DatabaseService().likePost(widget.groupName, _post.postID);
-                                        }
-
-                                      },
-                                      child: Container(
-                                        height: 40,
-                                        width: MediaQuery.of(context).size.width *0.5,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Icon(
-                                              Icons.thumb_up,
-                                              color: _post.likes.contains(_user.uid) ? Colors.blue : Colors.grey,
-                                              size: 14.0,
-                                            ),
-                                            SizedBox(width: 5.0),
-                                            Text(
-                                              _post.likes.contains(_user.uid) ? 'Liked' : 'Like',
-                                              style: GoogleFonts.montserrat(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color:  _post.likes.contains(_user.uid) ? Colors.blue : Colors.black),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    
-                                    ///Share
-                                    InkWell(
-                                      onTap: (){},
-                                      child: Container(
-                                        height: 40,
-                                        width: MediaQuery.of(context).size.width *0.5,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Icon(
-                                              Icons.share,
-                                              color: Colors.grey,
-                                              size: 14.0,
-                                            ),
-                                            SizedBox(width: 5.0),
-                                            Text(
-                                              'Compartir',
-                                              style: GoogleFonts.montserrat(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-
-                                  ],
-                                ),
-                              ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Image.network(_post.media, fit: BoxFit.fitWidth)),
+                              )
                             ),
-                                  
-                      ]
-                    )
-                  ),
 
-                  Divider(color: Colors.black),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 20.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      ///Likes
+                                      IconButton(
+                                        padding: EdgeInsets.all(2),
+                                        onPressed: () {
+                                          if (_post.likes.contains(_user.uid)) {
+                                            DatabaseService().unlikePost(
+                                                widget.groupName, _post.postID);
+                                            DatabaseService()
+                                                .notifyLikesComments(
+                                                    _post.ownerUID,
+                                                    'Liked Post',
+                                                    widget.groupName);
+                                          } else {
+                                            DatabaseService().likePost(
+                                                widget.groupName, _post.postID);
+                                          }
+                                        },
+                                        icon: Icon(
+                                          Icons.thumb_up,
+                                          color: _post.likes.contains(_user.uid)
+                                              ? Colors.blue
+                                              : Colors.grey,
+                                          size: 16.0,
+                                        ),
+                                        splashRadius: 16,
+                                      ),
+                                      SizedBox(width: 2.0),
+                                      Text(
+                                        NumberFormat.compact()
+                                            .format(_post.likes.length)
+                                            .toString(),
+                                        style: GoogleFonts.montserrat(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ]),
+                        ),
+                      ])),
+
+                  Divider(color: Colors.grey, indent: 40, endIndent: 40),
 
                   //Comments
                   Container(
                     color: Colors.white,
-                    width: double.infinity,              
+                    width: double.infinity,
                     child: ListView.builder(
-                      itemCount: _post.comments.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index){
-                        return StreamProvider<UserProfile>.value(
-                          value: DatabaseService().postOwner(_post.comments[index].userID),
-                          child: PostComment(commentText: _post.comments[index].comment));
-                      }
-                    ),
+                        itemCount: _post.comments.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return StreamProvider<UserProfile>.value(
+                              value: DatabaseService()
+                                  .postOwner(_post.comments[index].userID),
+                              child: PostComment(
+                                  commentText: _post.comments[index].comment));
+                        }),
                   ),
-                  
-                ],),
-              )
-            ),
-            
+                ],
+              ),
+            )),
+
             //Text Input
             Container(
               color: Colors.grey[50],
-              padding: const EdgeInsets.only(top:10),
+              padding: const EdgeInsets.only(top: 10),
               child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -315,7 +265,8 @@ class _PostDetailsState extends State<PostDetails> {
                     children: <Widget>[
                       ///Image
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10.0),
                         child: CircleAvatar(
                           radius: 20,
                           backgroundColor: Colors.grey[100],
@@ -323,8 +274,7 @@ class _PostDetailsState extends State<PostDetails> {
                             child: Container(
                                 height: 40,
                                 width: 40,
-                                child: Image.network(
-                                    _user.profilePic,
+                                child: Image.network(_user.profilePic,
                                     fit: BoxFit.cover)),
                           ),
                         ),
@@ -343,7 +293,8 @@ class _PostDetailsState extends State<PostDetails> {
                           controller: _controller,
                           decoration: InputDecoration.collapsed(
                             hintText: "Comenta...",
-                            hintStyle: TextStyle(color: Theme.of(context).canvasColor),
+                            hintStyle:
+                                TextStyle(color: Theme.of(context).canvasColor),
                           ),
                           onChanged: (value) {
                             setState(() => commentPost = value);
@@ -357,27 +308,32 @@ class _PostDetailsState extends State<PostDetails> {
                       Padding(
                         padding: const EdgeInsets.only(right: 15.0),
                         child: GestureDetector(
-                          child: Text('Post',
-                            style: GoogleFonts.montserrat(fontSize: 14, color: Theme.of(context).primaryColor)                      
-                          ),
-                          onTap: () {
-                            DatabaseService().commentPost(widget.groupName, widget.postID, commentPost);
-                            DatabaseService().notifyLikesComments(_post.ownerUID, 'Comment Post', widget.groupName);
-                            
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus) {
-                                  currentFocus.unfocus();}
-                              
-                            setState(() {
-                              _controller.clear();
-                            });
-                            
-                          }),
+                            child: Text('Post',
+                                style: GoogleFonts.montserrat(
+                                    fontSize: 14,
+                                    color: Theme.of(context).primaryColor)),
+                            onTap: () {
+                              DatabaseService().commentPost(
+                                  widget.groupName, widget.postID, commentPost);
+                              DatabaseService().notifyLikesComments(
+                                  _post.ownerUID,
+                                  'Comment Post',
+                                  widget.groupName);
+
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus) {
+                                currentFocus.unfocus();
+                              }
+
+                              setState(() {
+                                _controller.clear();
+                              });
+                            }),
                       )
                     ],
                   )),
-                ),
-
+            ),
           ],
         ),
       ),

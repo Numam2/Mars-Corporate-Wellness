@@ -50,8 +50,8 @@ class _EditProfileState extends State<EditProfile> {
   String sex;
   double weight;
   String newWeight;
-  String preference;
-  String goal;
+  List preferences;
+  List goals;
 
   String male = 'Masculino';
   String female = 'Femenino';
@@ -73,7 +73,7 @@ class _EditProfileState extends State<EditProfile> {
     weight = double.tryParse(widget.profile.weight);
     newWeight = widget.profile.weight;
     sex = widget.profile.sex;
-    preference = widget.profile.preference;
+    preferences = widget.profile.preferences;
   }
 
   @override
@@ -96,7 +96,7 @@ class _EditProfileState extends State<EditProfile> {
               onTap: () {
                 uploadPic(context);
                 DatabaseService().editUserData(
-                    name, about, sex, newWeight, preference, goal);
+                    name, about, sex, newWeight);
                 Navigator.of(context).pop();
               },
               child: Padding(

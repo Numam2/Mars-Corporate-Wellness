@@ -4,13 +4,14 @@ import 'package:personal_trainer/Firebase_Services/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Screens/Authenticate/SignIn.dart';
-import 'package:personal_trainer/Screens/Profile/Onboarding.dart';
-import 'package:personal_trainer/Screens/wrapper.dart';
+import 'package:personal_trainer/Screens/Authenticate/VerifyEmail.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
 
 class Register extends StatefulWidget {
-  final Function toggleView;
-  Register({this.toggleView});
+
+  final String domain;
+  final String organization;
+  Register({this.domain, this.organization});
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -102,6 +103,7 @@ class _RegisterState extends State<Register> {
                               val.isEmpty ? "No olvides gregar un nombre" : null,
                           cursorColor: Theme.of(context).accentColor,
                           focusNode: _nameNode,
+                          textCapitalization: TextCapitalization.words,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                               errorStyle: GoogleFonts.montserrat(
@@ -142,8 +144,13 @@ class _RegisterState extends State<Register> {
                               hintStyle: GoogleFonts.montserrat(
                                   color: Theme.of(context).canvasColor),
                               prefixIcon: Icon(
-                                Icons.person_outline,
-                                color: Theme.of(context).accentColor,
+                                Icons.email_outlined,
+                                color: Theme.of(context).accentColor,                              
+                              ),
+                              suffixText: widget.domain,
+                              suffixStyle: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black 
                               ),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -153,7 +160,7 @@ class _RegisterState extends State<Register> {
                             FocusScope.of(context).requestFocus(_passwordNode);
                           },
                           onChanged: (val) {
-                            setState(() => email = val);
+                            setState(() => email = val + widget.domain);
                           },
                         ),
 
@@ -237,9 +244,9 @@ class _RegisterState extends State<Register> {
                                       password: password)).user;
 
                                       await DatabaseService(uid: user.uid).createUserRoutine('Día 1');
-                                      await DatabaseService(uid: user.uid).createUserProfile(name, setSearchParam(name.toLowerCase()));
+                                      await DatabaseService(uid: user.uid).createUserProfile(name, setSearchParam(name.toLowerCase()), widget.organization);
 
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => Wrapper()));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => VerifyEmail(email: email)));
                                                 
                                       } on FirebaseAuthException catch (e) {
                                           if (e.code == 'email-already-in-use') {
@@ -324,7 +331,7 @@ class _RegisterState extends State<Register> {
                                   Navigator.push(context, MaterialPageRoute(
                                         builder: (context) => SignIn()));
                                 },
-                                child: Text("¿Ya tienes cuenta? Entra",
+                                child: Text("¿Ya tienes cuenta? Ingresa",
                                     style: GoogleFonts.montserrat(
                                         color: Colors.black))),
                           ],

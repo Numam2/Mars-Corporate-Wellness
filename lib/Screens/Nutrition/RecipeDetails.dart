@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 
 class RecipeDetails extends StatefulWidget {
+  final UserProfile userProfile;
   final String user;
   final String name;
   final String description;
@@ -18,7 +20,8 @@ class RecipeDetails extends StatefulWidget {
   final List likes;
 
   RecipeDetails(
-      {this.user,
+      {this.userProfile,
+      this.user,
       this.name,
       this.description,
       this.author,
@@ -50,7 +53,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
 
     return SafeArea(
       child: Scaffold(
@@ -127,6 +130,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                                             });
                                           } else {
                                             DatabaseService().likeRecipe(widget.recipeID);
+                                            DatabaseService().recordOrganizationStats(widget.userProfile.organization, 'Recipes Saved');
                                             setState(() {                                          
                                               savedRecipe = true;
                                             });
@@ -224,6 +228,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                         style: Theme.of(context).textTheme.headline6
                       ),
                     ),
+                    SizedBox(height:10),
                     Container(
                       width: double.infinity,
                       child: ListView.builder(
@@ -281,6 +286,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
                         style: Theme.of(context).textTheme.headline6
                       ),
                     ),
+                    SizedBox(height:10),
                     Container(
                       width: double.infinity,
                       child: ListView.builder(

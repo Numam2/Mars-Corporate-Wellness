@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_trainer/Screens/Authenticate/authenticate.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Shared/Loading.dart';
+import 'package:personal_trainer/Screens/Authenticate/VerifyEmail.dart';
 
 class Wrapper extends StatelessWidget {
   @override
@@ -15,8 +16,10 @@ class Wrapper extends StatelessWidget {
           User user = snapshot.data;
           if (user == null) {
             return Authenticate();
+          } else if (user.emailVerified){            
+            return InicioNew();
           }
-          return InicioNew();
+          return VerifyEmail();
         } else {
           return Scaffold(
             backgroundColor: Colors.white,

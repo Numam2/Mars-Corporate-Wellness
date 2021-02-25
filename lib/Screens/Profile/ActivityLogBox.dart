@@ -222,7 +222,7 @@ class ActivityLogBox extends StatelessWidget {
                             width: MediaQuery.of(context).size.width *0.25,
                             child: Image(
                                   image: AssetImage(
-                                      'Images/Illustration Woman Exercising.jpg'),
+                                      'Images/App Pics/iconos ilust-15.png'),
                                   fit: BoxFit.fitHeight))
                         ]),
                   ])),

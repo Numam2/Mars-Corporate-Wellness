@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
-import 'package:personal_trainer/Shared/SharePrompt.dart';
+import 'package:personal_trainer/Screens/Social/CreatePost.dart';
 
 class ReconitionLevelUp extends StatelessWidget {
 
@@ -8,7 +9,8 @@ class ReconitionLevelUp extends StatelessWidget {
   final int points;
   final String headline;
   final String time;
-  ReconitionLevelUp({this.level, this.points, this.headline, this.time});
+  final String organization;
+  ReconitionLevelUp({this.level, this.points, this.headline, this.time, this.organization});
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +34,8 @@ class ReconitionLevelUp extends StatelessWidget {
             Container(
               height: 200,
               child: Image(
-                  image: NetworkImage(
-                      'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FRecognition%20Star.png?alt=media&token=70378ac4-8954-420d-a884-eeaa134454cd')),
+                  image: AssetImage(
+                      'Images/App Pics/iconos ilust-12.png')),
             ),
             SizedBox(height: 20),
 
@@ -46,7 +48,10 @@ class ReconitionLevelUp extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: Text(
                 'Alcanzaste el $level con $points puntos',
-                style: Theme.of(context).textTheme.display1,
+                style: GoogleFonts.montserrat(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,                  
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -56,17 +61,14 @@ class ReconitionLevelUp extends StatelessWidget {
             Container(
               height: 35.0,
               child: RaisedButton(
-                onPressed: () {                 
-                  return showDialog(
-                    context: context,
-                      builder: (context) {
-                        return SharePrompt(
-                          type: 'Level Up',
-                          headline: 'Alcancé el $level con $points puntos',
-                          time: time,
-                          activityIcon: Icons.trending_up,
-                        );
-                      });
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePost(
+                    groupName: organization,
+                    type: 'Level Up',
+                    headline: 'Alcancé el $level con $points puntos',
+                    time: time,
+                    activityIcon: Icons.trending_up,
+                  )));
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25)),

@@ -5,15 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:personal_trainer/Firebase_Services/auth.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
-import 'package:personal_trainer/Models/messages.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Screens/SplashScreen.dart';
 import 'package:personal_trainer/Screens/wrapper.dart';
 import 'package:provider/provider.dart';
-import 'package:personal_trainer/Models/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,16 +55,13 @@ class _MyAppState extends State<MyApp> {
         ///User Provider
         StreamProvider<UserProfile>.value(value: DatabaseService().userData),
         StreamProvider<User>.value(value: FirebaseAuth.instance.userChanges()),
-        StreamProvider<ProgressPictureList>.value(value: DatabaseService().progressPictures),
-        ///Chat List Provider
-        StreamProvider<List<ChatsList>>.value(value: DatabaseService().chatsList),
-                                               
+        StreamProvider<ProgressPictureList>.value(value: DatabaseService().progressPictures),                                        
         ///Group Notifications Provider
         StreamProvider<GroupNotificationList>.value(value: DatabaseService().groupNotifications),
       ],
       
       child: MaterialApp(
-        theme: ThemeData(
+        theme: ThemeData(          
           scaffoldBackgroundColor: Colors.white,
           primaryColor: Color(0xff0033A1), ////Drak Blue
           accentColor: Color(0xff00CE7C), //// Green
@@ -100,6 +94,10 @@ class _MyAppState extends State<MyApp> {
               fontWeight: FontWeight.w200,
               color: Colors.black),
             bodyText2:GoogleFonts.montserrat(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Colors.black),
+            subtitle1: GoogleFonts.montserrat(
               fontSize: 12,
               fontWeight: FontWeight.w400,
               color: Colors.black),

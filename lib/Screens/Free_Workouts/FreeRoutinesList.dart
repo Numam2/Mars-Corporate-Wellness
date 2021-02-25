@@ -39,9 +39,9 @@ class FreeRoutinesList extends StatelessWidget {
 
     if (_routine == null) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
         child: Container(
-          height: 400,
+          height: 200,
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.grey[100],
@@ -130,87 +130,5 @@ class FreeRoutinesList extends StatelessWidget {
           enlargeCenterPage: true,
         ),
         items: imageSliders);
-
-    // return ListView.builder(
-    //     itemCount: _routine.length,
-    //     scrollDirection: Axis.horizontal,
-    //     shrinkWrap: true,
-    //     physics: BouncingScrollPhysics(),
-    //     itemBuilder: (_, index) {
-    //       return FittedBox(
-    //         child: Container(
-    //           width: MediaQuery.of(context).size.width,
-    //           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-    //           child: InkWell(
-    //             onTap: () => navigatetoDetail(context,
-    //               _routine[index].name,
-    //               _routine[index].image,
-    //               _routine[index].author,
-    //               _routine[index].duration,
-    //               _routine[index].description,
-    //               _routine[index].objectives,
-    //               _routine[index].equipment
-    //             ),
-    //             child: Container(
-    //               width: MediaQuery.of(context).size.width,
-    //               margin: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 0.0),
-    //               child: Column(
-    //                 children: <Widget>[
-    //                   ///Image
-    //                   Container(
-    //                     height: 300,
-    //                     width: double.infinity,
-    //                     decoration: BoxDecoration(
-    //                       color: Colors.grey[100],
-    //                       borderRadius: BorderRadius.circular(8.0),
-    //                       image: DecorationImage(
-    //                         image: NetworkImage(_routine[index].image),
-    //                         fit: BoxFit.cover,
-    //                       ),
-    //                     ),
-    //                   ),
-
-    //                   ///Text
-    //                   Container(
-    //                     width: double.infinity,
-    //                     child: Row(children: <Widget>[
-    //                       Padding(
-    //                         padding:
-    //                             const EdgeInsets.only(top: 12.0),
-    //                         child: Container(
-    //                           constraints: BoxConstraints(maxWidth: 105),
-    //                           child: Text(
-    //                             _routine[index].name,
-    //                             textAlign: TextAlign.start,
-    //                             style: GoogleFonts.montserrat(
-    //                                 color: Colors.black,
-    //                                 fontSize: 12,
-    //                                 fontWeight: FontWeight.w500),
-    //                           ),
-    //                         ),
-    //                       ),
-    //                       Spacer(),
-    //                       Padding(
-    //                         padding:
-    //                             const EdgeInsets.only(top: 12.0),
-    //                         child: Text(
-    //                           _routine[index].duration,
-    //                           textAlign: TextAlign.start,
-    //                           style: GoogleFonts.montserrat(
-    //                             color: Colors.black45,
-    //                             fontWeight: FontWeight.w400,
-    //                             fontSize: 10,
-    //                           ),
-    //                         ),
-    //                       ),
-    //                     ]),
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //       );
-    //     });
   }
 }

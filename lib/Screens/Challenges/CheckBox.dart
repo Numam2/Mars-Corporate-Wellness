@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Firebase_Services/levelTracker.dart';
 import 'package:personal_trainer/Models/challenge.dart';
+import 'package:personal_trainer/Models/dates.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Shared/RecognitionHabitChallenge.dart';
 import 'package:personal_trainer/Shared/RecognitionLevelUp.dart';
@@ -104,21 +105,43 @@ class _ChallengeCheckBoxState extends State<ChallengeCheckBox> {
 
             var completedDays = widget.chal.currentDay + 1;
             challenge = widget.chal.description;
-            var pointsCounter = (_profile.points + (widget.chal.totalDays * 2)).round();            
+            var pointsCounter = (_profile.points + (widget.chal.totalDays * 2)).round();
 
+            /////Logic to record challenge updates
+            if(_profile.activeOrganizationChallenges == {} || _profile.activeOrganizationChallenges == null){
+              //Do nothing
+            } else {
+              if(_profile.activeOrganizationChallenges['Status'] == 'Completo' || DateTime.now().difference(_profile.activeOrganizationChallenges['Date Finish'].toDate()).inDays > 0){
+                //Do nothing
+              } else if(_profile.activeOrganizationChallenges['Type'] ==  'Habit Count'){
+                //If next to complete
+                if(_profile.activeOrganizationChallenges['Completed Steps'] + 1 == _profile.activeOrganizationChallenges['Target']){
+                  DatabaseService().updateOrgChallenge('Completo', _profile.activeOrganizationChallenges['Completed Steps'] + 1);
+                  DatabaseService().saveTrainingSession('Reto', DatesDictionary().monthDictionary[_profile.activeOrganizationChallenges['Date Finish'].month - 1], _profile.activeOrganizationChallenges['Challenge Title']);
+                  DatabaseService().updateChallengeCompletedCount(_profile.organization,_profile.activeOrganizationChallenges['Challenge ID']);
+                  DatabaseService().recordOrganizationStats(_profile.organization, 'Challenges Completed');
+                } else {
+                  DatabaseService().updateOrgChallenge('En Progreso', _profile.activeOrganizationChallenges['Completed Steps'] + 1);
+                }
+              }             
+            }
+
+            /// Logic to increase level or not
             if (completedDays == widget.chal.totalDays){              
 
               if(pointsCounter > _profile.levelTo){
                 DatabaseService().updateUserPoints(pointsCounter);
                 LevelTracker().updateLevel(_profile.levelTo);
-                DatabaseService().saveTrainingSession('Hábito', widget.chal.totalDays.toString() + ' días', challenge);
+                DatabaseService().saveTrainingSession(challenge, widget.chal.totalDays.toString() + ' días', 'Hábito');
                 deleteChallenge();
+                DatabaseService().recordOrganizationStats(_profile.organization, 'Habits Adopted');
                 Navigator.push(context,
                   MaterialPageRoute(builder: (context) => ReconitionLevelUp(
                     level: _profile.level,
                     points: pointsCounter,
                     headline: '¡Subí al ' + _profile.level + '!',
                     time: pointsCounter.toString() + ' PTS',
+                    organization: _profile.organization
                   )));
               } else {
                 DatabaseService().updateUserPoints(pointsCounter);
@@ -128,9 +151,9 @@ class _ChallengeCheckBoxState extends State<ChallengeCheckBox> {
                   context, MaterialPageRoute(builder: (context) => ReconitionHabitChallenge(
                      headline: 'Completé un hábito: ' + challenge,
                     time: widget.chal.totalDays.toString() + ' DÍAS',
+                    organization: _profile.organization
                   )));
               }
-
             } else {
               await updateTodayStatus(today, completedDays);
             }

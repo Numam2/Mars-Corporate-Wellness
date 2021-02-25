@@ -26,3 +26,26 @@ class PostComments {
   PostComments({this.userID, this.comment, this.time});
 
 }
+
+class Article {
+
+  final String title;
+  final String author;
+  final List<ArticleContent> content;
+  final DateTime date;
+  final String image;
+  final List userReads;
+  final String articleID;
+
+  Article({this.title, this.author, this.content, this.date, this.image, this.userReads, this.articleID});
+
+}
+
+class ArticleContent {
+
+  final String text;
+  final String type;
+
+  ArticleContent({this.text, this.type});
+
+}

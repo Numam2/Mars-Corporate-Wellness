@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Challenges/GoalCreate.dart';
 
 class GoalSelectType extends StatelessWidget {
+
+  final UserProfile userProfile;
+  GoalSelectType({this.userProfile});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,7 +48,8 @@ class GoalSelectType extends StatelessWidget {
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) => GoalCreate(
-                                goalType: 'Weight'
+                                goalType: 'Weight',
+                                userProfile: userProfile,
                               )));
                           },
                           child: Container(
@@ -75,7 +81,8 @@ class GoalSelectType extends StatelessWidget {
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) => GoalCreate(
-                                goalType: 'Other'
+                                goalType: 'Other',
+                                userProfile: userProfile,
                               )));
                           },
                           child: Container(

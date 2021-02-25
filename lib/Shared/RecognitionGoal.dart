@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
-import 'package:personal_trainer/Shared/SharePrompt.dart';
+import 'package:personal_trainer/Screens/Social/CreatePost.dart';
 
 class ReconitionGoal extends StatelessWidget {
 
   final String headline;
   final String time;
-  ReconitionGoal({this.headline, this.time});
+  final String organization;
+  ReconitionGoal({this.headline, this.time, this.organization});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +25,8 @@ class ReconitionGoal extends StatelessWidget {
             Container(
               height: 200,
               child: Image(
-                  image: NetworkImage(
-                      'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FReconition%20Goal%20Complete.jpg?alt=media&token=72e2e3c7-807d-4aa6-bf40-ccd8942da598')),
+                  image: AssetImage(
+                      'Images/App Pics/iconos ilust-13.png')),
             ),
             SizedBox(height: 20),
 
@@ -37,7 +39,10 @@ class ReconitionGoal extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: Text(
                 'Alcanzar una meta a largo plazo requiere mucha disciplina y trabajo duro. ¡Lo lograste!',
-                style: Theme.of(context).textTheme.display1,
+                style: GoogleFonts.montserrat(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,                  
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -48,16 +53,13 @@ class ReconitionGoal extends StatelessWidget {
               height: 35.0,
               child: RaisedButton(
                 onPressed: () {
-                  return showDialog(
-                    context: context,
-                      builder: (context) {
-                        return SharePrompt(
-                          type: 'Goal',
-                          headline: headline,
-                          time: time,
-                          activityIcon: Icons.fitness_center,
-                        );
-                      });
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePost(
+                    groupName: organization,
+                    type: 'Goal',
+                    headline: headline,
+                    time: time.toString(),
+                    activityIcon: Icons.fitness_center,
+                  )));
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25)),

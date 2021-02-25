@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/auth.dart';
+import 'package:personal_trainer/Screens/Authenticate/SelectCompany.dart';
 import 'package:personal_trainer/Screens/Authenticate/register.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 import 'package:personal_trainer/Screens/wrapper.dart';
@@ -76,7 +77,7 @@ class _SignInState extends State<SignIn> {
                     ////// First Text
                     Container(
                       padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
-                      child: Text("Log in",
+                      child: Text("Ingresar",
                           textAlign: TextAlign.left,
                           style: GoogleFonts.montserrat(
                               fontSize: 40.0,
@@ -170,6 +171,7 @@ class _SignInState extends State<SignIn> {
                                             .signInWithEmailAndPassword(
                                                 email: email,
                                                 password: password);
+                                        Navigator.push(context, MaterialPageRoute(builder: (context) => Wrapper()));
                                                 
 
                                       } on FirebaseAuthException catch (e) {
@@ -244,7 +246,7 @@ class _SignInState extends State<SignIn> {
                                 FlatButton(
                                     onPressed: () {
                                       Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => Register()));
+                                        builder: (context) => SelectCompany()));
                                       //widget.toggleView();
                                     },
                                     child: Text("¿No tienes cuenta? Regístrate",

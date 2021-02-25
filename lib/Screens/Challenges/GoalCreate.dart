@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
 
 class GoalCreate extends StatefulWidget {
 
   final String goalType;
-  GoalCreate({this.goalType});
+  final UserProfile userProfile;
+  GoalCreate({this.goalType, this.userProfile});
 
   @override
   _GoalCreateState createState() => _GoalCreateState();
@@ -58,7 +60,7 @@ class _GoalCreateState extends State<GoalCreate> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.goalType);
+
     if(widget.goalType == 'Weight'){
       
       return WillPopScope(
@@ -445,6 +447,7 @@ class _GoalCreateState extends State<GoalCreate> {
                                         widget.goalType,
                                         [],
                                       );
+                                      DatabaseService().recordOrganizationStats(widget.userProfile.organization, 'Goals Set');
                                       Navigator.push(context, MaterialPageRoute(
                                           builder: (context) => InicioNew()));
                                     }

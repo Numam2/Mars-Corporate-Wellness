@@ -5,8 +5,7 @@ import 'package:personal_trainer/Models/challenge.dart';
 import 'package:personal_trainer/Models/exerciseDetail.dart';
 import 'package:personal_trainer/Models/explore.dart';
 import 'package:personal_trainer/Models/goals.dart';
-import 'package:personal_trainer/Models/groups.dart';
-import 'package:personal_trainer/Models/messages.dart';
+import 'package:personal_trainer/Models/organization.dart';
 import 'package:personal_trainer/Models/posts.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Models/weeks.dart';
@@ -26,7 +25,7 @@ class DatabaseService {
   //Collection reference profile
   final CollectionReference challenges = FirebaseFirestore.instance.collection('Challenges');
 
-  Future createUserProfile (String name, List searchName) async {
+  Future createUserProfile (String name, List searchName, String organization) async {
     return await profile.doc(uid).set({
       'UID': uid,
       'Name': name,
@@ -36,9 +35,9 @@ class DatabaseService {
       'Birthday': DateTime.parse("1994-01-01 12:00:00"),
       'Weight': '0.0',
       'Height': '0.0',
-      'Experience': 'None',
-      'Preference': 'None',
-      'Goal': 'None',
+      'Experience': 0,
+      'Preferences': [],
+      'Goals': [],
       'Accumulated Workouts': 0,
       'Accumulated Hours': 0,
       'Profile Image': 'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/Profile%20Images%2FNew%20User.jpg?alt=media&token=f08bc2e6-da37-4fcc-95f7-127a5de3ec52',
@@ -46,6 +45,7 @@ class DatabaseService {
       'Progress Pictures': [],
       'Group Notifications': [],
       'Activity': [],
+      'Organization': organization,
 
       'Level': 'Level 1',
       'Points': 0,
@@ -59,11 +59,12 @@ class DatabaseService {
       'Current Training Routine': '',
       'Personalized Routine': false,
       'Personal Coach': false,
+      'Active Organization Challenges': {},
       
     });
   }
 
-  Future updateUserData (name, sex, birthday, weight, height, experience, preference, goal, workoutsDone, hoursDone, caloriesBurnt) async {
+  Future updateUserData (name, sex, birthday, weight, height, experience, preferences, goals, workoutsDone, hoursDone, caloriesBurnt) async {
     return await profile.doc(uid).set({
      'Name': name,
      'Sex': sex ?? 'Other',
@@ -71,15 +72,15 @@ class DatabaseService {
      'Weight': weight,
      'Height': height,
      'Experience': experience,
-     'Preference': preference,
-     'Goal': goal,
+     'Preferences': preferences,
+     'Goals': goals,
      'Accumulated Workouts': workoutsDone,
      'Accumulated Hours': hoursDone,
      'Calories Burnt': caloriesBurnt,
     });
   }
 
-  Future editUserData(name, about, sex, weight, preference, goal) async {
+  Future editUserData(name, about, sex, weight) async {
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
 
@@ -91,8 +92,6 @@ class DatabaseService {
       'About': about,
       'Sex': sex,
       'Weight': weight,
-      'Preference': preference,
-      'Goal': goal,
     });
   }
 
@@ -116,6 +115,68 @@ class DatabaseService {
     });
   }
 
+  //List of Organizations
+  List<Organization> _organizationsListFromSnapshot (QuerySnapshot snapshot){
+    return snapshot.docs.map((doc){
+      return Organization(
+        organizationName: doc.data()['Name'] ?? '',
+        searchName: doc.data()['Search Name'] ?? [],
+        logo: doc.data()['Logo'] ?? '',
+        domain: doc.data()['Domain'] ?? '',
+        );
+      }
+    ).toList();
+  }
+
+  // Organizations Search
+  Stream <List<Organization>> searchOrganizations (String organizationSearch) async*{
+    yield* FirebaseFirestore.instance.collection('Organizations').where('Search Name', arrayContains: organizationSearch).snapshots().map(_organizationsListFromSnapshot);
+  }
+
+  // Record Organization Monthly Statistics
+  Future recordOrganizationStats (String organization, String activityType) async {
+
+    final String monthYear = DateTime.now().year.toString() + DateTime.now().month.toString();
+    final User user = FirebaseAuth.instance.currentUser;
+    final String uid = user.uid.toString();
+
+    FirebaseFirestore.instance.collection('Organizations').doc(organization).collection('Stats').doc(monthYear).update({
+      activityType: FieldValue.arrayUnion([uid])
+
+      // 'Goals Set':
+      // 'Goals Achieved':
+      // 'Habits Started':
+      // 'Habits Adopted':
+      // 'Challenges Accepted':
+      // 'Challenges Completed':
+      // 'Workouts Completed':
+      // 'Recipe Views':
+      // 'Recipes Saved':
+      // 'Feed Posts':
+      // 'Feed Likes':
+      // 'Article reads':   
+
+      // 'Yoga Sessions':
+      // 'Mindfulness Sessions':
+      
+    });
+  }
+  Future recordOrganizationCountStats (String organization, String activityType, int count) async {
+
+    final String monthYear = DateTime.now().year.toString() + DateTime.now().month.toString();
+
+    FirebaseFirestore.instance.collection('Organizations').doc(organization).collection('Stats').doc(monthYear).update({
+      activityType: FieldValue.arrayUnion([count])
+      // 'Workout Time in Minutes':
+      // 'Calories Burnt'
+      
+      // 'Yoga Time in Minutes':
+      // 'Mindfulness Time in Minutes:':
+      
+
+    });
+  }
+
 
 
 ///////////////////////// Home Routine Explorer Streams ////////////////////////// 
@@ -133,18 +194,28 @@ class DatabaseService {
         equipment: doc.data()['Equipment'] ?? [],
         firstWeek: doc.data()['First Week'] ?? '',
         firstDay: doc.data()['First Day'] ?? '',
+        dateUploaded: doc.data()['Date'].toDate() ?? DateTime.now(),
+        userGoals: doc.data()['User Goals'] ?? [],
+        userSex: doc.data()['Male Only'] ?? false,
+        userExperience: doc.data()['User Experience'] ?? 0,
         );
       }
     ).toList();
   }
 
   // Free Routines Stream
-  Stream <List<ExploreRoutines>> get freeRoutinesList {
-    return FirebaseFirestore.instance.collection('Free Routines').where('Tag', isEqualTo: 'Routine').snapshots().map(_exploreRoutines);
+  Stream <List<ExploreRoutines>> freeRoutinesList (List userGoals, int userExperience) {
+    return FirebaseFirestore.instance.collection('Free Routines')
+      .where('Tag', isEqualTo: 'Routine')
+      .where('User Goals', arrayContainsAny: userGoals)
+      // .where('User Experience', isLessThanOrEqualTo: userExperience)
+      .limit(5).snapshots().map(_exploreRoutines);
   }
-
-
-
+  Stream <List<ExploreRoutines>> allRoutinesList () {
+    return FirebaseFirestore.instance.collection('Free Routines')
+      .where('Tag', isEqualTo: 'Routine')
+      .snapshots().map(_exploreRoutines);
+  }
 
   // Free Individual Workouts list from snapshot
   List<ExploreWorkouts> _exploreWorkouts (QuerySnapshot snapshot){
@@ -157,17 +228,29 @@ class DatabaseService {
         description: doc.data()['Description'] ?? '',
         objectives: doc.data()['Objectives'] ?? [],
         equipment: doc.data()['Equipment'] ?? [],
+        dateUploaded: doc.data()['Date'].toDate() ?? DateTime.now(),
+        userGoals: doc.data()['User Goals'] ?? [],
+        // userSex: doc.data()['Male Only'] ?? false,
+        userExperience: doc.data()['User Experience'] ?? 0,
         );
       }
     ).toList();
   }
 
   // Free Individual Workouts Stream
-  Stream <List<ExploreWorkouts>> freeWorkoutsList (category) {
-    return FirebaseFirestore.instance.collection('Free Routines').doc('Individual Workouts').collection('Workout List').where('Category', isEqualTo: category).snapshots().map(_exploreWorkouts);
+  Stream <List<ExploreWorkouts>> freeWorkoutsList (String category, List userGoals) {
+    return FirebaseFirestore.instance.collection('Free Routines').doc('Individual Workouts').collection('Workout List')
+    .where('Category', isEqualTo: category)
+    .where('User Goals', arrayContainsAny: userGoals)
+    .orderBy('Date')
+    .limit(8).snapshots().map(_exploreWorkouts);
   }
-
-
+  Stream <List<ExploreWorkouts>> allWorkoutsList (String category) {
+    return FirebaseFirestore.instance.collection('Free Routines').doc('Individual Workouts').collection('Workout List')
+    .where('Category', isEqualTo: category)
+    .orderBy('Date')
+    .snapshots().map(_exploreWorkouts);
+  }
 
   //Workout Sets list from snapshot
   List<Workout> _individualWorkoutFromSnapshot (QuerySnapshot snapshot) {                                                              
@@ -423,8 +506,8 @@ class DatabaseService {
         sex: snapshot.data()['Sex'] ?? '', 
         weight: snapshot.data()['Weight'] ?? '', 
         height: snapshot.data()['Height'] ?? '', 
-        preference: snapshot.data()['Preference'] ?? '', 
-        goal: snapshot.data()['Goal'] ?? '', 
+        preferences: snapshot.data()['Preferences'] ?? [], 
+        goals: snapshot.data()['Goals'] ?? [], 
         experience: snapshot.data()['Experience'] ?? '', 
         caloriesBurnt: snapshot.data()['Calories Burnt'] ?? 0, 
         birthday: snapshot.data()['Birthday'].toDate() ?? DateTime.parse("1994-01-01 12:00:00"),
@@ -438,6 +521,7 @@ class DatabaseService {
         levelTo: snapshot.data()['Level To'] ?? 499,
 
         groups: snapshot.data()['Groups'] ?? [],
+        organization: snapshot.data()['Organization'] ?? '',
 
         currentTrainingWeek: snapshot.data()['Current Training Week'] ?? '',
         currentTrainingDay: snapshot.data()['Current Training Day'] ?? '',
@@ -446,6 +530,9 @@ class DatabaseService {
         personalizedRoutine: snapshot.data()['Personalized Routine'] ?? false,
 
         hasPersonalCoach: snapshot.data()['Personal Coach'] ?? false,
+
+        activeOrganizationChallenges: snapshot.data()['Active Organization Challenges'] ?? {}
+        
       );
     } catch(e){
       print(e);
@@ -487,9 +574,6 @@ class DatabaseService {
       'Points': points,
     });
   }
-
-
-
 
 
 
@@ -558,9 +642,78 @@ class DatabaseService {
 
 
 
+  // Organizations Challenge List from snapshot
+  List<ChallengeContest> _challengeContestsFromSnapshot (QuerySnapshot snapshot){
+    return snapshot.docs.map((doc){
+      return ChallengeContest(
+        challengeID: doc.data()['Challenge ID'] ?? '',
+        title: doc.data()['Title'] ?? '',
+        image: doc.data()['Image'] ?? '',
+        activityType: doc.data()['Type'] ?? '',
+        target: doc.data()['Target'] ?? 0,
+        activeUsers: doc.data()['Active Users'] ?? [],
+        dateStart: doc.data()['Date Start'].toDate() ?? DateTime.now(),
+        dateFinish:doc.data()['Date Finish'].toDate() ?? DateTime.now(),
+        description: doc.data()['Description'] ?? '',
+        targetDescription: doc.data()['Target Description'] ?? '',
+        reward: doc.data()['Reward'] ?? '',
+        );
+      }
+    ).toList();
+  }
 
+  // Organizations Challenges Stream
+  Stream <List<ChallengeContest>> challengeContests (String userOrganization) async*{
+    yield* FirebaseFirestore.instance.collection('Organizations').doc(userOrganization).collection('Challenges').snapshots().map(_challengeContestsFromSnapshot);
+  }
 
+  // Add user to org challenge
+  Future joinOrgChallenge(groupName, challengeID, challengeTitle, type, int target, DateTime dateFinish) async {
+    final User user = FirebaseAuth.instance.currentUser;
+    final String uid = user.uid.toString();
+    return await profile.doc(uid).update({
+      'Active Organization Challenges':
+        {
+          'Challenge ID': challengeID,
+          'Challenge Title': challengeTitle,
+          'Status': 'En progreso',
+          'Type': type,
+          'Target Steps': target,
+          'Completed Steps': 0,
+          'Date Finish': dateFinish,
+        }
+    });
+  }
 
+  // Delete Org Challenge
+  Future deleteOrgChallenge() async {
+    final User user = FirebaseAuth.instance.currentUser;
+    final String uid = user.uid.toString();
+    return await profile.doc(uid).update({
+      'Active Organization Challenges': {}      
+    });      
+  }
+
+  ///// RECORD ORGANIZATION CHALLEGE COUNT / POINTS
+  Future updateOrgChallenge(status, int currentSteps) async {
+    final User user = FirebaseAuth.instance.currentUser;
+    final String uid = user.uid.toString();
+    return await profile.doc(uid).update({
+      'Active Organization Challenges.Status': status,
+      'Active Organization Challenges.Completed Steps': currentSteps,
+    });      
+  }
+
+  ///// Update challenge completed user count
+  Future updateChallengeCompletedCount (String userOrganization, String challengeID) async {
+
+    final User user = FirebaseAuth.instance.currentUser;
+    final String uid = user.uid.toString();
+
+    return await FirebaseFirestore.instance.collection('Organizations').doc(userOrganization).collection('Challenges').doc(challengeID).update({
+      'Users Completed': FieldValue.arrayUnion([uid] ?? ''),
+    });
+  }
 
 
 ///////////////////////// Goals Streams from Firestore ////////////////////////// 
@@ -656,330 +809,23 @@ class DatabaseService {
 
 
 
-
-///////////////////////// Chat Streams from Firestore ////////////////////////// 
-
-  //Create First Chat Room
-  Future createFirstChat(receiverUID, newDocID) async {
-
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(newDocID).set({
-     'Created At': DateTime.now(),
-     'Users': [uid, receiverUID],
-     'User Reads': [
-       {
-       'User': uid ?? '',
-       'Last Read': DateTime.now(),
-      },
-       {
-       'User': receiverUID ?? '',
-       'Last Read': DateTime.parse("1994-01-01 12:04:04"),
-      },
-     ]
-    });
-  }
-
-
-  //Update MyLastRead
-  Future deletePreviousLastRead (String docID, date) async {
-
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).update({
-      'User Reads': FieldValue.arrayRemove([{
-          'User': uid ?? '',
-          'Last Read': date,
-        }]
-      ),       
-    });
-  }
-  Future updateMyLastRead (String docID) async {
-
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).update({
-      'User Reads': FieldValue.arrayUnion([{
-          'User': uid ?? '',
-          'Last Read': DateTime.now(),
-        }]
-      ),       
-    });
-  }
-
-
-  //List of Chats
-  List<ChatsList> _chatsListFromSnapshot (QuerySnapshot snapshot){
-    try{
-      return snapshot.docs.map((doc){
-        return ChatsList(
-          users: doc.data()['Users'] ?? [],
-          docID: doc.id,
-          lastMessageTime: doc.data()['Created At'].toDate(),
-          userReads: doc.data()['User Reads'].map<UserReads>((item){
-            return UserReads(
-              user: item['User'] ?? '',
-              lastChecked: item['Last Read'].toDate() ?? DateTime.now(),            
-            );
-            }).toList(),
-          );
-        }
-      ).toList();
-    } catch (e){
-      print(e);
-      return null;
-    }
-    
-  }
-
-  // Chats Stream
-  Stream <List<ChatsList>> get chatsList async*{
-
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    yield* FirebaseFirestore.instance.collection('Chat Rooms').where('Users', arrayContains: uid).snapshots().map(_chatsListFromSnapshot);
-  }
-
-  // Profile from snapshot
-  ChatsList _selectedChatfromSnapshot (DocumentSnapshot snapshot){
-    try{
-      return ChatsList(
-        users: snapshot.data()['Users'] ?? [],
-        docID: snapshot.id,
-        lastMessageTime: snapshot.data()['Created At'].toDate(),
-        userReads: snapshot.data()['User Reads'].map<UserReads>((item){
-          return UserReads(
-            user: item['User'] ?? '',
-            lastChecked: item['Last Read'].toDate() ?? DateTime.now(),        
-          );
-        }).toList(),
-      );
-    } catch (e){
-      print(e);
-      return null;
-    }
-  }
-
-  // Profile Stream
-  Stream <ChatsList> selectedChat (docID) async*{
-    yield* FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).snapshots().map(_selectedChatfromSnapshot);
-  }
-
-
-
-  //List of Chats
-  List<SearchChatsList> _searchChatsListFromSnapshot (QuerySnapshot snapshot){
-    return snapshot.docs.map((doc){
-      return SearchChatsList(
-        users: doc.data()['Users'] ?? [],
-        docID: doc.id
-        );
-      }
-    ).toList();
-  }
-
-  
-  // Search User existing
-  Stream <List<SearchChatsList>> searchChatsList (String searchUserID) async*{
-    yield* FirebaseFirestore.instance.collection('Chat Rooms').where('Users', arrayContains: searchUserID).snapshots().map(_searchChatsListFromSnapshot);
-  }
-
-
-
-
-
-  //List of Messages Chats
-  List<Messages> _messagesListFromSnapshot (QuerySnapshot snapshot){
-    try{
-      return snapshot.docs.map((doc){
-        return Messages(
-          sender: doc.data()['Sender'] ?? '',
-          text: doc.data()['Text'] ?? '',
-          time: doc.data()['Time'].toDate(),
-          image: doc.data()['Image'] ?? null,
-          docID: doc.id,
-
-          type: doc.data()['Type'] ?? null,
-          headline: doc.data()['Headline'] ?? '',
-          subtitle: doc.data()['Subtitle'] ?? '',
-          );
-        }
-      ).toList();
-    } catch(e){
-      print(e);
-      return null;
-    }
-  }
-
-  // Messages Stream
-  Stream <List<Messages>> messages (docID) async*{
-
-    yield* FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).collection('Messages')
-      .orderBy('Time', descending: true)
-      .limit(10)
-      .snapshots().map(_messagesListFromSnapshot);
-  }
-
-
-  //Create Message
-  Future sendMessage(docID, text, image) async {
-
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).collection('Messages').doc().set({
-     'Time': DateTime.now(),
-     'Sender': uid,
-     'Text': text,
-     'Image': image,
-    });
-  }
-  
-  Future sendSharedMessage(docID, text, type, headline, subtitle) async {
-
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).collection('Messages').doc().set({
-     'Time': DateTime.now(),
-     'Sender': uid,
-     'Text': text,
-     'Image': null,
-     'Type': type,
-     'Headline': headline,
-     'Subtitle': subtitle,
-    });
-  }
-
-  //Update last message date
-  Future updateChatDate(docID) async {
-
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).update({
-     'Created At': DateTime.now(),
-    });
-  }
-
-
-
-  //List Chat Options (Users)
-  List<UserProfile> _userListFromSnapshot (QuerySnapshot snapshot){
-    return snapshot.docs.map((doc){
-      return UserProfile(
-        name: doc.data()['Name'] ?? '',
-        uid: doc.data()['UID'] ?? '',
-        about: doc.data()['About'] ?? '',
-        profilePic: doc.data()['Profile Image'] ?? 'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/Profile%20Images%2FNo%20User.png?alt=media&token=0312211c-026c-432b-98b5-e4e03bcbe386', 
-        );
-      }
-    ).toList();
-  }
-
-
-  // Users Search
-  Stream <List<UserProfile>> searchUsers (String userToSearch, int limitNumber) async*{
-    yield* FirebaseFirestore.instance.collection('User Profile').where('Search Name', arrayContains: userToSearch).limit(limitNumber).snapshots().map(_userListFromSnapshot);
-  }
-
-
-
-
-  //Delete Chat
-  Future deleteChat (chatID) async {
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(chatID).delete();
-  }
-  Future removeFromMyChats (String docID) async {
-
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    return await FirebaseFirestore.instance.collection('Chat Rooms').doc(docID).update({
-      'Users': FieldValue.arrayRemove([uid]),       
-    });
-  }
-
-
-
-
 ///////////////////////// Social Streams from Firestore ////////////////////////// 
 
-  //List of Groups I Belong to
-  List<Groups> _myGroupListFromSnapshot (QuerySnapshot snapshot){
-    return snapshot.docs.map((doc){
-      return Groups(
-        groupName: doc.data()['Group Name'] ?? 'None',
-        groupSearchName: doc.data()['Group Seach Name'] ?? [],
-        groupImage: doc.data()['Image'] ?? '',
-        description: doc.data()['Description'] ?? '',
-        memberCount: doc.data()['MemberCount'] ?? 0,
-        private: doc.data()['Private'] ?? false,
-        members: doc.data()['Members'] ?? [],
-        admin: doc.data()['Admin'] ?? '',
-        createdAt: doc.data()['Created At'].toDate() ?? DateTime.now(),
-        );
-      }
-    ).toList();
-  }
 
-  // My Groups Stream
-  Stream <List<Groups>> get myGroupList async*{
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    yield* FirebaseFirestore.instance.collection('Groups').where('Members', arrayContains: uid).snapshots().map(_myGroupListFromSnapshot);
-  }
-
-  // Group Search
-  Stream <List<Groups>> searchGroups (String groupToSearch) async*{
-    yield* FirebaseFirestore.instance.collection('Groups').where('Group Search Name', arrayContains: groupToSearch).snapshots().map(_myGroupListFromSnapshot);
-  }
-
-
-
-  // Groups from snapshot
-  Groups _groupfromSnapshot (DocumentSnapshot snapshot){
-      return Groups(
-        groupName: snapshot.data()['Group Name'] ?? 'None',
-        groupSearchName: snapshot.data()['Group Seach Name'] ?? [],
-        groupImage: snapshot.data()['Image'] ?? '',
-        description: snapshot.data()['Description'] ?? '',
-        memberCount: snapshot.data()['MemberCount'] ?? 0,
-        private: snapshot.data()['Private'] ?? false,
-        members: snapshot.data()['Members'] ?? [],
-        admin: snapshot.data()['Admin'] ?? [],
-        createdAt: snapshot.data()['Created At'].toDate() ?? DateTime.now(),
+  // Organization from snapshot
+  Organization _organizationfromSnapshot (DocumentSnapshot snapshot){
+      return Organization(
+        organizationName: snapshot.data()['Name'] ?? '',
+        searchName: snapshot.data()['Search Name'] ?? [],
+        logo: snapshot.data()['Logo'] ?? '',
+        domain: snapshot.data()['Domain'] ?? '',
       );
   }
 
-  // Groups Stream
-  Stream <Groups> groupData (String groupName) async*{
-    yield* FirebaseFirestore.instance.collection('Groups').doc(groupName).snapshots().map(_groupfromSnapshot);
+  // Organization Stream
+  Stream <Organization> organizationData (String organizationName) async*{
+    yield* FirebaseFirestore.instance.collection('Organizations').doc(organizationName).snapshots().map(_organizationfromSnapshot);
   }
-
-
-
-  // Create Group
-  Future createGroup(groupName, groupImage, groupDescription, List groupSearchName, bool private) async {
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).set({
-      'Group Name': groupName,
-      'Group Search Name': groupSearchName ?? [],
-      'Image': groupImage ?? '',
-      'Description': groupDescription ?? '',
-      'MemberCount': 1,
-      'Private': false,
-      'Members': [uid],
-      'Admin': uid ?? '',
-      'Created At': DateTime.now(),
-    });
-  }
-
-
 
   // Group Feed
   List<Post> _feedFromSnapshot (QuerySnapshot snapshot){
@@ -1011,8 +857,8 @@ class DatabaseService {
   }
 
   // Feed Stream
-  Stream <List<Post>> groupFeed (groupName) async*{
-    yield* FirebaseFirestore.instance.collection('Groups').doc(groupName).collection('Posts').orderBy('Time', descending: true).limit(15).snapshots().map(_feedFromSnapshot);
+  Stream <List<Post>> groupFeed (organizationName) async*{
+    yield* FirebaseFirestore.instance.collection('Organizations').doc(organizationName).collection('Posts').orderBy('Time', descending: true).limit(15).snapshots().map(_feedFromSnapshot);
   }
 
   // Individual Post from snapshot (Comments)
@@ -1041,7 +887,39 @@ class DatabaseService {
 
   // Individual Post Stream (Comments)
   Stream <Post> post (groupName, postID) async*{
-    yield* FirebaseFirestore.instance.collection('Groups').doc(groupName).collection('Posts').doc(postID).snapshots().map(_postfromSnapshot);
+    yield* FirebaseFirestore.instance.collection('Organizations').doc(groupName).collection('Posts').doc(postID).snapshots().map(_postfromSnapshot);
+  }
+
+  // Individual Post from snapshot (Comments)
+  List<Article> _articlesfromSnapshot (QuerySnapshot snapshot){
+    try {
+      return snapshot.docs.map((doc){
+        return Article(
+        title: doc.data()['Title'] ?? '',
+        author: doc.data()['Author'] ?? '',
+        date: doc.data()['Date'].toDate() ?? DateTime.now(),
+        userReads: doc.data()['User Reads'] ?? [],
+        image: doc.data()['Image'] ?? '',
+        articleID: doc.data()['ID'] ?? '',
+        content: doc.data()["Content"].map<ArticleContent>((item){
+          return ArticleContent(
+            text: item['Text'] ?? '',
+            type: item['Type'] ?? '',
+          );
+        }).toList(),        
+    );
+      }).toList();
+    } catch(e){
+      return null;
+    }
+  }
+
+  // Individual Post Stream (Comments)
+  Stream <List<Article>> articles (groupName) async*{
+    yield* FirebaseFirestore.instance.collection('Organizations')
+    .doc(groupName).collection('Articles')
+    .orderBy('Date')
+    .snapshots().map(_articlesfromSnapshot);
   }
 
 
@@ -1052,7 +930,7 @@ class DatabaseService {
 
     String docID = DateTime.now().toString(); 
 
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).collection('Posts').doc(docID).set({
+    return await FirebaseFirestore.instance.collection('Organizations').doc(groupName).collection('Posts').doc(docID).set({
       'Post ID': docID,
       'Owner ID': uid,
       'Time': DateTime.now(),
@@ -1062,19 +940,19 @@ class DatabaseService {
       'Comments': [],
     });
   }
-  Future createSharedPost(groupName, textContent, type, headline, subtitle) async {
+  Future createSharedPost(groupName, textContent, media, type, headline, subtitle) async {
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
 
     String docID = DateTime.now().toString(); 
 
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).collection('Posts').doc(docID).set({
+    return await FirebaseFirestore.instance.collection('Organizations').doc(groupName).collection('Posts').doc(docID).set({
       'Post ID': docID,
       'Owner ID': uid,
       'Time': DateTime.now(),
       'Likes': [],
       'Text Content': textContent,
-      'Media': '',
+      'Media': media ?? '',
       'Comments': [],
       'Type': type,
       'Headline': headline,
@@ -1104,7 +982,7 @@ class DatabaseService {
   Future likePost(groupName, postID) async {
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).collection('Posts').doc(postID).update({
+    return await FirebaseFirestore.instance.collection('Organizations').doc(groupName).collection('Posts').doc(postID).update({
       'Likes': FieldValue.arrayUnion([uid] ?? ''),
     });
   }
@@ -1113,7 +991,7 @@ class DatabaseService {
   Future unlikePost(groupName, postID) async {
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).collection('Posts').doc(postID).update({
+    return await FirebaseFirestore.instance.collection('Organizations').doc(groupName).collection('Posts').doc(postID).update({
       'Likes': FieldValue.arrayRemove([uid] ?? ''),
     });
   }
@@ -1125,7 +1003,7 @@ class DatabaseService {
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
 
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).collection('Posts').doc(postID).update({
+    return await FirebaseFirestore.instance.collection('Organizations').doc(groupName).collection('Posts').doc(postID).update({
      'Comments': FieldValue.arrayUnion([{
           'Time': DateTime.now(),
           'Sender': uid,
@@ -1135,56 +1013,6 @@ class DatabaseService {
     });
   }
   
-
-
-
-  //Join a Group
-  Future joinGroupList (String groupName, int memberCount) async {
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).update({
-      'Members': FieldValue.arrayUnion([uid] ?? ''),
-      'MemberCount' : memberCount +1 ?? memberCount
-    });
-  }
-
-  //Add to my Group
-  Future addMyGroup (String groupName) async {
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-    return await profile.doc(uid).update({
-      'Groups': FieldValue.arrayUnion([groupName] ?? ''),
-    });
-  }
-
-
-  //Ask to Join Private Group
-  Future askJoinPrivateGroup (String adminUID, String group) async {
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
-    return await profile.doc(adminUID).update({
-      'Group Notifications': FieldValue.arrayUnion([{
-          'Notification Type': 'Join Request',  
-          'Group': group ?? '',
-          'Requester UID': uid ?? '',
-          'Date': DateTime.now(),
-        }]
-      ),       
-    });
-  }
-
-  //Accept in private group
-  Future acceptinPrivateGroup (String requesterUID, String group) async {
-    return await profile.doc(requesterUID).update({
-      'Group Notifications': FieldValue.arrayUnion([{
-          'Notification Type': 'Join Request Accepted',  
-          'Group': group ?? '',
-          'Requester UID': requesterUID ?? '',
-          'Date': DateTime.now(),
-        }]
-      ),       
-    });
-  }
 
   //Notify me likes and comments
   Future notifyLikesComments (String postOwnerUID, String likeorComment, String group) async {
@@ -1228,21 +1056,6 @@ class DatabaseService {
     yield* profile.doc(uid).snapshots().map(_groupNotificationsfromSnapshot);
   }
   
-  //Sender Join a Group
-  Future senderjoinGroupList (String senderID, String groupName, int memberCount) async {
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).update({
-      'Members': FieldValue.arrayUnion([senderID] ?? ''),
-      'MemberCount' : memberCount +1 ?? memberCount
-    });
-  }
-
-  //Add to sender Group
-  Future addSenderGroup (String senderID, String groupName) async {
-    return await profile.doc(senderID).update({
-      'Groups': FieldValue.arrayUnion([groupName] ?? ''),
-    });
-  }
-
   //Delete Group Notification
   Future deleteGroupNotification (date, String group, String type, String senderUID) async {
 
@@ -1259,28 +1072,26 @@ class DatabaseService {
       ),       
     });
   }
+  Future clearAllNotifications () async {
 
-  //Leave a Group
-  Future leaveGroupList (String groupName, int memberCount) async {
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    return await FirebaseFirestore.instance.collection('Groups').doc(groupName).update({
-      'Members': FieldValue.arrayRemove([uid] ?? ''),
-      'MemberCount' : memberCount -1 ?? memberCount
-    });
-  }
 
-  //Delete from my Groups
-  Future deleteMyGroup (String groupName) async {
-    final User user = FirebaseAuth.instance.currentUser;
-    final String uid = user.uid.toString();
     return await profile.doc(uid).update({
-      'Groups': FieldValue.arrayRemove([groupName] ?? ''),
+      'Group Notifications': []           
     });
   }
 
+  //Comment in Post
+  Future readArticle (groupName, articleID) async {
 
+    final User user = FirebaseAuth.instance.currentUser;
+    final String uid = user.uid.toString();
 
+    return await FirebaseFirestore.instance.collection('Organizations').doc(groupName).collection('Articles').doc(articleID).update({
+     'User Reads': FieldValue.arrayUnion([uid]),     
+    });
+  }
 
 
 
@@ -1301,7 +1112,9 @@ class DatabaseService {
         tags: doc.data()['Tags'] ?? [],
         ingredients: doc.data()['Ingredients'] ?? [],
         likes: doc.data()['Likes'] ?? [],
-        recipeID: doc.id
+        recipeID: doc.id,
+        dateUploaded: doc.data()['Date'].toDate() ?? DateTime.now(),
+        userGoals: doc.data()['User Goals'] ?? [],
       );
     }).toList();
   }
@@ -1312,15 +1125,20 @@ class DatabaseService {
   }
 
   // Saved Recipes Stream
-  Stream <List<Recipes>> get savedRecipes async*{
+  Stream <List<Recipes>> savedRecipes () async*{
     final User user = FirebaseAuth.instance.currentUser;
     final String uid = user.uid.toString();
-    yield* FirebaseFirestore.instance.collection('Recipes').where('Likes', arrayContains: uid).limit(10).snapshots().map(_recipesFromSnapshot);
+    yield* FirebaseFirestore.instance.collection('Recipes')
+    .where('Likes', arrayContains: uid)
+    .snapshots().map(_recipesFromSnapshot);
   }
 
   // Saved Recipes Stream
-  Stream <List<Recipes>> get featuredRecipes async*{
-    yield* FirebaseFirestore.instance.collection('Recipes').where('Featured', isEqualTo:  true).limit(10).snapshots().map(_recipesFromSnapshot);
+  Stream <List<Recipes>> recommendedRecipes (List userGoals) async*{
+    yield* FirebaseFirestore.instance.collection('Recipes')
+    .where('User Goals', arrayContainsAny: userGoals)
+    .orderBy('Date')
+    .snapshots().map(_recipesFromSnapshot);
   }
 
   //Like

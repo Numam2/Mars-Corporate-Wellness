@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
-import 'package:personal_trainer/Shared/SharePrompt.dart';
+import 'package:personal_trainer/Screens/Social/CreatePost.dart';
 
 class ReconitionHabitChallenge extends StatelessWidget {
 
   final String headline;
   final String time;
-  ReconitionHabitChallenge({this.headline, this.time});
+  final String organization;
+  ReconitionHabitChallenge({this.headline, this.time, this.organization});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +25,8 @@ class ReconitionHabitChallenge extends StatelessWidget {
             Container(
               height: 200,
               child: Image(
-                  image: NetworkImage(
-                      'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FReconition%20Habit%20Challenge%20Complete.jpg?alt=media&token=d3c23e22-0cdf-484a-9184-ce43b52dce72')),
+                  image: AssetImage(
+                      'Images/App Pics/iconos ilust-14.png')),
             ),
             SizedBox(height: 20),
 
@@ -37,7 +39,10 @@ class ReconitionHabitChallenge extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: Text(
                 'Te propusiste adoptar un nuevo hábito y lograste mantenerlo en el tiempo establecido. Pero esto no termina aca, ahora demuestra que puedes sostenerlo a largo plazo. Sigue así',
-                style: Theme.of(context).textTheme.display1,
+                style: GoogleFonts.montserrat(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,                  
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -48,16 +53,13 @@ class ReconitionHabitChallenge extends StatelessWidget {
               height: 35.0,
               child: RaisedButton(
                 onPressed: () {
-                  return showDialog(
-                    context: context,
-                      builder: (context) {
-                        return SharePrompt(
-                          type: 'Level Up',
-                          headline: headline,
-                          time: time,
-                          activityIcon: Icons.fitness_center,
-                        );
-                      });
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePost(
+                    groupName: organization,
+                    type: 'Challenge completed',
+                    headline: headline,
+                    time: time,
+                    activityIcon: Icons.fitness_center
+                  )));
                 },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25)),

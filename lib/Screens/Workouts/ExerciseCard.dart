@@ -123,14 +123,6 @@ class ExerciseCard extends StatelessWidget {
                   exercise: exercise,
                 )));
         },
-        onLongPress: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                String exercise = exerciseName;
-                return ExerciseFeedback(exercise: exercise);
-              });
-        },
         child: Container(
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -144,13 +136,12 @@ class ExerciseCard extends StatelessWidget {
                 Container(
                   height: MediaQuery.of(context).size.width * 0.18,
                   width: MediaQuery.of(context).size.width * 0.18,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Colors.grey[200],               
-                    ),
-                    child: Image.network(
-                      exercise.image,
-                      fit: BoxFit.cover
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        exercise.image,
+                        fit: BoxFit.cover
+                      ),
                     )
                 ),
                 SizedBox(width: 10),

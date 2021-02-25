@@ -22,7 +22,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.0
 
   # Add the dependency for the Firebase Core Flutter SDK
   firebase_core: ^0.5.0
@@ -77,13 +77,27 @@ flutter:
     - Images/Brand/Blue Isologo.png
     - Images/Brand/SplashScreen Logo.png
     - Images/Brand/Primary Logo Blue.png
+    - Images/Brand/White Logo.png
+  #List of App images
+    - Images/App Pics/iconos ilust-10.png
+    - Images/App Pics/iconos ilust-11.png
+    - Images/App Pics/iconos ilust-12.png
+    - Images/App Pics/iconos ilust-13.png
+    - Images/App Pics/iconos ilust-14.png
+    - Images/App Pics/iconos ilust-15.png
+    - Images/App Pics/iconos ilust-16.png
+    - Images/App Pics/iconos ilust-17.png
+    - Images/App Pics/iconos_01 entrena.png
+    - Images/App Pics/iconos-02 yoga.png
+    - Images/App Pics/iconos-03 stretching.png
+    - Images/App Pics/iconos-04 mente.png
+    - Images/App Pics/iconos-05.png
+    - Images/App Pics/iconos-07.png
+    - Images/App Pics/iconos-08.png
+    - Images/App Pics/iconos-09.png
   #List of general app Images (Home Screen)
-    - Images/AppImage1.jpg
-    - Images/ManMyPlan.jpg
-    - Images/Icon Exercise.png
-    - Images/Icon Yoga.png
-    - Images/Icon Meditation.png
-    - Images/Illustration Woman Exercising.jpg
+    - Images/Authenticate Pic.jpg
+    - Images/Email Confirmation.jpg
   #List Popular callenges images
     - Images/Challenges/Burpees.jpg
     - Images/Challenges/Fruits.jpg
@@ -97,8 +111,8 @@ flutter:
    #TrainPreferences
     - Images/TrainPreference/Gym.jpg
     - Images/TrainPreference/Home.jpg
-    - Images/TrainPreference/Machine.jpg
-    - Images/TrainPreference/Running.jpg
+    - Images/TrainPreference/Yoga.jpg
+    - Images/TrainPreference/Stretching.jpg
    #Equipment
     - Images/Equipment/Barbell.jpg
     - Images/Equipment/Battle Rope.jpg

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Challenges/Create_Challenge.dart';
 import 'package:provider/provider.dart';
 import 'package:personal_trainer/Models/challenge.dart';
@@ -38,8 +39,9 @@ class _PopularChallengeListState extends State<PopularChallengeList> {
   @override
   Widget build(BuildContext context) {
     final _popularChallenge = Provider.of<List<PopularChallenges>>(context);
+    final _profile = Provider.of<UserProfile>(context);
 
-    if (_popularChallenge == null || _popularChallenge.length == null) {
+    if (_popularChallenge == null || _profile == null || _popularChallenge.length == null) {
       return Container(
         constraints: BoxConstraints(maxHeight: 170),
         child: ListView.builder(

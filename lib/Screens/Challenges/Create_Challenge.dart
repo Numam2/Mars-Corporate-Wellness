@@ -7,8 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/challenge.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Challenges/PopularChallenges.dart';
 import 'package:personal_trainer/Screens/Home/Inicio_Navigate.dart';
+import 'package:personal_trainer/Shared/Loading.dart';
 import 'package:provider/provider.dart';
 
 class CreateChallenge extends StatefulWidget {
@@ -45,6 +47,15 @@ class _CreateChallengeState extends State<CreateChallenge> {
 
   @override
   Widget build(BuildContext context) {
+
+    final _profile = Provider.of<UserProfile>(context);
+
+    if(_profile == null){
+      return Scaffold(
+        body: Center(child: Loading())        
+      );
+    }  
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -167,6 +178,7 @@ class _CreateChallengeState extends State<CreateChallenge> {
                             String lastcheck = '0';
                             int duration = (_value + 5).round();
                             int currentDay = 0;
+                            DatabaseService().recordOrganizationStats(_profile.organization, 'Habits Adopted');
                             await createChallenge(
                                 newChallenge, duration, lastcheck, currentDay);
                             Navigator.of(context).pop();

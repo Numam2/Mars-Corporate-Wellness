@@ -26,7 +26,7 @@ class ChallengeList extends StatelessWidget {
       children: <Widget>[
         //Title
         Padding(
-          padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+          padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 10.0),
           child: Row(children: <Widget>[
             Text(
               "Mis hábitos",
@@ -130,7 +130,7 @@ class ChallengeList extends StatelessWidget {
                                     SizedBox(height: 5),
                                     //Date range
                                     Text(
-                                        'Pasaste el límite de tiempo',
+                                        'Oops.. pasaste el límite de tiempo',
                                         style:
                                             Theme.of(context).textTheme.display2),
                                     SizedBox(height: 15),
@@ -144,7 +144,7 @@ class ChallengeList extends StatelessWidget {
                                             Theme.of(context).canvasColor,
                                         unselectedColor:
                                             Theme.of(context).disabledColor)
-                                  ]),
+                                  ]),                              
                             ])),
                       ),
                     ),
@@ -186,7 +186,7 @@ class ChallengeList extends StatelessWidget {
                             )
                           ]),
                       child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                          padding: const EdgeInsets.fromLTRB(20, 5, 0, 5),
                           child: Row(children: <Widget>[
                             //Check Box
                             Align(
@@ -229,7 +229,7 @@ class ChallengeList extends StatelessWidget {
                                           Theme.of(context).accentColor,
                                       unselectedColor:
                                           Theme.of(context).disabledColor)
-                                ]),
+                                ]),                            
                           ])),
                     ),
                   ),

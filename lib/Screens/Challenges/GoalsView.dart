@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart' as intl_local_date_data;
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Models/goals.dart';
+import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Screens/Challenges/GoalDelete.dart';
 import 'package:personal_trainer/Screens/Challenges/GoalUpdate.dart';
 import 'package:personal_trainer/Screens/Challenges/GoalUpdate_Milestones.dart';
@@ -12,6 +13,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class GoalsView extends StatefulWidget {
+
+  final UserProfile user;
+  GoalsView({this.user});
+
   @override
   _GoalsViewState createState() => _GoalsViewState();
 }
@@ -68,7 +73,7 @@ class _GoalsViewState extends State<GoalsView> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => GoalSelectType()));
+                                  builder: (context) => GoalSelectType(userProfile: widget.user)));
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25)),
@@ -102,15 +107,19 @@ class _GoalsViewState extends State<GoalsView> {
                   ]),
                 ),
               ),
-              Container(
-                  height: 100,
-                  width: MediaQuery.of(context).size.width*0.2,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                    image: NetworkImage(
-                        'https://firebasestorage.googleapis.com/v0/b/ludus-health-coach.appspot.com/o/App%20Images%2FIllustration%20Goals%20Start.jpg?alt=media&token=f6ec46c2-67ab-45d5-9eaf-4c8525454cd1'),
-                    fit: BoxFit.cover,
-                  )))
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: Container(
+                    height: 100,
+                    width: MediaQuery.of(context).size.width*0.25,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                      image: AssetImage(
+                          'Images/App Pics/iconos ilust-11.png'),
+                      fit: BoxFit.cover,
+                    ))),
+              )
             ],
           ),
         ),
@@ -896,14 +905,9 @@ class _GoalsViewState extends State<GoalsView> {
                                           builder: (context) {
                                             return Wrap(
                                               children:<Widget>[
-                                                GoalUpdate(goal: _goal[index], loseWeight: false, currentVal: _goal[index].currentValue)
+                                                GoalUpdate(goal: _goal[index], loseWeight: true, currentVal: _goal[index].currentValue)
                                               ]);
                                           });
-                                        // showDialog(
-                                        //     context: context,
-                                        //     builder: (context) {
-                                        //       return GoalUpdate(goal: _goal[index]);
-                                        //     });
                                       },
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(25)),

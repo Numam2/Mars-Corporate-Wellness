@@ -80,6 +80,7 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
             .padLeft(2, "0");
     if (_stopwatchText == '00') {
       setState(() {
+        _timer.cancel();
         _stopWatch.stop();
       });
       player.play('End Workout Bell.mp3');   
@@ -118,10 +119,10 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
 
   @override
   void dispose() {
-    //if (widget.exerciseDuration != null && widget.exerciseDuration != 0) {
-      _timer.cancel();
-      _stopWatch.stop();
-
+      setState(() {
+        _timer.cancel();
+        _stopWatch.stop();
+      });      
     super.dispose();
   }
 
@@ -382,14 +383,15 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                                       widget.pageController.previousPage(
                                       duration: Duration(milliseconds: 500),
                                       curve: Curves.ease);
+                                  } else {
+                                    setState(() {
+                                      _stopWatch.stop();
+                                    });
+                                    _timer.cancel();
+                                    widget.pageController.previousPage(
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.ease);
                                   }
-                                  setState(() {
-                                    _stopWatch.stop();
-                                  });
-                                  _timer.cancel();
-                                  widget.pageController.previousPage(
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease);
                                 }
                               },
                               child: Container(
@@ -475,14 +477,15 @@ class _ExerciseVideoState extends State<ExerciseVideo> {
                                       widget.pageController.nextPage(
                                       duration: Duration(milliseconds: 500),
                                       curve: Curves.ease);
+                                  } else {
+                                    setState(() {
+                                      _stopWatch.stop();
+                                    });
+                                    _timer.cancel();
+                                    widget.pageController.nextPage(
+                                        duration: Duration(milliseconds: 500),
+                                        curve: Curves.ease);
                                   }
-                                  setState(() {
-                                    _stopWatch.stop();
-                                  });
-                                  _timer.cancel();
-                                  widget.pageController.nextPage(
-                                      duration: Duration(milliseconds: 500),
-                                      curve: Curves.ease);
                                 }
                               },
                               child: Container(

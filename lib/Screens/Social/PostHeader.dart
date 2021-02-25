@@ -16,7 +16,7 @@ class PostHeader extends StatelessWidget {
 
     if (_postOwner == null){
       return Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Container(
           height: 50,
           width: double.infinity,
@@ -26,7 +26,7 @@ class PostHeader extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Container(
         width: double.infinity,
         child: Row(
@@ -46,34 +46,43 @@ class PostHeader extends StatelessWidget {
                           fit: BoxFit.cover)),
                 ),
               ),
-              SizedBox(width: 20),
+              SizedBox(width: 15),
 
               ///Userifo
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    ///Username
-                    Text(
-                      _postOwner.name,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black),
-                    ),
-                    SizedBox(height: 5),
+              Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.35
+                ),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ///Username
+                      Text(
+                        _postOwner.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.montserrat(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black),
+                      ),
+                      SizedBox(height: 5),
 
-                    ///User Bio
-                    Text(
-                      (_postOwner.about == null || _postOwner.about == '')
-                      ?_postOwner.name
-                      :_postOwner.about,
-                      style: GoogleFonts.montserrat(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.black),
-                    ),
-                  ]),
+                      ///User Bio
+                      Text(
+                        (_postOwner.about == null || _postOwner.about == '')
+                        ?_postOwner.name
+                        :_postOwner.about,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.montserrat(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.black),
+                      ),
+                    ]),
+              ),
 
               Spacer(),
 
@@ -86,7 +95,7 @@ class PostHeader extends StatelessWidget {
                 ),
                 SizedBox(width: 5.0),
                 Text(
-                  timeago.format(date, locale: 'es_short'),
+                  timeago.format(date, locale: 'es'),
                   style: GoogleFonts.montserrat(
                       fontSize: 11,
                       fontWeight: FontWeight.w300,

@@ -7,9 +7,9 @@ class UserProfile {
   final String sex;
   final String weight;
   final String height;
-  final String preference;
-  final String goal;
-  final String experience;
+  final List preferences;
+  final List goals;
+  final int experience;
   final int caloriesBurnt;
   final DateTime birthday;
   final int accumulatedHours;
@@ -22,6 +22,7 @@ class UserProfile {
   final int levelTo;
 
   final List groups;
+  final String organization;
 
   final String currentTrainingWeek;
   final String currentTrainingDay;
@@ -32,6 +33,8 @@ class UserProfile {
   final bool hasPersonalCoach;
 
   final List<ProgressPictures> progressPictures;
+  
+  final Map activeOrganizationChallenges;
 
   UserProfile({
     this.uid,
@@ -40,8 +43,8 @@ class UserProfile {
     this.sex, 
     this.weight, 
     this.height, 
-    this.preference, 
-    this.goal, 
+    this.preferences,
+    this.goals, 
     this.experience, 
     this.caloriesBurnt, 
     this.birthday, 
@@ -55,6 +58,7 @@ class UserProfile {
     this.levelTo,
 
     this.groups,
+    this.organization,
 
     this.currentTrainingWeek,
     this.currentTrainingDay,
@@ -65,6 +69,7 @@ class UserProfile {
     this.hasPersonalCoach,
 
     this.progressPictures,
+    this.activeOrganizationChallenges,
   }); 
 
 }
@@ -123,3 +128,15 @@ class GroupNotifications {
   DateTime date;
   GroupNotifications({this.group, this.type, this.senderID, this.date});
 }
+
+
+// class ActiveOrganiationChallenge {
+//   final String challengeID;
+//   final String status;
+//   final String activityType;
+//   final int completedSteps;
+//   final int targetSteps;
+  
+//   ActiveOrganiationChallenge({this.challengeID, this.status, this.activityType, this.completedSteps, this.targetSteps});
+
+// }

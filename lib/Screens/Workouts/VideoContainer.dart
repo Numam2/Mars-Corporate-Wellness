@@ -34,9 +34,7 @@ class _VideoContainerState extends State<VideoContainer>
     fetchedFile = await DefaultCacheManager().getSingleFile(widget.exerciseVideoURL);
     setState((){
       videoFile = fetchedFile;
-      print ('File fetched: ${fetchedFile.path}');
     });
-    print(videoFile.path);
   }
 
   @override
@@ -46,13 +44,12 @@ class _VideoContainerState extends State<VideoContainer>
 
       downloadMedia().whenComplete(() {
         setState(() {});
-        print("success");
 
         _controller = VideoPlayerController.file(videoFile);
         initializeVideo = _controller.initialize();
         _controller.play();
         _controller.setLooping(true);
-        _controller.setVolume(0);      
+        _controller.setVolume(0);
       
       }).catchError((error, stackTrace) {
         print("outer: $error");

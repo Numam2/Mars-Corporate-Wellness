@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Firebase_Services/levelTracker.dart';
@@ -8,8 +7,6 @@ import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Shared/RecognitionGoal.dart';
 import 'package:personal_trainer/Shared/RecognitionLevelUp.dart';
 import 'package:provider/provider.dart';
-
-//DatabaseService().updateGoalProgress(goal, currentValue)
 
 class GoalUpdate extends StatefulWidget {
   final Goals goal;
@@ -124,6 +121,62 @@ class _GoalUpdateState extends State<GoalUpdate> {
                     if(!widget.loseWeight){
 
                       //If I am completing the goal
+                      if (newVal >= widget.goal.targetValue) {
+                        //if I should move to next level
+                        if (pointsCounter > _profile.levelTo) {
+                          var duration = (DateTime.now()
+                                      .difference(widget.goal.dateFrom)
+                                      .inDays)
+                                  .toString() +
+                              ' días';
+                          DatabaseService().updateUserPoints(pointsCounter);
+                          LevelTracker().updateLevel(_profile.levelTo);
+                          DatabaseService().saveTrainingSession(
+                              widget.goal.description, duration, 'Meta');
+                          DatabaseService().updateGoalProgress(
+                              widget.goal.description, newVal);
+                          DatabaseService().recordOrganizationStats(_profile.organization, 'Goals Achieved');
+                          Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => ReconitionLevelUp(
+                                  level: _profile.level,
+                                  points: pointsCounter,
+                                  headline: '¡Subí al ' + _profile.level + '!',
+                                  time: pointsCounter.toString() + ' PTS',
+                                  organization: _profile.organization
+                                )));
+                        }
+                        //If I only accumulate points
+                        else {
+                          var duration = (DateTime.now()
+                                      .difference(widget.goal.dateFrom)
+                                      .inDays)
+                                  .toString() +
+                              ' días';
+                          print(duration);
+                          DatabaseService().updateUserPoints(pointsCounter);
+                          DatabaseService().saveTrainingSession(
+                              widget.goal.description, duration, 'Meta');
+                          DatabaseService().updateGoalProgress(
+                              widget.goal.description, newVal);
+                          DatabaseService().recordOrganizationStats(_profile.organization, 'Goals Achieved');
+                          Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => ReconitionGoal(
+                                  headline: 'Alcancé una meta: ' + widget.goal.description,
+                                  time: duration,
+                                  organization: _profile.organization
+                                )));
+                        }
+                        ///If only update weigth
+                      } else {
+                        DatabaseService().updateGoalProgress(
+                            widget.goal.description, newVal);
+                        Navigator.of(context).pop();
+                      }
+                    
+                    ///////////////////////////// Goal is Gain Weight ////////////////////////
+                    } else {
+
+                      //If I am completing the goal
                       if (newVal <= widget.goal.targetValue) {
                         //if I should move to next level
                         if (pointsCounter > _profile.levelTo) {
@@ -139,12 +192,14 @@ class _GoalUpdateState extends State<GoalUpdate> {
                               widget.goal.description, duration, 'Meta');
                           DatabaseService().updateGoalProgress(
                               widget.goal.description, newVal);
+                          DatabaseService().recordOrganizationStats(_profile.organization, 'Goals Achieved');
                           Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => ReconitionLevelUp(
                                   level: _profile.level,
                                   points: pointsCounter,
                                   headline: '¡Subí al ' + _profile.level + '!',
                                   time: pointsCounter.toString() + ' PTS',
+                                  organization: _profile.organization
                                 )));
                         }
                         //If I only accumulate points
@@ -160,63 +215,12 @@ class _GoalUpdateState extends State<GoalUpdate> {
                               widget.goal.description, duration, 'Meta');
                           DatabaseService().updateGoalProgress(
                               widget.goal.description, newVal);
+                          DatabaseService().recordOrganizationStats(_profile.organization, 'Goals Achieved');
                           Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => ReconitionGoal(
                                   headline: 'Alcancé una meta: ' + widget.goal.description,
-                                  time: duration + ' DÍAS',
-                                )));
-                        }
-                        ///If only update weigth
-                      } else {
-                        DatabaseService().updateGoalProgress(
-                            widget.goal.description, newVal);
-                        Navigator.of(context).pop();
-                      }
-                    
-                    ///////////////////////////// Goal is Gain Weight ////////////////////////
-                    } else {
-
-                      //If I am completing the goal
-                      if (newVal >= widget.goal.targetValue) {
-                        //if I should move to next level
-                        if (pointsCounter > _profile.levelTo) {
-                          var duration = (DateTime.now()
-                                      .difference(widget.goal.dateFrom)
-                                      .inDays)
-                                  .toString() +
-                              ' días';
-                          print(duration);
-                          DatabaseService().updateUserPoints(pointsCounter);
-                          LevelTracker().updateLevel(_profile.levelTo);
-                          DatabaseService().saveTrainingSession(
-                              widget.goal.description, duration, 'Meta');
-                          DatabaseService().updateGoalProgress(
-                              widget.goal.description, newVal);
-                          Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => ReconitionLevelUp(
-                                  level: _profile.level,
-                                  points: pointsCounter,
-                                  headline: '¡Subí al ' + _profile.level + '!',
-                                  time: pointsCounter.toString() + ' PTS',
-                                )));
-                        }
-                        //If I only accumulate points
-                        else {
-                          var duration = (DateTime.now()
-                                      .difference(widget.goal.dateFrom)
-                                      .inDays)
-                                  .toString() +
-                              ' días';
-                          print(duration);
-                          DatabaseService().updateUserPoints(pointsCounter);
-                          DatabaseService().saveTrainingSession(
-                              widget.goal.description, duration, 'Meta');
-                          DatabaseService().updateGoalProgress(
-                              widget.goal.description, newVal);
-                          Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => ReconitionGoal(
-                                  headline: 'Alcancé una meta: ' + widget.goal.description,
-                                  time: duration + ' DÍAS',
+                                  time: duration,
+                                  organization: _profile.organization
                                 )));
                         }
                         ///If only update weigth

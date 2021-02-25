@@ -4,6 +4,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:personal_trainer/Firebase_Services/database.dart';
 import 'package:personal_trainer/Firebase_Services/levelTracker.dart';
+import 'package:personal_trainer/Models/dates.dart';
 import 'package:personal_trainer/Models/userProfile.dart';
 import 'package:personal_trainer/Shared/RecognitionLevelUp.dart';
 import 'package:personal_trainer/Shared/RecognitionWorkout.dart';
@@ -62,8 +63,6 @@ class _FinishWorkoutState extends State<FinishWorkout> {
 
     final _profile = Provider.of<UserProfile>(context);
 
-    print(widget.trainingRoutine);
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       child: Container(
@@ -121,10 +120,15 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                             //Clean Cache Manager
                             await DefaultCacheManager().emptyCache();
 
+                            //Record to Org Stats
+                            DatabaseService().recordOrganizationStats(_profile.organization, 'Workouts Completed');
+                            DatabaseService().recordOrganizationCountStats(_profile.organization, 'Workout Time in Minutes', widget.workoutMinutes);
+                            DatabaseService().recordOrganizationCountStats(_profile.organization, 'Calories Burnt', caloriesFormula);
+
                             //If individual workout, just save activity
                             if(widget.trainingRoutine == 'Individual Workouts'){
-                              trainingType = 'Workout';
-                              trainingSession = 'Workout List - ' + widget.currentDay;
+                              trainingType = widget.currentDay;
+                              trainingSession = 'Entrenamiento';
                               DatabaseService().saveTrainingSession(trainingType, widget.workoutMinutes.toString() + ' min', trainingSession);
                             } else {
                               /////Save workout to Activity Log
@@ -141,6 +145,52 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                                 widget.nextTrainingDuration,
                               );                            
                             }
+
+                            /////Logic to record challenge updates                            
+                            if(_profile.activeOrganizationChallenges == {} || _profile.activeOrganizationChallenges == null){
+                              //Do nothing
+                            } else {
+                              if(_profile.activeOrganizationChallenges['Status'] == 'Completo' || DateTime.now().difference(_profile.activeOrganizationChallenges['Date Finish'].toDate()).inDays > 0){
+                                //Do nothing
+                              }
+                              ///If save workout session
+                              else if(_profile.activeOrganizationChallenges['Type'] ==  'Exercise Count'){
+                                //If next to complete
+                                if(_profile.activeOrganizationChallenges['Completed Steps'] + 1 == _profile.activeOrganizationChallenges['Target']){
+                                  DatabaseService().updateOrgChallenge('Completo', _profile.activeOrganizationChallenges['Completed Steps'] + 1);
+                                  DatabaseService().saveTrainingSession('Reto', DatesDictionary().monthDictionary[_profile.activeOrganizationChallenges['Date Finish'].month - 1], _profile.activeOrganizationChallenges['Challenge Title']);
+                                  DatabaseService().updateChallengeCompletedCount(_profile.organization,_profile.activeOrganizationChallenges['Challenge ID']);
+                                  DatabaseService().recordOrganizationStats(_profile.organization, 'Challenges Completed');
+                                } else {
+                                  DatabaseService().updateOrgChallenge('En Progreso', _profile.activeOrganizationChallenges['Completed Steps'] + 1);
+                                }
+                              }
+                              ///If accumulate time trained
+                              else if(_profile.activeOrganizationChallenges['Type'] ==  'Exercise Minutes Count'){
+                                //If next to complete                                
+                                if(_profile.activeOrganizationChallenges['Completed Steps'] + (widget.workoutMinutes / 60).round() == _profile.activeOrganizationChallenges['Target']){
+                                  DatabaseService().saveTrainingSession('Reto', DatesDictionary().monthDictionary[_profile.activeOrganizationChallenges['Date Finish'].month - 1], _profile.activeOrganizationChallenges['Challenge Title']);
+                                  DatabaseService().updateOrgChallenge('Completo', _profile.activeOrganizationChallenges['Completed Steps'] + (widget.workoutMinutes / 60).round());
+                                  DatabaseService().updateChallengeCompletedCount(_profile.organization,_profile.activeOrganizationChallenges['Challenge ID']);
+                                  DatabaseService().recordOrganizationStats(_profile.organization, 'Challenges Completed');
+                                } else {
+                                  DatabaseService().updateOrgChallenge('En progreso',_profile.activeOrganizationChallenges['Completed Steps'] + (widget.workoutMinutes / 60).round());
+                                }
+                              }
+                              ///If save calories
+                              else if(_profile.activeOrganizationChallenges['Type'] ==  'Calorie Count'){
+                                //If next to complete
+                                if(_profile.activeOrganizationChallenges['Completed Steps'] + caloriesFormula == _profile.activeOrganizationChallenges['Target']){
+                                  DatabaseService().saveTrainingSession('Reto', DatesDictionary().monthDictionary[_profile.activeOrganizationChallenges['Date Finish'].month - 1], _profile.activeOrganizationChallenges['Challenge Title']);
+                                  DatabaseService().updateOrgChallenge('Completo', _profile.activeOrganizationChallenges['Completed Steps'] + caloriesFormula);
+                                  DatabaseService().updateChallengeCompletedCount(_profile.organization,_profile.activeOrganizationChallenges['Challenge ID']);
+                                  DatabaseService().recordOrganizationStats(_profile.organization, 'Challenges Completed');
+                                } else {
+                                  DatabaseService().updateOrgChallenge('En progreso', _profile.activeOrganizationChallenges['Completed Steps'] + caloriesFormula);
+                                }
+                              }
+                            }
+                            
                             /////Logic to increase level if applicable
                             DatabaseService().updateUserStats(workoutCounter, caloriesCounter, hoursCounter, pointsCounter);
                             if(pointsCounter > _profile.levelTo){
@@ -148,26 +198,22 @@ class _FinishWorkoutState extends State<FinishWorkout> {
                               /////Go to Level Up recognition
                               Navigator.push(context,
                                 MaterialPageRoute(builder: (context) => ReconitionLevelUp(
+                                  organization: _profile.organization,
                                   level: _profile.level, 
+                                  headline: '¡Subí al ' + _profile.level + '!',
                                   points: pointsCounter,
-                                  time: widget.workoutMinutes.toString() + ' MIN',
+                                  time: pointsCounter.toString() + ' PTS',
                               )));
                             } else {
                               /////Go to congrats Page, then home
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(builder: (context) => ReconitionWorkout(
+                                  organization: _profile.organization,
                                   headline: (trainingSession == '' || trainingSession == null) ? 'Completé un entrenamiento: ' + trainingType : 'Completé un entrenamiento: ' + trainingType + ' - ' + trainingSession,
                                   time: widget.workoutMinutes,
                                   calories: caloriesFormula,
                                   points: 25,
                                 )), (Route<dynamic> route) => false);
-                              // Navigator.pushReplacement(context,
-                              //   MaterialPageRoute(builder: (context) => ReconitionWorkout(
-                              //     headline: (trainingSession == '' || trainingSession == null) ? 'Completé un entrenamiento: ' + trainingType : 'Completé un entrenamiento: ' + trainingType + ' - ' + trainingSession,
-                              //     time: widget.workoutMinutes,
-                              //     calories: caloriesFormula,
-                              //     points: 25,
-                              //   )));
                             }
                             
                             
